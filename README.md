@@ -15,7 +15,7 @@ git push -u origin master
 Configure the project
 ---------------------
 
-* Update ``fabfile.py`` with the name of the new project.
+* Update ``app_config.py`` with the name of the new project.
 * Uncomment and update the ad code and Facebook tags at the top of ``www/index.html`` (or make yourself a note to do it later).
 
 Install requirements
