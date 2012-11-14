@@ -1,0 +1,5 @@
+Fabric==1.4.3
+pycrypto==2.6
+ssh==1.7.14
+wsgiref==0.1.2
+webassets==0.7.1

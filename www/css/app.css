@@ -1,0 +1,32 @@
+body { font: 13px/1.35em Arial, Helvetica, sans-serif; color: #333; }
+
+h1, h2, h3, h4, h5, h6 { font-family: Georgia, serif; margin: 0 0 12px 0; line-height: 1.35em; }
+a, a:link, a:visited { color: #000; }
+a:hover, a:active { color: #36c; }
+
+.navbar .nav li.npr { background: url('../img/npr_55x38.jpg') no-repeat center left; text-indent: -999px; }
+.navbar .nav > li.npr > a { display: block; width: 55px; padding-left: 0; }
+.navbar .nav > li.donate > a { font-weight: bold; color: #ccc; }
+
+.container.the-goods { margin-top:60px; }
+
+.sponsor300 { overflow: hidden; width: 300px; margin: 0 auto; }
+.adwrapper { zoom: 1; padding: 0 0 12px 0; }
+.sponsor300 p { margin: 0; font-size: 10px; color: #333; }
+.sponsor300 p.right { margin-top: 4px; font-style: italic; float: right; }
+.sponsor300 p.left { float: left; margin-top: 4px; }
+
+#footer ul.bottomlist { clear: left; padding: 15px 0; margin: 0; height: 1%; overflow: hidden; list-style: none; }
+#footer ul.bottomlist li { float: left; font-size: 12px; margin-right: 15px; color: #999; }
+#footer ul.bottomlist li a { color: #999; }
+#footer ul.bottomlist li.help a, #footer ul.bottomlist li.contact a { color: #000; font-weight: bold; }
+#footer ul.bottomlist li.donate a { font-weight: bold; color: #F30; }
+
+@media (max-width: 480px) {
+	#footer { border-top: 1px solid #CCC; margin-top: 24px; }
+}
+
+@media (max-width: 979px) {
+    .container.the-goods { margin-top:0; }
+    .navbar-fixed-top .navbar-inner { padding-left: 20px; padding-right: 20px; }
+}
