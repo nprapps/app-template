@@ -8,6 +8,7 @@ import app_config
 Base configuration
 """
 env.project_name = app_config.PROJECT_NAME 
+env.deployed_name = app_config.DEPLOYED_NAME
 env.deploy_to_servers = False
 env.repo_url = 'git@github.com:nprapps/%(project_name)s.git' % env
 env.alt_repo_url = 'git@bitbucket.org:nprapps/%(project_name)s.git' % env
@@ -23,15 +24,13 @@ Environments
 """
 def production():
     env.settings = 'production'
-    env.s3_bucket = 'apps.npr.org'
-    env.alt_s3_bucket = 'apps2.npr.org'
-    env.hosts = ['cron.nprapps.org']
-    
+    env.s3_buckets = app_config.PRODUCTION_S3_BUCKETS
+    env.hosts = app_config.PRODUCTION_SERVERS
+
 def staging():
     env.settings = 'staging'
-    env.s3_bucket = 'stage-apps.npr.org'
-    env.alt_s3_bucket = None
-    env.hosts = ['cron-staging.nprapps.org']
+    env.s3_buckets = app_config.STAGING_S3_BUCKETS
+    env.hosts = app_config.PRODUCTION_SERVERS
 
 """
 Branches
@@ -136,12 +135,11 @@ def _deploy_to_s3():
     """
     build_assets()
 
-    s3mcd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude .webassets-cache sync gzip/ %s'
+    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude .webassets-cache sync gzip/ %s'
 
-    local(s3cmd % ('s3://%(s3_bucket)s/%(project_name)s/' % env))
-
-    if env.get('alt_s3_bucket', None):
-        local(s3cmd % ('s3://%(alt_s3_bucket)s/%(project_name)s/' % env))
+    for bucket in env.s3_buckets:
+        env.s3_bucket = bucket
+        local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s/' % env))
 
 def _gzip_www():
     """
@@ -180,10 +178,12 @@ def shiva_the_destroyer():
     with settings(warn_only=True):
         s3cmd = 's3cmd del --recursive %s' % env
         
-        local(s3cmd % ('s3://%(s3_bucket)s/%(project_name)s' % env))
+        for bucket in env.s3_buckets:
+            env.s3_bucket = bucket
+            local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s' % env))
 
         if env.get('alt_s3_bucket', None):
-            local(s3cmd % ('s3://%(alt_s3_bucket)s/%(project_name)s' % env))
+            local(s3cmd % ('s3://%(alt_s3_bucket)s/%(deployed_name)s' % env))
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
