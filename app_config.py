@@ -11,7 +11,9 @@ PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 STAGING_SERVERS = ['cron-staging.nprapps.org']
 
-if os.environ.get('DEPLOYMENT_TARGET', None) == 'production':
+DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
+
+if DEPLOYMENT_TARGET == 'production':
     S3_BUCKETS = PRODUCTION_S3_BUCKETS
     SERVERS = PRODUCTION_SERVERS
 else:
