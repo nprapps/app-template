@@ -5,7 +5,7 @@ Copying the template
 --------------------
 
 ```
-git clone git@github.com:npr/app-template.git $NEW_PROJECT_NAME
+git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
 cd $NEW_PROJECT_NAME
 git remote rm origin
 git remote add origin https://github.com/nprapps/$NEW_PROJECT_NAME.git
