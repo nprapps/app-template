@@ -161,11 +161,30 @@ def deploy(remote='origin'):
 """
 Local workflow
 """
+def compile_jst():
+    """
+    Compile JST.
+    """
+    local('node_modules/.bin/jst --template underscore www/templates/ www/js/templates.js')
+
+def watch_jst():
+    """
+    Watch JST for changes and recompile as needed.
+    """
+    local('node_modules/.bin/jst --template underscore www/templates/ www/js/templates.js --watch true')
+
 def build_assets():
+    """
+    Build consolidated versions of CSS and JS assets.
+    """
+    compile_jst()
     local('webassets -m assets_env build')
 
-
 def watch_assets():
+    """
+    Watch CSS and JS for changes and rebuild assets as necessary.
+    """
+    compile_jst()
     local('webassets -m assets_env watch')
 
 """

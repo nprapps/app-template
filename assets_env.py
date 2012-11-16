@@ -15,6 +15,7 @@ footer_js = Bundle(
     'js/lib/underscore-min.js',
     'js/lib/moment.min.js',
     'bootstrap/js/bootstrap.min.js',
+    'js/templates.js',
     'js/app.js',
     output='js/app-footer.min.js')
 

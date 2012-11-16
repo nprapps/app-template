@@ -30,7 +30,10 @@ pip-log.txt
 .DS_store
 gzip
 
+node_modules
 www/.webassets-cache/
 www/css/app.min.css
 www/js/app-header.min.js
 www/js/app-footer.min.js
+www/js/templates.js
+

@@ -21,7 +21,16 @@ Configure the project
 Install requirements
 --------------------
 
+Node.js is required for the JST compiler. If you don't already have it, get it like this:
+
 ```
+brew install node
+```
+
+Then install the project requirements:
+
+```
+npm install universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
@@ -37,6 +46,25 @@ python -m SimpleHTTPServer
 ```
 
 Visit ``localhost:8000`` in your browser.
+
+Working with assets
+-------------------
+
+The asset pipeline is complicated and will require running several shells. [tmux](http://tmux.sourceforge.net/) and [teamocil](https://github.com/remiprev/teamocil) may make this easier.
+
+To automatically regenerate javascript templates, run the following:
+
+```
+workon $NEW_PROJECT_NAME
+fab watch_jst
+```
+
+To automatically regenerate CSS and JS packages, open another terminal and run:
+
+```
+workon $NEW_PROJECT_NAME
+fab watch_assets
+```
 
 Deploying the project
 ---------------------
