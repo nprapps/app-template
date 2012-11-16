@@ -47,10 +47,10 @@ python -m SimpleHTTPServer
 
 Visit ``localhost:8000`` in your browser.
 
-Working with assets
--------------------
+Working with CSS, Javascript and JST 
+------------------------------------
 
-The asset pipeline is complicated and will require running several shells. [tmux](http://tmux.sourceforge.net/) and [teamocil](https://github.com/remiprev/teamocil) may make this easier.
+The asset pipeline is complicated and will require running several shells. 
 
 To automatically regenerate javascript templates, run the following:
 
@@ -65,6 +65,8 @@ To automatically regenerate CSS and JS packages, open another terminal and run:
 workon $NEW_PROJECT_NAME
 fab watch_assets
 ```
+
+Using [tmux](http://tmux.sourceforge.net/) and [teamocil](https://github.com/remiprev/teamocil) will allow you to automatically start these services. An example teamocil config is found in ``.teamocil``.
 
 Deploying the project
 ---------------------
