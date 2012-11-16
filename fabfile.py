@@ -165,13 +165,13 @@ def compile_jst():
     """
     Compile JST.
     """
-    local('node_modules/.bin/jst --template underscore www/templates/ www/js/templates.js')
+    local('node_modules/.bin/jst --template underscore www/jst/ www/js/templates.js')
 
 def watch_jst():
     """
     Watch JST for changes and recompile as needed.
     """
-    local('node_modules/.bin/jst --template underscore www/templates/ www/js/templates.js --watch true')
+    local('node_modules/.bin/jst --template underscore www/jst/ www/js/templates.js --watch true')
 
 def build_assets():
     """
