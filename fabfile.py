@@ -72,8 +72,10 @@ def _render_template(template, data={}):
     """
     Helper function for rendering a jinja template.
     """
-    env = Environment(loader=FileSystemLoader('templates'))
-    template = env.get_template(template)
+    jinja = Environment(loader=FileSystemLoader('templates'))
+    template = jinja.get_template(template)
+
+    data['project_name'] = env.project_name
 
     return template.render(data)
 

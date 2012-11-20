@@ -32,6 +32,7 @@ gzip
 
 node_modules
 www/.webassets-cache/
+www/index.html
 www/css/app.min.css
 www/js/app-header.min.js
 www/js/app-footer.min.js
