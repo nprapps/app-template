@@ -65,14 +65,26 @@ def _confirm_branch():
 """
 Template-specific functions
 """
-def make_table():
+def make_table(filename='data/example.csv'):
+    """
+    Rewrite index.html with a table from a CSV.
+    """
+    import csv
+
     from jinja2 import Template
     from pyquery import PyQuery as pq
 
-    with open('templates/table.html') as f:
-        template = Template(f.read())
+    with open(filename) as f:
+        reader = csv.reader(f)
+        header = reader.next()
 
-    table = template.render(foo='bar')
+        with open('templates/table.html') as f:
+            template = Template(f.read())
+
+        table = template.render({
+            'columns': header,
+            'data': reader
+        })
 
     index = pq(filename='www/index.html')
     el = index('.template-root')

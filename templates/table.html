@@ -1,1 +1,20 @@
-This is a table. {{ foo }}
+<h1>Tabular!</h1>
+    
+<table class="table table-striped">
+    <thead>
+        <tr>
+            {% for column in columns %}
+            <th>{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            {% for d in row %}
+            <td>{{ d }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </body>
+</table>
