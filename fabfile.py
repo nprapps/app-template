@@ -63,6 +63,23 @@ def _confirm_branch():
             exit()
 
 """
+Template-specific functions
+"""
+def make_table():
+    from jinja2 import Template
+
+    with open('templates/table.html') as f:
+        template = Template(f.read())
+
+    table = '{% block content %}%s{% endblock %}' % template.render(foo='bar')
+
+    with open('www/index.html') as f:
+        index = Template(f.read())
+    
+    with open('www/index.html', 'w') as f:
+        f.write(index.render(body=table))
+
+"""
 Setup
 """
 def setup():
