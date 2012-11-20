@@ -67,17 +67,19 @@ Template-specific functions
 """
 def make_table():
     from jinja2 import Template
+    from pyquery import PyQuery as pq
 
     with open('templates/table.html') as f:
         template = Template(f.read())
 
-    table = '{% block content %}%s{% endblock %}' % template.render(foo='bar')
+    table = template.render(foo='bar')
 
-    with open('www/index.html') as f:
-        index = Template(f.read())
-    
+    index = pq(filename='www/index.html')
+    el = index('.template-root')
+    el.html(table)
+
     with open('www/index.html', 'w') as f:
-        f.write(index.render(body=table))
+        f.write(unicode(index))
 
 """
 Setup
