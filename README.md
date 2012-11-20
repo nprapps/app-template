@@ -16,7 +16,6 @@ Configure the project
 ---------------------
 
 * Update ``app_config.py`` with the name of the new project.
-* Uncomment and update the ad code and Facebook tags at the top of ``www/index.html`` (or make yourself a ticket to do it later).
 
 Install requirements
 --------------------
@@ -34,6 +33,13 @@ npm install universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
+
+Generating index.html
+---------------------
+
+* Run ``fab make_index`` to generate a blank index page.
+* <strong>Or</strong>, for a table, run ``fab make_table:data/example.csv`` to use the table template.
+* Uncomment and update the ad code and Facebook tags at the top of ``www/index.html`` (or make yourself a ticket to do it later).
 
 Running the project locally
 ---------------------------

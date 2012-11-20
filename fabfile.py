@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
+import csv
+
 from fabric.api import *
+from jinja2 import Environment, FileSystemLoader
 
 import app_config
 
@@ -65,33 +68,37 @@ def _confirm_branch():
 """
 Template-specific functions
 """
+def _render_template(template, data={}):
+    """
+    Helper function for rendering a jinja template.
+    """
+    env = Environment(loader=FileSystemLoader('templates'))
+    template = env.get_template(template)
+
+    return template.render(data)
+
+def make_index():
+    """
+    Generate a basic index.html.
+    """
+    with open('www/index.html', 'w') as f:
+        f.write(_render_template('base.html'))
+
 def make_table(filename='data/example.csv'):
     """
     Rewrite index.html with a table from a CSV.
     """
-    import csv
-
-    from jinja2 import Template
-    from pyquery import PyQuery as pq
-
     with open(filename) as f:
         reader = csv.reader(f)
         header = reader.next()
 
-        with open('templates/table.html') as f:
-            template = Template(f.read())
-
-        table = template.render({
+        table = _render_template('table.html', {
             'columns': header,
             'data': reader
         })
 
-    index = pq(filename='www/index.html')
-    el = index('.template-root')
-    el.html(table)
-
     with open('www/index.html', 'w') as f:
-        f.write(unicode(index))
+        f.write(table)
 
 """
 Setup

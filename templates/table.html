@@ -1,4 +1,7 @@
-<h1>Tabular!</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Tabular Data!</h1>
     
 <table class="table table-striped">
     <thead>
@@ -18,3 +21,5 @@
         {% endfor %}
     </body>
 </table>
+
+{% endblock %}
