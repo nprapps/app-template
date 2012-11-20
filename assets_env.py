@@ -15,6 +15,7 @@ footer_js = Bundle(
     'js/lib/underscore-min.js',
     'js/lib/moment.min.js',
     'bootstrap/js/bootstrap.min.js',
+    'js/lib/jquery.tablesorter.min.js',
     'js/templates.js',
     'js/app.js',
     output='js/app-footer.min.js')
@@ -22,6 +23,7 @@ footer_js = Bundle(
 css = Bundle(
     'bootstrap/css/bootstrap.min.css',
     'bootstrap/css/bootstrap-responsive.min.css',
+    'css/tablesorter.css',
     'css/app.css',
     output='css/app.min.css')
 

@@ -7,3 +7,5 @@ function my_function() {
 
 // Example of rendering a precompiled template
 $("#sample-content").html(window.JST['example']({ name: 'example' }));
+
+$("table.table").tablesorter();
