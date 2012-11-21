@@ -36,7 +36,11 @@ module.exports = function(grunt) {
         var exec = require('child_process').exec;
 
         exec('webassets -m assets_env build', function callback(error, stdout, stderr) {
-            done();
+            if (error === null) {
+                grunt.log.writeln('Compiled webassets.');
+            } else {
+                done(false);
+            }
         });
     });
 
