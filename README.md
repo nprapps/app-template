@@ -20,7 +20,7 @@ Configure the project
 Install requirements
 --------------------
 
-Node.js is required for the JST compiler. If you don't already have it, get it like this:
+Node.js is required for the static asset pipeline. If you don't already have it, get it like this:
 
 ```
 brew install node
