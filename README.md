@@ -53,26 +53,24 @@ python -m SimpleHTTPServer
 
 Visit ``localhost:8000`` in your browser.
 
-Working with CSS, Javascript and JST 
-------------------------------------
+Working with static assets
+--------------------------
 
-The asset pipeline is complicated and will require running several shells. 
+The asset pipeline is now handled with [grunt](http://gruntjs.com). 
 
-To automatically regenerate javascript templates, run the following:
-
-```
-workon $NEW_PROJECT_NAME
-fab watch_jst
-```
-
-To automatically regenerate CSS and JS packages, open another terminal and run:
+To compile LESS to CSS, compile javascript templates to JS and package assets with webassets:
 
 ```
 workon $NEW_PROJECT_NAME
-fab watch_assets
+fab grunt
 ```
 
-Using [tmux](http://tmux.sourceforge.net/) and [teamocil](https://github.com/remiprev/teamocil) will allow you to automatically start these services. An example teamocil config is found in ``.teamocil``.
+To automatically run these processes when you change files, simply run:
+
+```
+workon $NEW_PROJECT_NAME
+fab watch
+```
 
 Deploying the project
 ---------------------
