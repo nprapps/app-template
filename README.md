@@ -58,7 +58,7 @@ Working with static assets
 
 The asset pipeline is now handled with [grunt](http://gruntjs.com). 
 
-To compile LESS to CSS, compile javascript templates to JS and package assets with webassets:
+To compile LESS to CSS, compile javascript templates to JS and minify all assets, run:
 
 ```
 workon $NEW_PROJECT_NAME

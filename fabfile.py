@@ -175,7 +175,7 @@ def _deploy_to_s3():
     """
     build_assets()
 
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude .webassets-cache/* sync gzip/ %s'
+    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive sync gzip/ %s'
 
     for bucket in env.s3_buckets:
         env.s3_bucket = bucket

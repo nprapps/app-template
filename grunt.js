@@ -2,6 +2,38 @@ module.exports = function(grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        min: {
+            header_js: {
+                src: [
+                    'www/js/lib/jquery-1.8.2.min.js',
+                    'www/js/lib/modernizr.js',
+                    'www/js/responsive-ad.js'
+                ],
+                dest: 'www/js/app-header.min.js'
+            },
+            footer_js: {
+                src: [
+                    'www/js/lib/underscore-min.js',
+                    'www/js/lib/moment.min.js',
+                    'www/bootstrap/js/bootstrap.min.js',
+                    'www/js/lib/jquery.tablesorter.min.js',
+                    'www/js/templates.js',
+                    'www/js/app.js'
+                ],
+                dest: 'www/js/app-footer.min.js'
+            }
+        },
+        concat: {
+            css: {
+                src: [
+                    'www/bootstrap/css/bootstrap.min.css',
+                    'www/bootstrap/css/bootstrap-responsive.min.css',
+                    'www/css/tablesorter.css',
+                    'www/css/app.css'
+                ],
+                dest: 'www/css/app.min.css'
+            }
+        },
         less: {
             all: {
                 files: {
@@ -30,21 +62,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jst');
 
-    // Task to compile webassets
-    grunt.registerTask('webassets', 'Compile webassets.', function() {
-        var done = this.async();
-        var exec = require('child_process').exec;
-
-        exec('webassets -m assets_env build', function callback(error, stdout, stderr) {
-            if (error === null) {
-                grunt.log.writeln('Compiled webassets.');
-            } else {
-                done(false);
-            }
-        });
-    });
-
     // Default task.
-    grunt.registerTask('default', 'less jst webassets');
+    grunt.registerTask('default', 'less jst min concat');
 
 };
