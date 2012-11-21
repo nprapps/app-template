@@ -35,5 +35,5 @@ www/index.html
 www/css/app.min.css
 www/js/app-header.min.js
 www/js/app-footer.min.js
-www/js/templates.js
+js/templates.js
 

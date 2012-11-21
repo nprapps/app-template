@@ -49,12 +49,12 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    'www/js/templates.js': ['www/jst/*.html']
+                    'js/templates.js': ['jst/*.html']
                 }
             }
         },
         watch: {
-            files: ['less/*.less', 'www/jst/*.html', 'www/css/*.css', 'www/js/*.js'],
+            files: ['less/*.less', 'jst/*.html', 'js/*.js'],
             tasks: 'default'
         }
     });
