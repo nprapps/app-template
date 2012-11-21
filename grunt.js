@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['less/*.less', 'www/jst/*.html'],
+            files: ['less/*.less', 'www/jst/*.html', 'www/css/*.css', 'www/js/*.js'],
             tasks: 'default'
         }
     });
@@ -30,6 +30,17 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jst');
 
+    // Task to compile webassets
+    grunt.registerTask('webassets', 'Compile webassets.', function() {
+        var done = this.async();
+        var exec = require('child_process').exec;
+
+        exec('webassets -m assets_env build', function callback(error, stdout, stderr) {
+            done();
+        });
+    });
+
     // Default task.
-    grunt.registerTask('default', 'less jst');
+    grunt.registerTask('default', 'less jst webassets');
+
 };

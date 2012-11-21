@@ -201,45 +201,17 @@ def deploy(remote='origin'):
 """
 Local workflow
 """
-def compile_less():
+def grunt():
     """
-    Compile less stylesheets to CSS. 
+    Compile static assets. 
     """
-    local('node_modules/.bin/lessc less/app.less > www/css/app.css')
+    local('node_modules/.bin/grunt')
 
-def watch_less():
+def watch():
     """
-    Watch LESS stylesheets for changes and recompile as needed.
+    Watch static assets for changes and recompile as needed.
     """
-    local('node_modules/.bin/lesswatcher --compiler node_modules/.bin/lessc --less_dir less --css_dir www/css/')
-
-def compile_jst():
-    """
-    Compile JST.
-    """
-    local('node_modules/.bin/jst --template underscore www/jst/ www/js/templates.js')
-
-def watch_jst():
-    """
-    Watch JST for changes and recompile as needed.
-    """
-    local('node_modules/.bin/jst --template underscore www/jst/ www/js/templates.js --watch true')
-
-def build_assets():
-    """
-    Build consolidated versions of CSS and JS assets.
-    """
-    compile_jst()
-    compile_less()
-    local('webassets -m assets_env build')
-
-def watch_assets():
-    """
-    Watch CSS and JS for changes and rebuild assets as necessary.
-    """
-    compile_jst()
-    compile_less()
-    local('webassets -m assets_env watch')
+    local('node_modules/.bin/grunt watch')
 
 """
 Destruction
