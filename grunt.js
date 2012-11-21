@@ -5,20 +5,20 @@ module.exports = function(grunt) {
         min: {
             header_js: {
                 src: [
-                    'www/js/lib/jquery-1.8.2.min.js',
-                    'www/js/lib/modernizr.js',
-                    'www/js/responsive-ad.js'
+                    'js/lib/jquery-1.8.2.min.js',
+                    'js/lib/modernizr.js',
+                    'js/responsive-ad.js'
                 ],
                 dest: 'www/js/app-header.min.js'
             },
             footer_js: {
                 src: [
-                    'www/js/lib/underscore-min.js',
-                    'www/js/lib/moment.min.js',
-                    'www/bootstrap/js/bootstrap.min.js',
-                    'www/js/lib/jquery.tablesorter.min.js',
-                    'www/js/templates.js',
-                    'www/js/app.js'
+                    'js/lib/underscore-min.js',
+                    'js/lib/moment.min.js',
+                    'bootstrap/js/bootstrap.min.js',
+                    'js/lib/jquery.tablesorter.min.js',
+                    'js/templates.js',
+                    'js/app.js'
                 ],
                 dest: 'www/js/app-footer.min.js'
             }

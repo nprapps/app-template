@@ -46,7 +46,7 @@ Running the project locally
 
 ```
 workon $NEW_PROJECT_NAME
-fab build_assets
+fab grunt 
 cd www
 python -m SimpleHTTPServer
 ```
