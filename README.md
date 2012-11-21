@@ -29,7 +29,7 @@ brew install node
 Then install the project requirements:
 
 ```
-npm install universal-jst
+npm install less grunt grunt-contrib-less grunt-contrib-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```

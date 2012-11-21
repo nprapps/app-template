@@ -201,6 +201,18 @@ def deploy(remote='origin'):
 """
 Local workflow
 """
+def compile_less():
+    """
+    Compile less stylesheets to CSS. 
+    """
+    local('node_modules/.bin/lessc less/app.less > www/css/app.css')
+
+def watch_less():
+    """
+    Watch LESS stylesheets for changes and recompile as needed.
+    """
+    local('node_modules/.bin/lesswatcher --compiler node_modules/.bin/lessc --less_dir less --css_dir www/css/')
+
 def compile_jst():
     """
     Compile JST.
@@ -218,6 +230,7 @@ def build_assets():
     Build consolidated versions of CSS and JS assets.
     """
     compile_jst()
+    compile_less()
     local('webassets -m assets_env build')
 
 def watch_assets():
@@ -225,6 +238,7 @@ def watch_assets():
     Watch CSS and JS for changes and rebuild assets as necessary.
     """
     compile_jst()
+    compile_less()
     local('webassets -m assets_env watch')
 
 """
