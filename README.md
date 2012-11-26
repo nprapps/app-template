@@ -59,7 +59,7 @@ Generate index.html
 
 * Run ``fab make_index`` to generate a blank index page.
 * <strong>Or</strong>, for a table, run ``fab make_table:data/example.csv`` to use the table template.
-* If you will be using data to drive your page (``table.html`` or a custom template) then you will want to continue work on those files in the templates folder. Otherwise you can start edit ``www/index.html`` directly.
+* If you will be using data to drive your page (``table.html`` or a custom template) then you will want to continue work on those files in the templates folder. Otherwise you can edit ``www/index.html`` directly.
 * Uncomment and update the ad code and Facebook tags at the top of your index page. (or make yourself a ticket to do it later).
 
 Run the project locally
