@@ -2,24 +2,46 @@
 
 {% block content %}
 <h1>{{ project_name }}</h1>
-    
-<table class="table tablesorter">
-    <thead>
-        <tr>
-            {% for column in columns %}
-            <th>{{ column }}</th>
+
+<div class="app-table">
+    <div class="table-filter">
+        <label for="table-search">Search this table:</label> <input name="search" type="search" />
+    </div>
+
+    <div class="table-pager">
+        <form>
+            <div class="pager-nav">
+                <a href="" class="prev">prev</a>
+                <input class="pagedisplay" readonly="readonly" />
+                <a href="" class="next">next</a>
+            </div>
+
+            Show <select class="pagesize">
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select> pages
+        </form>
+    </div>
+
+    <table class="table tablesorter">
+        <thead>
+            <tr>
+                {% for column in columns %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for d in row %}
+                <td>{{ d }}</td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in data %}
-        <tr>
-            {% for d in row %}
-            <td>{{ d }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </body>
-</table>
+        </body>
+    </table>
+</div>
 
 {% endblock %}

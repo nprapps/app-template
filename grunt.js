@@ -17,6 +17,8 @@ module.exports = function(grunt) {
                     'js/lib/moment.min.js',
                     'bootstrap/js/bootstrap.min.js',
                     'js/lib/jquery.tablesorter.min.js',
+                    'js/lib/jquery.tablesorter.pager.js',
+                    'js/lib/jquery.tablesorter.multipagefilter.js',
                     'js/templates.js',
                     'js/app.js'
                 ],
