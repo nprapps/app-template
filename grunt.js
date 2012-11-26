@@ -54,8 +54,18 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['less/*.less', 'jst/*.html', 'js/*.js'],
-            tasks: 'default'
+            css: {
+                files: ['less/*.less'],
+                tasks: 'less concat:css'
+            },
+            jst: {
+                files: ['jst/*.html'],
+                tasks: 'jst'
+            },
+            js: {
+                files: ['js/*.js'],
+                tasks: 'min:header_js min:footer_js',
+            }
         }
     });
 
