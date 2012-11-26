@@ -1,6 +1,26 @@
 nprapps' Project Template
 =========================
 
+About this template
+-------------------
+
+This template provides a a project skeleton suitable for any project that is to be served entirely as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, etc.
+
+What's in here?
+---------------
+
+The project contains the following folders and important files:
+
+* ``data`` -- Data files, such as those used to generate HTML
+* ``js`` -- Javascript files, will be concatenated for deployment
+* ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates 
+* ``less`` -- LESS files, will be compiled to CSS and concatenated for deployment
+* ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally
+* ``www`` -- Static and compiled assets to be deployed (a.k.a. "the output")
+* ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
+* ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment
+* ``grunt.js`` -- [Grunt.js](http://gruntjs.com/) commands automating asset compilation
+
 Copying the template
 --------------------
 
@@ -82,7 +102,7 @@ fab staging master deploy
 Deploying to a server
 ---------------------
 
-The current configuration is for running cron jobs only. Web server configuration is not yet included.
+The current configuration is for running cron jobs only. Web server configuration is not included.
 
 * In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
 * Run ``fab staging master setup`` to configure the server.
