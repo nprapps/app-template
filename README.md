@@ -84,6 +84,16 @@ fab render
 
 (This is done automatically whenever you deploy to S3.)
 
+Test the rendered app
+---------------------
+
+If you want to test the app once you've rendered it out, just use the Python webserver:
+
+```
+cd www
+python -m SimpleHTTPServer
+```
+
 Deploy to S3
 ------------
 
