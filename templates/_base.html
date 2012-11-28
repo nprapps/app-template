@@ -10,8 +10,10 @@
 
 	<!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
-
-    <link rel="stylesheet" type="text/css" href="css/app.min.css" />
+    
+    {% block extra_css %}{% endblock %}
+    {{ CSS.push('less/app.less') }}
+    {{ CSS.render('app.min.css') }}
 
     <!-- AD CODE -->
     <script>
@@ -25,6 +27,7 @@
 	{{ JS.push('js/lib/jquery-1.8.2.min.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/responsive-ad.js') }}
+    {% block extra_head_js %}{% endblock %}
     {{ JS.render('app-header.min.js') }}
 
     <!-- <script type="text/javascript" src="js/app-header.min.js"></script> -->
@@ -120,11 +123,13 @@
         
     </div>
     
-    <!--[if lt IE 9]>
-    <script src="js/lib/html5.js"></script>
-    <![endif]-->
-
-    <script type="text/javascript" src="js/app-footer.min.js"></script>
+	{{ JS.push('js/lib/html5.js') }}
+	{{ JS.push('js/lib/underscore-min.js') }}
+    {{ JS.push('js/lib/moment.min.js') }}
+    {{ JS.push('js/templates.js') }}
+    {% block extra_foot_js %}{% endblock %}
+    {{ JS.push('js/app.js') }}
+    {{ JS.render('app-footer.min.js') }}
 
     <!-- GOOGLE ANALYTICS -->
 	<script type="text/javascript">
