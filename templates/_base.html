@@ -22,8 +22,12 @@
         };
     </script>
 
-	
-    <script type="text/javascript" src="js/app-header.min.js"></script>
+	{{ JS.push('js/lib/jquery-1.8.2.min.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/responsive-ad.js') }}
+    {{ JS.render('app-header.min.js') }}
+
+    <!-- <script type="text/javascript" src="js/app-header.min.js"></script> -->
 
 	<script>
     	AddNamespace('NPR.serverVars');
