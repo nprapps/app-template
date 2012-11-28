@@ -3,7 +3,8 @@ pycrypto==2.6
 ssh==1.7.14
 wsgiref==0.1.2
 Jinja2==2.6
-lxml==3.0.1
-cssselect==0.7.1
 flask==0.9
 Werkzeug==0.8.3
+envoy==0.2
+slimit==0.7.4
+cssmin==0.1.4

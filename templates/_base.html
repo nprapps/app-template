@@ -11,11 +11,12 @@
 	<!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     
+    <!-- CSS -->
     {{ CSS.push('bootstrap/css/bootstrap.min.css') }}
     {{ CSS.push('bootstrap/css/bootstrap-responsive.min.css') }}
     {% block extra_css %}{% endblock %}
     {{ CSS.push('less/app.less') }}
-    {{ CSS.render('app.min.css') }}
+    {{ CSS.render('css/app.min.css') }}
 
     <!-- AD CODE -->
     <script>
@@ -26,11 +27,12 @@
         };
     </script>
 
+    <!-- JS -->
 	{{ JS.push('js/lib/jquery-1.8.2.min.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/responsive-ad.js') }}
     {% block extra_head_js %}{% endblock %}
-    {{ JS.render('app-header.min.js') }}
+    {{ JS.render('js/app-header.min.js') }}
 
     <!-- <script type="text/javascript" src="js/app-header.min.js"></script> -->
 
@@ -132,7 +134,7 @@
     {% block extra_foot_js %}{% endblock %}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
-    {{ JS.render('app-footer.min.js') }}
+    {{ JS.render('js/app-footer.min.js') }}
 
     <!-- GOOGLE ANALYTICS -->
 	<script type="text/javascript">

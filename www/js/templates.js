@@ -1,6 +1,5 @@
-this["JST"] = this["JST"] || {};
-
-this["JST"]["example"] = function(obj){
+(function(){ window.JST || (window.JST = {}) 
+window.JST["example"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='This text is rendered from an example template named <strong>'+
@@ -9,3 +8,5 @@ __p+='This text is rendered from an example template named <strong>'+
 }
 return __p;
 };
+
+})();

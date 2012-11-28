@@ -40,13 +40,6 @@ def map():
     """
     return render_template('map.html', **make_context(app))
 
-# Render JST templates on-demand
-@app.route('/js/templates.js')
-def _templates_js():
-    r = envoy.run('node_modules/.bin/jst --template underscore jst')
-
-    return r.std_out, 200, { 'Content-Type': 'application/javascript' }
-
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -56,6 +49,13 @@ def _less(filename):
     r = envoy.run('node_modules/.bin/lessc -', data=less)
 
     return r.std_out, 200, { 'Content-Type': 'text/css' }
+
+# Render JST templates on-demand
+@app.route('/js/templates.js')
+def _templates_js():
+    r = envoy.run('node_modules/.bin/jst --template underscore jst')
+
+    return r.std_out, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
 @app.route('/<path:path>')

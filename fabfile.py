@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import csv
+from glob import glob
+import os
 
 from fabric.api import *
 
@@ -68,7 +69,31 @@ def _confirm_branch():
 """
 Template-specific functions
 """
-def render_templates():
+def less():
+    """
+    Render LESS files to CSS.
+    """
+    for path in glob('less/*.less'):
+        filename = os.path.split(path)[-1]
+        name = os.path.splitext(filename)[0]
+        out_path = 'www/css/%s.css' % name
+
+        local('node_modules/.bin/lessc %s %s' % (path, out_path))
+
+def jst():
+    """
+    Render Underscore templates to a JST package.
+    """
+    local('node_modules/.bin/jst --template underscore jst www/js/templates.js')
+
+def render():
+    """
+    Render HTML templates. Will compress assets as a side-effect. (Yes this is a bit funny.)
+    """
+    less()
+    jst()
+
+    app.app.testing = True
     client = app.app.test_client()
 
     for rule in app.app.url_map.iter_rules():
