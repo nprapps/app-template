@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import csv
+from mimetypes import guess_type
 
 import envoy
 from flask import Flask, render_template
@@ -51,6 +52,12 @@ def _templates_js():
 def _js(path):
     with open('js/%s' % path) as f:
         return f.read(), 200, { 'Content-Type': 'application/javascript' }
+
+# Server arbitrary image files on-demand
+@app.route('/img/<path:path>')
+def _img(path):
+    with open('www/img/%s' % path) as f:
+        return f.read(), 200, { 'Content-Type': guess_type(path) }
 
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
