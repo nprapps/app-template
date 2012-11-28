@@ -12,8 +12,8 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     
     <!-- CSS -->
-    {{ CSS.push('bootstrap/css/bootstrap.min.css') }}
-    {{ CSS.push('bootstrap/css/bootstrap-responsive.min.css') }}
+    {{ CSS.push('bootstrap/css/bootstrap.css') }}
+    {{ CSS.push('bootstrap/css/bootstrap-responsive.css') }}
     {% block extra_css %}{% endblock %}
     {{ CSS.push('less/app.less') }}
     {{ CSS.render('css/app.min.css') }}
@@ -28,7 +28,7 @@
     </script>
 
     <!-- JS -->
-	{{ JS.push('js/lib/jquery-1.8.2.min.js') }}
+	{{ JS.push('js/lib/jquery-1.8.3.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/responsive-ad.js') }}
     {% block extra_head_js %}{% endblock %}
@@ -131,9 +131,9 @@
     </div>
     
 	{{ JS.push('js/lib/html5.js') }}
-	{{ JS.push('js/lib/underscore-min.js') }}
-    {{ JS.push('js/lib/moment.min.js') }}
-    {{ JS.push('bootstrap/js/bootstrap.min.js') }}
+	{{ JS.push('js/lib/underscore.js') }}
+    {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('bootstrap/js/bootstrap.js') }}
     {% block extra_foot_js %}{% endblock %}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
