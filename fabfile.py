@@ -3,8 +3,8 @@
 import csv
 
 from fabric.api import *
-from jinja2 import Environment, FileSystemLoader
 
+import app
 import app_config
 
 """
@@ -68,39 +68,29 @@ def _confirm_branch():
 """
 Template-specific functions
 """
-def _render_template(template, data={}):
-    """
-    Helper function for rendering a jinja template.
-    """
-    jinja = Environment(loader=FileSystemLoader('templates'))
-    template = jinja.get_template(template)
+def render_templates():
+    client = app.app.test_client()
 
-    data['project_name'] = env.project_name
+    for rule in app.app.url_map.iter_rules():
+        rule_string = rule.rule
+        name = rule.endpoint
 
-    return template.render(data)
+        if name == 'static':
+            continue
 
-def make_index():
-    """
-    Generate a basic index.html.
-    """
-    with open('www/index.html', 'w') as f:
-        f.write(_render_template('base.html'))
+        if name.startswith('_'):
+            continue
 
-def make_table(filename='data/example.csv'):
-    """
-    Rewrite index.html with a table from a CSV.
-    """
-    with open(filename) as f:
-        reader = csv.reader(f)
-        header = reader.next()
+        if rule_string.endswith('/'):
+            filename = 'www' + rule_string + 'index.html'
+        else:
+            filename = 'www' + rule_string
 
-        table = _render_template('table.html', {
-            'columns': header,
-            'data': reader
-        })
+        print 'Rendering %s' % filename
 
-    with open('www/index.html', 'w') as f:
-        f.write(table)
+        with open(filename, 'w') as f:
+            content = client.get(rule_string).data
+            f.write(content)
 
 """
 Setup
