@@ -84,7 +84,7 @@ def render_templates():
         if rule_string.endswith('/'):
             filename = 'www' + rule_string + 'index.html'
         else:
-            filename = 'www' + rule_string
+            filename = 'www' + rule_string + '.html'
 
         print 'Rendering %s' % filename
 

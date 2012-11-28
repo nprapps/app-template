@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 
 {% block content %}
 <h1>{{ project_name }}</h1>
@@ -33,9 +33,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in data %}
+            {% for row in rows %}
             <tr>
-                {% for d in rows %}
+                {% for d in row %}
                 <td>{{ d }}</td>
                 {% endfor %}
             </tr>

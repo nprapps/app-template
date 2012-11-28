@@ -9,17 +9,39 @@ import app_config
 
 app = Flask(app_config.PROJECT_NAME)
 
-# App-specific routes
+# App-specific views 
 @app.route('/')
-def index():
-    data = app_config.__dict__ 
+@app.route('/simple')
+def simple():
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = app_config.__dict__
+
+    return render_template('simple.html', **context)
+
+@app.route('/table')
+def table():
+    """
+    Example view demonstrating rendering a table page.
+    """
+    context = app_config.__dict__ 
 
     with open('data/example.csv') as f:
         reader = csv.reader(f)
-        data['columns'] = reader.next()
-        data['rows'] = list(reader)
+        context['columns'] = reader.next()
+        context['rows'] = list(reader)
 
-    return render_template('index.html', **data)
+    return render_template('table.html', **context)
+
+@app.route('/map')
+def map():
+    """
+    TODO: Example view demonstrating rendering a map page.
+    """
+    context = app_config.__dict__
+
+    return render_template('map.html', **context)
 
 # Generic routing mechanism for static files
 @app.route('/<path:path>')

@@ -32,6 +32,9 @@ gzip
 
 node_modules
 www/index.html
+www/simple.html
+www/table.html
+www/map.html
 www/css/app.css
 www/css/app.min.css
 www/js/app-header.min.js
