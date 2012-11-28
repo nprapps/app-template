@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% block extra_css %}
+{{ CSS.push('css/tablesorter.css') }}
+{% endblock %}
+
 {% block content %}
 <h1>{{ project_name }}</h1>
 
@@ -45,3 +49,10 @@
 </div>
 
 {% endblock %}
+
+{% block extra_foot_js %}
+{{ JS.push('js/lib/jquery.tablesorter.min.js') }}
+{{ JS.push('js/lib/jquery.tablesorter.pager.js') }}
+{{ JS.push('js/lib/jquery.tablesorter.multipagefilter.js') }}
+{% endblock %}
+

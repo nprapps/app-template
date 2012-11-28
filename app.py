@@ -47,18 +47,6 @@ def _templates_js():
 
     return r.std_out, 200, { 'Content-Type': 'application/javascript' }
 
-# Render arbitrary javascript files on-demand
-@app.route('/js/<path:path>')
-def _js(path):
-    with open('js/%s' % path) as f:
-        return f.read(), 200, { 'Content-Type': 'application/javascript' }
-
-# Server arbitrary image files on-demand
-@app.route('/img/<path:path>')
-def _img(path):
-    with open('www/img/%s' % path) as f:
-        return f.read(), 200, { 'Content-Type': guess_type(path) }
-
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -68,6 +56,12 @@ def _less(filename):
     r = envoy.run('node_modules/.bin/lessc -', data=less)
 
     return r.std_out, 200, { 'Content-Type': 'text/css' }
+
+# Server arbitrary static files on-demand
+@app.route('/<path:path>')
+def _img(path):
+    with open('www/%s' % path) as f:
+        return f.read(), 200, { 'Content-Type': guess_type(path) }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)

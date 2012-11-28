@@ -11,6 +11,8 @@
 	<!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     
+    {{ CSS.push('bootstrap/css/bootstrap.min.css') }}
+    {{ CSS.push('bootstrap/css/bootstrap-responsive.min.css') }}
     {% block extra_css %}{% endblock %}
     {{ CSS.push('less/app.less') }}
     {{ CSS.render('app.min.css') }}
@@ -126,8 +128,9 @@
 	{{ JS.push('js/lib/html5.js') }}
 	{{ JS.push('js/lib/underscore-min.js') }}
     {{ JS.push('js/lib/moment.min.js') }}
-    {{ JS.push('js/templates.js') }}
+    {{ JS.push('bootstrap/js/bootstrap.min.js') }}
     {% block extra_foot_js %}{% endblock %}
+    {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
     {{ JS.render('app-footer.min.js') }}
 
