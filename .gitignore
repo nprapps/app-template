@@ -37,7 +37,9 @@ www/table.html
 www/map.html
 www/css/app.css
 www/css/app.min.css
+www/css/tables.min.css
 www/js/app-header.min.js
 www/js/app-footer.min.js
 www/js/templates.js
+www/js/tables.min.js
 

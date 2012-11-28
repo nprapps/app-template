@@ -61,6 +61,9 @@
 	<meta property="og:site_name" content="NPR.org" />
 	<meta property="fb:app_id" content="138837436154588" />
 	-->
+
+    {% block extra_head %}
+    {% endblock %}
 </head>
 <body>
     
@@ -135,6 +138,9 @@
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
     {{ JS.render('js/app-footer.min.js') }}
+
+    {% block extra_foot %}
+    {% endblock %}
 
     <!-- GOOGLE ANALYTICS -->
 	<script type="text/javascript">
