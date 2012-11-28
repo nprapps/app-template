@@ -109,7 +109,7 @@ def render():
         if rule_string.endswith('/'):
             filename = 'www' + rule_string + 'index.html'
         else:
-            filename = 'www' + rule_string + '.html'
+            filename = 'www' + rule_string
 
         print 'Rendering %s' % filename
 
