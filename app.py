@@ -12,14 +12,14 @@ app = Flask(app_config.PROJECT_NAME)
 
 # Example application views 
 @app.route('/')
-@app.route('/simple')
+@app.route('/simple.html')
 def simple():
     """
     Example view demonstrating rendering a simple HTML page.
     """
     return render_template('simple.html', **make_context(app))
 
-@app.route('/table')
+@app.route('/table.html')
 def table():
     """
     Example view demonstrating rendering a table page.
@@ -33,7 +33,7 @@ def table():
 
     return render_template('table.html', **context)
 
-@app.route('/map')
+@app.route('/map.html')
 def map():
     """
     TODO: Example view demonstrating rendering a map page.
