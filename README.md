@@ -12,14 +12,13 @@ What's in here?
 The project contains the following folders and important files:
 
 * ``data`` -- Data files, such as those used to generate HTML
-* ``js`` -- Javascript files, will be concatenated for deployment
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates 
 * ``less`` -- LESS files, will be compiled to CSS and concatenated for deployment
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally
 * ``www`` -- Static and compiled assets to be deployed (a.k.a. "the output")
+* ``app.py`` -- A flask app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment
-* ``grunt.js`` -- [Grunt.js](http://gruntjs.com/) commands automating asset compilation
 
 Copy the template
 -----------------
@@ -49,7 +48,7 @@ brew install node
 Then install the project requirements:
 
 ```
-npm install less grunt grunt-contrib-less grunt-contrib-jst
+npm install less universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
@@ -57,19 +56,18 @@ pip install -r requirements.txt
 Generate index.html
 -------------------
 
-* Run ``fab make_index`` to generate a blank index page.
-* <strong>Or</strong>, for a table, run ``fab make_table:data/example.csv`` to use the table template.
-* If you will be using data to drive your page (``table.html`` or a custom template) then you will want to continue work on those files in the templates folder. Otherwise you can edit ``www/index.html`` directly.
-* Uncomment and update the ad code and Facebook tags at the top of your index page. (or make yourself a ticket to do it later).
+* Choose from the available templates which one to base your project on, e.g. ``templates/table.html``. Move this template to ``templates/index.html`` and delete the others.
+* Never edit ``www/index.html`` directly. Instead edit the templates.
+* Uncomment and update the ad code and Facebook tags at the top of ``templates/_base.html``. (or make yourself a ticket to do it later).
 
 Run the project locally
 -----------------------
 
+A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
+
 ```
 workon $NEW_PROJECT_NAME
-fab grunt 
-cd www
-python -m SimpleHTTPServer
+python app.py
 ```
 
 Visit ``localhost:8000`` in your browser.
@@ -77,21 +75,14 @@ Visit ``localhost:8000`` in your browser.
 Compile with static assets
 --------------------------
 
-The asset pipeline is now handled with [grunt](http://gruntjs.com). 
-
-To compile LESS to CSS, compile javascript templates to JS and minify all assets, run:
+Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
 ```
 workon $NEW_PROJECT_NAME
-fab grunt
+fab render 
 ```
 
-To automatically run these processes when you change files, simply run:
-
-```
-workon $NEW_PROJECT_NAME
-fab watch
-```
+(This is done automatically whenever you deploy to S3.)
 
 Deploy to S3
 ------------

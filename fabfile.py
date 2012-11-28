@@ -188,7 +188,7 @@ def _deploy_to_s3():
     """
     Deploy the gzipped stuff to
     """
-    build_assets()
+    render()
 
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive sync gzip/ %s'
 
@@ -213,21 +213,6 @@ def deploy(remote='origin'):
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
     
-"""
-Local workflow
-"""
-def grunt():
-    """
-    Compile static assets. 
-    """
-    local('node_modules/.bin/grunt')
-
-def watch():
-    """
-    Watch static assets for changes and recompile as needed.
-    """
-    local('node_modules/.bin/grunt watch')
-
 """
 Destruction
 """
