@@ -90,8 +90,12 @@ def render():
     """
     Render HTML templates. Will compress assets as a side-effect. (Yes this is a bit funny.)
     """
+    from flask import g
+    
     less()
     jst()
+
+    rendered_includes = []
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
@@ -116,8 +120,12 @@ def render():
         print 'Rendering %s to %s' % (name, filename)
 
         with app.app.test_request_context(path=rule_string):
+            g.rendered_includes = rendered_includes
+
             view = app.__dict__[name]
             content = view()
+
+            rendered_includes = g.rendered_includes
 
         with open(filename, 'w') as f:
             f.write(content)

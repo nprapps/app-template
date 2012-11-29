@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 from cssmin import cssmin
-from flask import Markup
+from flask import Markup, g
 from slimit import minify
 
 import app_config
 
 class Includer():
-    def __init__(self, debug):
-        self.debug = debug
+    def __init__(self, app):
+        self.app = app
         self.includes = []
 
     def push(self, path):
@@ -33,7 +33,7 @@ class JavascriptIncluder(Includer):
         return '\n'.join(output)
 
     def render(self, path):
-        if self.debug:
+        if self.app.debug:
             response = ','.join(self.includes)
             
             response = '\n'.join([
@@ -43,9 +43,17 @@ class JavascriptIncluder(Includer):
 
             return Markup(response)
 
-        with open('www/%s' % path, 'w') as f:
-            f.write(self._compress())
-        
+        out_filename = 'www/%s' % path
+
+        if out_filename not in g.rendered_includes:
+            print 'Rendering %s' % out_filename
+
+            with open(out_filename, 'w') as f:
+                f.write(self._compress())
+
+            # See "fab render"
+            g.rendered_includes.append(out_filename)
+
         del self.includes[:]
 
         return Markup('<script type="text/javascript" src="%s"></script>' % path)
@@ -67,7 +75,7 @@ class CSSIncluder(Includer):
         return '\n'.join(output)
 
     def render(self, path):
-        if self.debug:
+        if self.app.debug:
             response = ','.join(self.includes)
             
             response = '\n'.join([
@@ -76,18 +84,26 @@ class CSSIncluder(Includer):
             del self.includes[:]
 
             return Markup(response)
+
+        out_filename = 'www/%s' % path
  
-        with open('www/%s' % path, 'w') as f:
-            f.write(self._compress())
-       
+        if out_filename not in g.rendered_includes:
+            print 'Rendering %s' % out_filename
+
+            with open(out_filename, 'w') as f:
+                f.write(self._compress())
+
+            # See "fab render"
+            g.rendered_includes.append(out_filename)
+     
         del self.includes[:]
 
         return Markup('<link rel="stylesheet" type="text/css" href="%s" />' % path)
 
 def make_context(app):
     context = app_config.__dict__
-    context['JS'] = JavascriptIncluder(debug=app.debug)
-    context['CSS'] = CSSIncluder(debug=app.debug)
+    context['JS'] = JavascriptIncluder(app=app)
+    context['CSS'] = CSSIncluder(app=app)
 
     return context
 
