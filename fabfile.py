@@ -93,28 +93,33 @@ def render():
     less()
     jst()
 
-    app.app.testing = True
-    client = app.app.test_client()
-
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
         name = rule.endpoint
 
         if name == 'static':
+            print 'Skipping %s' % name
             continue
 
         if name.startswith('_'):
+            print 'Skipping %s' % name
             continue
 
         if rule_string.endswith('/'):
             filename = 'www' + rule_string + 'index.html'
-        else:
+        elif rule_string.endswith('.html'):
             filename = 'www' + rule_string
+        else:
+            print 'Skipping %s' % name 
+            continue
 
-        print 'Rendering %s' % filename
+        print 'Rendering %s to %s' % (name, filename)
+
+        with app.app.test_request_context(path=rule_string):
+            view = app.__dict__[name]
+            content = view()
 
         with open(filename, 'w') as f:
-            content = client.get(rule_string).data
             f.write(content)
 
 """
