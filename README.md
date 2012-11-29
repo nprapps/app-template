@@ -56,8 +56,11 @@ pip install -r requirements.txt
 Generate index.html
 -------------------
 
+The app-template ships with several example templates and corresponding views.
+
 * Choose from the available templates which one to base your project on, e.g. ``templates/table.html``. Move this template to ``templates/index.html`` and delete the others.
 * Never edit ``www/index.html`` or other dynamically generated assets. Instead edit the templates.
+* Choose the view from ``app.py`` that matches your chosen template. Apply the ``@app.route('/')`` decorator to it. Delete the others.  
 * Uncomment and update the ad code and Facebook tags at the top of ``templates/_base.html``. (or make yourself a ticket to do it later).
 
 Run the project locally
