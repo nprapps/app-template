@@ -88,7 +88,7 @@ def jst():
 
 def render():
     """
-    Render HTML templates. Will compress assets as a side-effect. (Yes this is a bit funny.)
+    Render HTML templates and compile assets.
     """
     from flask import g
     

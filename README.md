@@ -57,7 +57,7 @@ Generate index.html
 -------------------
 
 * Choose from the available templates which one to base your project on, e.g. ``templates/table.html``. Move this template to ``templates/index.html`` and delete the others.
-* Never edit ``www/index.html`` directly. Instead edit the templates.
+* Never edit ``www/index.html`` or other dynamically generated assets. Instead edit the templates.
 * Uncomment and update the ad code and Facebook tags at the top of ``templates/_base.html``. (or make yourself a ticket to do it later).
 
 Run the project locally
