@@ -95,7 +95,7 @@ def render():
     less()
     jst()
 
-    rendered_includes = []
+    compiled_includes = []
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
@@ -117,15 +117,16 @@ def render():
             print 'Skipping %s' % name 
             continue
 
-        print 'Rendering %s to %s' % (name, filename)
+        print 'Rendering %s' % (filename)
 
         with app.app.test_request_context(path=rule_string):
-            g.rendered_includes = rendered_includes
+            g.compile_includes = True
+            g.compiled_includes = compiled_includes
 
             view = app.__dict__[name]
             content = view()
 
-            rendered_includes = g.rendered_includes
+            compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
             f.write(content)

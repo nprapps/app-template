@@ -6,23 +6,58 @@ from slimit import minify
 
 import app_config
 
-class Includer():
-    def __init__(self, app):
-        self.app = app
+class Includer(object):
+    """
+    Base class for Javascript and CSS psuedo-template-tags.
+    """
+    def __init__(self):
         self.includes = []
+        self.tag_string = None
 
     def push(self, path):
             self.includes.append(path)
 
             return ""
 
-    def render():
+    def _compress(self):
         raise NotImplementedError()
+
+    def render(self, path):
+        if getattr(g, 'compile_includes', False):
+            out_filename = 'www/%s' % path
+            
+            if out_filename not in g.compiled_includes:
+                print 'Rendering %s' % out_filename
+
+                with open(out_filename, 'w') as f:
+                    f.write(self._compress())
+
+            # See "fab render"
+            g.compiled_includes.append(out_filename)
+
+            markup = Markup(self.tag_string % path)
+        else:
+            response = ','.join(self.includes)
+            
+            response = '\n'.join([
+                self.tag_string % src for src in self.includes
+                ])
+
+            markup = Markup(response)
+
+        del self.includes[:]
+
+        return markup 
 
 class JavascriptIncluder(Includer):
     """
     Psuedo-template tag that handles collecting Javascript and serving appropriate clean or compressed versions.
     """
+    def __init__(self):
+        Includer.__init__(self)
+
+        self.tag_string = '<script type="text/javascript" src="%s"></script>'
+
     def _compress(self):
         output = []
 
@@ -32,36 +67,15 @@ class JavascriptIncluder(Includer):
 
         return '\n'.join(output)
 
-    def render(self, path):
-        if self.app.debug:
-            response = ','.join(self.includes)
-            
-            response = '\n'.join([
-                '<script type="text/javascript" src="%s"></script>' % src for src in self.includes
-                ])
-            del self.includes[:]
-
-            return Markup(response)
-
-        out_filename = 'www/%s' % path
-
-        if out_filename not in g.rendered_includes:
-            print 'Rendering %s' % out_filename
-
-            with open(out_filename, 'w') as f:
-                f.write(self._compress())
-
-            # See "fab render"
-            g.rendered_includes.append(out_filename)
-
-        del self.includes[:]
-
-        return Markup('<script type="text/javascript" src="%s"></script>' % path)
-
 class CSSIncluder(Includer):
     """
     Psuedo-template tag that handles collecting CSS and serving appropriate clean or compressed versions.
     """
+    def __init__(self):
+        Includer.__init__(self)
+
+        self.tag_string = '<link rel="stylesheet" type="text/css" href="%s" />'
+
     def _compress(self):
         output = []
 
@@ -74,36 +88,11 @@ class CSSIncluder(Includer):
 
         return '\n'.join(output)
 
-    def render(self, path):
-        if self.app.debug:
-            response = ','.join(self.includes)
-            
-            response = '\n'.join([
-                '<link rel="stylesheet" type="text/css" href="%s" />' % src for src in self.includes
-                ])
-            del self.includes[:]
-
-            return Markup(response)
-
-        out_filename = 'www/%s' % path
- 
-        if out_filename not in g.rendered_includes:
-            print 'Rendering %s' % out_filename
-
-            with open(out_filename, 'w') as f:
-                f.write(self._compress())
-
-            # See "fab render"
-            g.rendered_includes.append(out_filename)
-     
-        del self.includes[:]
-
-        return Markup('<link rel="stylesheet" type="text/css" href="%s" />' % path)
-
-def make_context(app):
+def make_context():
     context = app_config.__dict__
-    context['JS'] = JavascriptIncluder(app=app)
-    context['CSS'] = CSSIncluder(app=app)
+
+    context['JS'] = JavascriptIncluder()
+    context['CSS'] = CSSIncluder()
 
     return context
 

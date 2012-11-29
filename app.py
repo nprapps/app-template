@@ -17,14 +17,14 @@ def simple():
     """
     Example view demonstrating rendering a simple HTML page.
     """
-    return render_template('simple.html', **make_context(app))
+    return render_template('simple.html', **make_context())
 
 @app.route('/table.html')
 def table():
     """
     Example view demonstrating rendering a table page.
     """
-    context = make_context(app) 
+    context = make_context() 
 
     with open('data/example.csv') as f:
         reader = csv.reader(f)
@@ -38,7 +38,7 @@ def map():
     """
     TODO: Example view demonstrating rendering a map page.
     """
-    return render_template('map.html', **make_context(app))
+    return render_template('map.html', **make_context())
 
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
