@@ -63,6 +63,15 @@ The app-template ships with several example templates and corresponding views.
 * Choose the view from ``app.py`` that matches your chosen index template. Rename it to ``index``, apply the ``@app.route('/')`` decorator to it and delete the others.  
 * Uncomment and update the ad code and Facebook tags at the top of ``templates/_base.html``. (or make yourself a ticket to do it later).
 
+Adding a template/view
+----------------------
+
+A site can have any number of rendered templates (i.e. pages). Each will need a corresponding view. To create a new one:
+
+* Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
+* Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
+* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``. 
+
 Run the project locally
 -----------------------
 
