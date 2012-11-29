@@ -2,6 +2,12 @@
 var $table = $(".app-table");
 
 $(function() {
+    // JST example
+    html = JST.example({ "name": "foobar" });
+
+    console.log(html);
+
+    // Tables example
     var table = $table.find(".table").tablesorter({
         widthFixed: true,
         widgets: ['zebra']
