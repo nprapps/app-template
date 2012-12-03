@@ -5,6 +5,6 @@ wsgiref==0.1.2
 Jinja2==2.6
 flask==0.9
 Werkzeug==0.8.3
-envoy==0.2
+envoy==0.0.2
 slimit==0.7.4
 cssmin==0.1.4
