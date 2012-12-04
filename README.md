@@ -26,7 +26,10 @@ Copy the template
 ```
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
 cd $NEW_PROJECT_NAME
-git remote rm origin
+rm -rf .git
+git init
+git add *
+git commit -am "Initial import from app-template."
 git remote add origin https://github.com/nprapps/$NEW_PROJECT_NAME.git
 git push -u origin master
 ```
