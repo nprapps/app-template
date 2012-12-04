@@ -52,6 +52,7 @@ curl https://npmjs.org/install.sh | sh
 Then install the project requirements:
 
 ```
+cd $NEW_PROJET_NAME
 npm install less universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
