@@ -14,7 +14,7 @@
     <!-- CSS -->
     {{ CSS.push('bootstrap/css/bootstrap.css') }}
     {{ CSS.push('bootstrap/css/bootstrap-responsive.css') }}
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}{% endblock extra_css %}
     {{ CSS.push('less/app.less') }}
     {{ CSS.render('css/app.min.css') }}
 
@@ -31,7 +31,7 @@
 	{{ JS.push('js/lib/jquery-1.8.3.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/responsive-ad.js') }}
-    {% block extra_head_js %}{% endblock %}
+    {% block extra_head_js %}{% endblock extra_head_js %}
     {{ JS.render('js/app-header.min.js') }}
 
 	<script>
@@ -61,9 +61,10 @@
 	-->
 
     {% block extra_head %}
-    {% endblock %}
+    {% endblock extra_head %}
 </head>
 <body>
+	{% block outer_content %}
     
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -127,18 +128,20 @@
         </div>
         
     </div>
+
+	{% endblock outer_content %}
     
 	{{ JS.push('js/lib/html5.js') }}
 	{{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('bootstrap/js/bootstrap.js') }}
-    {% block extra_foot_js %}{% endblock %}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
     {{ JS.render('js/app-footer.min.js') }}
 
     {% block extra_foot %}
-    {% endblock %}
+    {% endblock extra_foot %}
 
     <!-- GOOGLE ANALYTICS -->
 	<script type="text/javascript">
