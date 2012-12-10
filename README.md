@@ -29,8 +29,9 @@ cd $NEW_PROJECT_NAME
 rm -rf .git
 git init
 git add *
+git add .gitignore
 git commit -am "Initial import from app-template."
-git remote add origin https://github.com/nprapps/$NEW_PROJECT_NAME.git
+git remote add origin git@github.com:nprapps/$NEW_PROJECT_NAME.git
 git push -u origin master
 ```
 
@@ -52,7 +53,7 @@ curl https://npmjs.org/install.sh | sh
 Then install the project requirements:
 
 ```
-cd $NEW_PROJET_NAME
+cd $NEW_PROJECT_NAME
 npm install less universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt

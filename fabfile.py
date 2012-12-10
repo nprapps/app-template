@@ -15,7 +15,7 @@ env.project_name = app_config.PROJECT_NAME
 env.deployed_name = app_config.DEPLOYED_NAME
 env.deploy_to_servers = False
 env.repo_url = 'git@github.com:nprapps/%(project_name)s.git' % env
-env.alt_repo_url = 'git@bitbucket.org:nprapps/%(project_name)s.git' % env
+env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(project_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
 env.path = '/home/%(user)s/apps/%(project_name)s' % env
@@ -34,7 +34,7 @@ def production():
 def staging():
     env.settings = 'staging'
     env.s3_buckets = app_config.STAGING_S3_BUCKETS
-    env.hosts = app_config.PRODUCTION_SERVERS
+    env.hosts = app_config.STAGING_SERVERS
 
 """
 Branches
