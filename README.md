@@ -29,6 +29,7 @@ cd $NEW_PROJECT_NAME
 rm -rf .git
 git init
 git add *
+git add .gitignore
 git commit -am "Initial import from app-template."
 git remote add origin git@github.com:nprapps/$NEW_PROJECT_NAME.git
 git push -u origin master
