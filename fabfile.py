@@ -34,7 +34,7 @@ def production():
 def staging():
     env.settings = 'staging'
     env.s3_buckets = app_config.STAGING_S3_BUCKETS
-    env.hosts = app_config.PRODUCTION_SERVERS
+    env.hosts = app_config.STAGING_SERVERS
 
 """
 Branches
