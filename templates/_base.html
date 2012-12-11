@@ -12,8 +12,8 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     
     <!-- CSS -->
-    {{ CSS.push('bootstrap/css/bootstrap.css') }}
-    {{ CSS.push('bootstrap/css/bootstrap-responsive.css') }}
+    {{ CSS.push('css/bootstrap.css') }}
+    {{ CSS.push('css/bootstrap-responsive.css') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.push('less/app.less') }}
     {{ CSS.render('css/app.min.css') }}
@@ -134,7 +134,7 @@
 	{{ JS.push('js/lib/html5.js') }}
 	{{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/moment.js') }}
-    {{ JS.push('bootstrap/js/bootstrap.js') }}
+    {{ JS.push('js/lib/bootstrap.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
