@@ -48,7 +48,7 @@ def delete_existing_labels(auth):
 
 def create_default_labels(auth):
     """
-    Creates default labels in a Github repo
+    Creates default labels in Github issues.
     """
     url = 'https://api.github.com/repos/%s/labels' % get_repo_path()
 
@@ -63,3 +63,27 @@ def create_default_labels(auth):
 
         requests.post(url, data=data, auth=auth)
 
+def create_default_tickets(auth):
+    """
+    Creates default tickets it Github issues.
+    """
+    url = 'https://api.github.com/repos/%s/issues' % get_repo_path()
+
+    with open('etc/default_tickets.csv') as f:
+        tickets = list(csv.DictReader(f))
+
+    print 'Creating %i tickets' % len(tickets)
+
+    for ticket in tickets:
+        print 'Creating ticket "%s"' % ticket['title']
+
+        if ticket['labels']:
+            ticket['labels'] = ticket['labels'].split(',')
+        else:
+            ticket['labels'] = []
+
+        ticket['labels'].append('Default Ticket')
+
+        data = json.dumps(ticket)
+
+        requests.post(url, data=data, auth=auth) 
