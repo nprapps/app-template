@@ -3,7 +3,6 @@
 import csv
 import getpass
 import json
-import os
 import re
 
 import requests
@@ -25,10 +24,9 @@ def get_repo_path():
     with open('.git/config') as f:
         gitconfig = f.read()
 
-    repo_url = re.search('(https.+)\w', gitconfig).group(0)
-    base, repo = os.path.split(repo_url)
-    repo_username = os.path.split(base)[-1]
-    repo_name = os.path.splitext(repo)[0]
+    match = re.search('(git@github.com:|https://github.com/)(.+)/(.+).git', gitconfig)    
+    repo_username = match.group(2)
+    repo_name = match.group(3)
 
     return '%s/%s' % (repo_username, repo_name)
 
@@ -38,7 +36,7 @@ def delete_existing_labels(auth):
     """
     url = 'https://api.github.com/repos/%s/labels' % get_repo_path()
 
-    response = requests.get(url)
+    response = requests.get(url, auth=auth)
     labels = json.loads(response.content)
 
     print 'Deleting %i labels' % len(labels)
@@ -46,13 +44,13 @@ def delete_existing_labels(auth):
     for label in labels:
         print 'Deleting label %s' % label['name']
 
-        requests.delete(url + '/' + label['name'])
+        requests.delete(url + '/' + label['name'], auth=auth)
 
 def create_default_labels(auth):
     """
     Creates default labels in a Github repo
     """
-    url = 'https://api.github.com/repos/%s/repo/labels' % get_repo_path()
+    url = 'https://api.github.com/repos/%s/labels' % get_repo_path()
 
     with open('etc/default_labels.csv') as f:
         labels = list(csv.DictReader(f))
