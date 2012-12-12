@@ -12,6 +12,7 @@ What's in here?
 The project contains the following folders and important files:
 
 * ``data`` -- Data files, such as those used to generate HTML
+* ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates 
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally
@@ -58,6 +59,13 @@ npm install less universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
+
+Bootstrap your project issues
+-----------------------------
+
+The app-template can automatically setup your Github repo with our default labels and tickets.
+
+* Run ``fab bootstrap_issues`` and enter your Github username and password.
 
 Generate index.html
 -------------------

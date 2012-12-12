@@ -7,6 +7,7 @@ from fabric.api import *
 
 import app
 import app_config
+from etc import github
 
 """
 Base configuration
@@ -194,6 +195,14 @@ def install_requirements():
     require('settings', provided_by=[production, staging])
 
     run('%(virtualenv_path)s/bin/pip install -U -r %(repo_path)s/requirements.txt' % env)
+
+def bootstrap_issues():
+    """
+    Bootstraps Github issues with default configuration.
+    """
+    auth = github.get_auth()
+    github.delete_existing_labels(auth)
+    github.create_default_labels(auth)
 
 """
 Deployment
