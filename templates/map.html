@@ -1,7 +1,95 @@
 {% extends '_base.html' %}
 
-{% block outer_content %}
-<h1>{{ PROJECT_NAME }}</h1>
-
-<p>TODO -- Map template</p>
+{% block extra_css %}
+    {{ CSS.push('css/mapbox.css') }}
+    {{ CSS.push('less/app-map.less') }}
 {% endblock %}
+
+{% block outer_content %}
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <div id="nav">
+        <ul>
+            <li class="npr"><a href="http://npr.org">&nbsp;</a></li>
+            <li class="news"><a href="http://www.npr.org/sections/news/">News</a></li>
+            <li class="arts"><a href="http://www.npr.org/sections/arts/">Arts &amp; Life</a></li>
+            <li class="music"><a href="http://www.npr.org/music/">Music</a></li>
+            <li class="donate"><a href="http://www.npr.org/stations/donate/">Donate</a></li>
+        </ul>
+    </div>
+    <div id="embed-nav">
+			 <button id="expand" class="btn">Full Screen</button>
+			 <p class="desc">To install this map on your iPhone or tablet, click to view it at full-screen.</p>
+    </div>
+    <div id="topper">
+        <h1>Fire Forecast</h1>
+        <h2>Updated daily.</h2>
+        <button id="about" class="btn" data-toggle="modal" data-target="#myModal">About the map</button>
+
+        <form class="input-prepend input-append" id="search2">
+            <span class="add-on"><i class="icon-search"></i></span><input class="span2" type="text" placeholder=" Zip Code, city, etc." /><input type="submit" value="Go" class="add-on"/>
+        </form>
+        <button class="btn" id="find2">Find my location</button>
+    </div>
+    <div id="map"></div>
+    <div id="bottom">
+        <button class="btn" id="find">Find my location</button>
+        <form class="input-prepend input-append" id="search">
+            <span class="add-on"><i class="icon-search"></i></span><input class="span2" type="text" placeholder=" Zip Code, city, etc." /><input type="submit" value="Go" class="add-on"/>
+        </form>
+    </div>
+    <div id="legend">
+        <div class="legend-contents">
+    		<p class="headline">Wildfire Danger</a>
+    			<p class="chatter">This map shows current large wildfires and forecast burning conditions in the lower 48 states. The map uses federal <a target="_blank" href="http://www.wfas.net/index.php/fire-danger-rating-fire-potential--danger-32/class-rating-fire-potential--danger-51?task=view">categories</a> to describe fire conditions.</p>
+			            <ul>
+                <li><span style="background:#77b0d3; border: #77b0d3 1px solid; color:#77b0d3;"></span> Low<br/></li>
+                <li><span style="background:#b6e3ef; border: #b6e3ef 1px solid; color:#b6e3ef;"></span> Moderate<br/></li>
+                <li><span style="background:#FEE090; border: #FEE090 1px solid; color:#FEE090;"></span> High<br/></li>
+                <li><span style="background:#FC8D59; border: #FC8D59 1px solid; color:#FC8D59;"></span> Very High<br/></li>
+                <li><span style="background:#D73027; border: #D73027 1px solid; color:#D73027;"></span> Extreme<br/></li>
+                <li><span style="background:#eeeeee; border: #999999 1px solid; color:#eeeeee;"></span> No Forecast<br/></li>
+                <li><span style="display: inline;"><img src="img/triangle-12.png"></span> Current Large Fires<br/></li>
+            </ul>
+    		<p class="read-more">Read more: <a href="http://www.npr.org/series/158936457/megafires-the-new-normal-in-the-southwest">Megafires: The New Normal In The Southwest</a></p>
+    		<p class="byline">
+                By <a href="mailto:mstiles@npr.org">Matt Stiles</a>, <a href="mailto:sdotreppe@npr.org">Stephanie D'Otreppe</a><br/>and <a href="mailto:bboyer@npr.org">Brian Boyer</a> &mdash; August 23, 2012
+            </p>
+    		<p class="source">
+                Source: U.S. Forest Service (<a href="http://www.wfas.net/index.php/fire-danger-rating-fire-potential--danger-32">Forecast updated</a> each morning, <a href="http://psgeodata.fs.fed.us/download.html#tabs-ini-1">fires updated</a> every 30 minutes, 4-10 a.m. Mountain Time.)
+            </p>
+    		<p class="source">
+                Geocoding provided by <a href="http://developer.mapquest.com/">Mapquest</a>.
+            </p>
+            <div class="fb-like" data-href="http://apps.npr.org/fire-forecast/" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false" data-font="arial"></div>
+            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+            <div style="clear:both;"></div>
+		</div>
+	</div>
+
+	<div class="modal hide" id="myModal">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal">X</button>
+	    <h3>About The Map</h3>
+	  </div>
+      <div class="modal-body">
+      </div>
+	</div>
+    
+{% endblock %}
+
+{% block extra_foot %}
+    {# This JS breaks when compressed with other assets #}
+    <script type="text/javascript" src="js/lib/mapbox.js"></script>
+
+    {{ JS.push('js/app-map.js') }}
+    {{ JS.render('js/app-map.min.js') }}
+{% endblock %}
+

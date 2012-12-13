@@ -1,7 +1,6 @@
-// Setup tables
-var $table = $(".app-table");
+$(document).ready(function() {
+    var $table = $(".app-table");
 
-$(function() {
     // Tables example
     var table = $table.find(".table").tablesorter({
         widthFixed: true,
