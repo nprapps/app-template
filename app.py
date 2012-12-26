@@ -61,7 +61,7 @@ def _templates_js():
 @app.route('/<path:path>')
 def _img(path):
     with open('www/%s' % path) as f:
-        return f.read(), 200, { 'Content-Type': guess_type(path) }
+        return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
