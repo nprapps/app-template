@@ -96,6 +96,9 @@ def render():
     less()
     jst()
 
+    # Fake out deployment target
+    app_config.configure_targets(env.get(settings, None))
+
     compiled_includes = []
 
     for rule in app.app.url_map.iter_rules():
@@ -131,6 +134,9 @@ def render():
 
         with open(filename, 'w') as f:
             f.write(content)
+
+    # Un-fake-out deployment target
+    app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
 
 """
 Setup
