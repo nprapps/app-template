@@ -17,6 +17,7 @@ The project contains the following folders and important files:
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally
 * ``www`` -- Static and compiled assets to be deployed (a.k.a. "the output")
+* ``www/test`` -- Javascript tests and supporting files
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment
@@ -95,7 +96,12 @@ workon $NEW_PROJECT_NAME
 python app.py
 ```
 
-Visit ``localhost:8000`` in your browser.
+Visit [localhost:8000][] in your browser.
+
+Running Javascript tests
+------------------------
+
+With the project running, visit [localhost:8000/test/SpecRunner.html][].
 
 Compile with static assets
 --------------------------
