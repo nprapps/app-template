@@ -15,7 +15,15 @@ def get_auth():
     username = raw_input('Username:')
     password = getpass.getpass('Password:')
 
-    return HTTPBasicAuth(username, password)
+    auth = HTTPBasicAuth(username, password)
+
+    # Test auth by requesting repo events
+    response = requests.get('https://api.github.com/notifications', auth=auth)
+
+    if response.status_code == 401:
+        raise Exception('Invalid username or password')
+
+    return auth
 
 def get_repo_path():
     """
