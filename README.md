@@ -1,6 +1,12 @@
 nprapps' Project Template
 =========================
 
+Jump to:
+
+* [About this template](#about-this-template)
+* [What's in here?](#whats-in-here)
+* [Copy the template](#copy-the-template)
+
 About this template
 -------------------
 
