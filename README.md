@@ -3,9 +3,20 @@ nprapps' Project Template
 
 Jump to:
 
-* [About this template](#about-this-template)
-* [What's in here?](#whats-in-here)
-* [Copy the template](#copy-the-template)
+[About this template](#about-this-template)
+[What's in here?](#whats-in-here)
+[Copy the template](#copy-the-template)
+[Configure the project](#configure-the-project)
+[Install requirements](#install-requirements)
+[Bootstrap issues](#bootstrap-issues)
+[Generate index.html](#generate-indexhtml)
+[Adding a template/view](#adding-a-templateview)
+[Run the project locally](#run-the-project-locally)
+[Run javascript tests](#run-javascript-tests)
+[Compile static assets](#compile-static-assets)
+[Test the rendered app](#test-the-rendered-app)
+[Deploy to S3](#deploy-to-s3)
+[Deploy to EC2](#deploy-to-ec2)
 
 About this template
 -------------------
@@ -66,8 +77,8 @@ mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
 
-Bootstrap your project issues
------------------------------
+Bootstrap issues
+----------------
 
 The app-template can automatically setup your Github repo with our default labels and tickets.
 
@@ -104,13 +115,13 @@ python app.py
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-Running Javascript tests
-------------------------
+Run Javascript tests
+--------------------
 
 With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
 
-Compile with static assets
---------------------------
+Compile static assets
+---------------------
 
 Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
@@ -138,8 +149,8 @@ Deploy to S3
 fab staging master deploy
 ```
 
-Deploy to a server
-------------------
+Deploy to EC2 
+-------------
 
 The current configuration is for running cron jobs only. Web server configuration is not included.
 
