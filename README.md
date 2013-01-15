@@ -96,12 +96,12 @@ workon $NEW_PROJECT_NAME
 python app.py
 ```
 
-Visit [localhost:8000]() in your browser.
+Visit [](localhost:8000) in your browser.
 
 Running Javascript tests
 ------------------------
 
-With the project running, visit [localhost:8000/test/SpecRunner.html]().
+With the project running, visit [](localhost:8000/test/SpecRunner.html).
 
 Compile with static assets
 --------------------------
