@@ -96,23 +96,20 @@
                 {% endblock content %}
             </div>
             <div class="span4">
-                <!-- START 300X250 AD -->
-                <div class="adwrapper"><div class="sponsor300">
-				<!-- DFP AD MANAGER -->
-				<script type="text/javascript">
-				<!--
-					try{
-						DFP.renderLocation('desktop');
-					} catch(e) {
-						NPR.messaging.warning('Problem fetching/rendering desktop ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
-					}
-				// -->
-				</script>                  
-				<!-- END UNDERWRITING -->
-				<p class="left">NPR thanks our sponsors</p>
-				<p class="right"><a href="http://www.npr.org/about/place/corpsupport/">Become an NPR Sponsor </a></p>
-				</div></div>
-				<!-- END 300X250 AD --> 
+                {# 300x250 ad #}
+                <div class="adwrapper">
+                    <div class="sponsor300">
+				        <script type="text/javascript">
+				        <!--
+					    try {
+						    DFP.renderLocation('desktop');
+                        } catch(e) {
+                            NPR.messaging.warning('Problem fetching/rendering desktop ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
+                        }
+				        // -->
+                        </script>
+                    </div>
+				</div>
             </div>
         </div>
 	</div>
@@ -140,6 +137,7 @@
 		</div>
 	</div> <!-- end footer -->
 
+    {# Adhesion ad #}
     <div id="adhesion">
         <script type="text/javascript">
         <!--
