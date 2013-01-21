@@ -76,7 +76,6 @@
     		<li class="listen"><a href="http://www.npr.org/listen/">Listen</a></li>
     	</ul>
 		<ul class="social-links">
-		<!--TODO: FIX SOCIAL LINKS -->
         <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ PROJECT_NAME }}&amp;url=http%3A%2F%2F{{ S3_BUCKETS[0] }}%2F{{ DEPLOYED_NAME }}%2F" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ DEPLOYED_NAME }}']);">Share This Page On Twitter</a></li>
             <li class="facebook"><a rel="external" href="http://www.facebook.com/sharer/sharer.php?t={{ DEPLOYED_NAME }}&amp;u=http%3A%2F%2F{{ S3_BUCKETS[0] }}%2F{{ DEPLOYED_NAME }}%2F" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ DEPLOYED_NAME }}']);">Like This Page On Facebook</a></li>
         </ul>
@@ -102,9 +101,9 @@
 				<script type="text/javascript">
 				<!--
 					try{
-						DFP.renderLocation(0);
+						DFP.renderLocation('desktop');
 					} catch(e) {
-						NPR.messaging.warning('Problem fetching/rendering ad server code.', 'DFP.renderlocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
+						NPR.messaging.warning('Problem fetching/rendering desktop ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
 					}
 				// -->
 				</script>                  
@@ -139,6 +138,18 @@
 			</ul>
 		</div>
 	</div> <!-- end footer -->
+
+    <div id="adhesion">
+        <script type="text/javascript">
+        <!--
+        try {
+            DFP.renderLocation('mobile');
+        } catch (e) {
+			NPR.messaging.warning('Problem fetching/rendering mobile ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
+        }
+        // -->
+        </script>
+    </div>
 
 	{% endblock outer_content %}
     
