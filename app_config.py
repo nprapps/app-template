@@ -22,7 +22,28 @@ S3_BUCKETS = []
 SERVERS = []
 DEBUG = True 
 
-FB_APP_ID = '138837436154588'
+PROJECT_DESCRIPTION = 'foo'
+SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], DEPLOYED_NAME)
+
+TWITTER = {
+    'TEXT': PROJECT_NAME,
+    'URL': SHARE_URL
+}
+
+FACEBOOK = {
+    'TITLE': DEPLOYED_NAME,
+    'URL': SHARE_URL,
+    'DESCRIPTION': PROJECT_DESCRIPTION,
+    'IMAGE_URL': '',
+    'APP_ID': '138837436154588'
+}
+
+NPR_DFP = {
+    'STORY_ID': '139482413',
+    'TARGET': '\/news_election_results;storyid=139482413'
+}
+
+GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
 def configure_targets(deployment_target):
     """

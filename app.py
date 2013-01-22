@@ -3,9 +3,10 @@
 import csv
 import json
 from mimetypes import guess_type
+import urllib
 
 import envoy
-from flask import Flask, abort, render_template
+from flask import Flask, Markup, abort, render_template
 
 import app_config
 from render_utils import flatten_app_config, make_context 
@@ -77,6 +78,19 @@ def _static(path):
             return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
     except IOError:
         abort(404)
+
+@app.template_filter('urlencode')
+def urlencode_filter(s):
+    """
+    Filter to urlencode strings.
+    """
+    if type(s) == 'Markup':
+        s = s.unescape()
+        
+    s = s.encode('utf8')
+    s = urllib.quote_plus(s)
+
+    return Markup(s)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)

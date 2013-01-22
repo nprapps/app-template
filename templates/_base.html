@@ -4,6 +4,7 @@
 <head>
     <title>{{ DEPLOYED_NAME }}</title>
 	
+    <meta name="description" content="{{ PROJECT_DESCRIPTION }}">
     <meta http-equiv="X-UA-Compatible" content="IE=8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -39,29 +40,25 @@
 
 	<script>
     	AddNamespace('NPR.serverVars');
-	    /* TODO
 		jQuery.extend(NPR.serverVars, {
-	        "storyId": "139482413",
+            "storyId": "{{ NPR_DFP.STORY_ID }}",
 	        "serverType": "prod",
-	        "DFPtarget": "\/news_election_results;storyid=139482413",
+            "DFPtarget": "{{ NPR_DFP.TARGET }}",
 	        "DFPuserver": "u.npr.org",
 	        "DFPserver": "ad.doubleclick.net",
 	        "DFPnetwork": "n6735",
 	        "DFPsite": "NPR",
 	        "DFPmobile": "NPR"
 	    });
-		*/
 	</script>
 
-	<!-- TODO
-	<meta property="og:title" content="Election 2012: Live Coverage From NPR News" />
-	<meta property="og:url" content="http://elections2012.npr.org/" />
+    <meta property="og:title" content="{{ FACEBOOK.TITLE }}" />
+    <meta property="og:url" content="{{ FACEBOOK.URL }}" />
 	<meta property="og:type" content="article" />
-	<meta property="og:description" content="Follow the latest results, get breaking news and analysis, and listen to our live special broadcast." />
-	<meta property="og:image" content="http://media.npr.org/news/specials/2012/elections/election-promo_sq.gif" />
+    <meta property="og:description" content="{{ FACEBOOK.DESCRIPTION }}" />
+    <meta property="og:image" content="{{ FACEBOOK.IMAGE_URL }}" />
 	<meta property="og:site_name" content="NPR.org" />
-	<meta property="fb:app_id" content="138837436154588" />
-	-->
+    <meta property="fb:app_id" content="{{ FACEBOOK.APP_ID }}" />
 
     {% block extra_head %}
     {% endblock extra_head %}
@@ -78,8 +75,8 @@
     		<li class="listen"><a href="http://www.npr.org/listen/">Listen</a></li>
     	</ul>
 		<ul class="social-links">
-        <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ PROJECT_NAME }}&amp;url=http%3A%2F%2F{{ S3_BUCKETS[0] }}%2F{{ DEPLOYED_NAME }}%2F" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ DEPLOYED_NAME }}']);">Share This Page On Twitter</a></li>
-        <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FB_APP_ID }}&amp;link=http%3A%2F%2F{{ S3_BUCKETS[0] }}%2F{{ DEPLOYED_NAME }}%2F&name={{ DEPLOYED_NAME }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ DEPLOYED_NAME }}']);">Like This Page On Facebook</a></li>
+            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ TEXT }}&amp;url={{ TWITTER.URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK.APP_ID }}&amp;link={{ FACEBOOK.URL|urlencode }}&name={{ FACEBOOK.TITLE }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
         </ul>
     	<ul class="site-links-2">
 			<li class="stations"><a href="http://www.npr.org/templates/stations/stations/">Stations</a></li>
@@ -168,7 +165,7 @@
     <!-- GOOGLE ANALYTICS -->
 	<script type="text/javascript">
         var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-5828686-4']);
+        _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS_ID }}']);
         _gaq.push(['_trackPageview']);
         (function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
