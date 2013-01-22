@@ -147,16 +147,16 @@ footer {
 
 // Media queries
 @media (max-width: 979px) {
-	#nav .site-links-2 { display: none; }
-	#footer {
+	nav .site-links-2 { display: none; }
+	footer {
 		.primary { float: none; }
 		.secondary ul, .secondary p { margin-left: 0; float: left; }
 	}
 }
 @media (max-width: 767px) {
-	#nav, #footer, #toggles { margin-left: -20px; margin-right: -20px; }
-	#nav .site-links { margin-left: 20px; }
-	#footer { 
+	nav, header, footer { margin-left: -20px; margin-right: -20px; }
+	nav .site-links { margin-left: 20px; }
+	footer { 
 		.primary { display: none; }
 		.secondary p { float: left; font-size: 10px; color: #bccae5; }
 		.secondary ul { float: right; }
@@ -165,7 +165,16 @@ footer {
 	}
 }
 @media (max-width: 480px) {
-	#nav .site-links li { display: none; }
-	#nav .site-links .npr { display: block; }
-	#footer { border-top: 1px solid #CCC; margin-top: 24px; }
+	section.the-goods { margin-top: 33px; }
+	h1 { font-size: 26px; }
+	#story-meta p { font-size: 11px; }
+	nav .site-links {
+		li { display: none; }
+		.npr { display: block; }
+	}
+	header {
+		padding: 33px 20px;
+		h1 { font-size: 36px; }
+	}
+	footer { border-top: 1px solid #CCC; margin-top: 24px; }
 }
