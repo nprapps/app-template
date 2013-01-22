@@ -14,15 +14,7 @@ app = Flask(app_config.PROJECT_NAME)
 
 # Example application views 
 @app.route('/')
-@app.route('/simple.html')
-def simple():
-    """
-    Example view demonstrating rendering a simple HTML page.
-    """
-    return render_template('simple.html', **make_context())
-
-@app.route('/table.html')
-def table():
+def index():
     """
     Example view demonstrating rendering a table page.
     """
@@ -34,13 +26,6 @@ def table():
         context['rows'] = list(reader)
 
     return render_template('table.html', **context)
-
-@app.route('/map.html')
-def map():
-    """
-    TODO: Example view demonstrating rendering a map page.
-    """
-    return render_template('map.html', **make_context())
 
 @app.route('/widget.html')
 def widget():

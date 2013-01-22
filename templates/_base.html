@@ -3,7 +3,7 @@
 
 <head>
     <title>{{ DEPLOYED_NAME }}</title>
-	
+
     <meta name="description" content="{{ PROJECT_DESCRIPTION }}">
     <meta http-equiv="X-UA-Compatible" content="IE=8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
@@ -12,7 +12,7 @@
 
 	<!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
-    
+
     <!-- CSS -->
     {{ CSS.push('css/bootstrap.css') }}
     {{ CSS.push('css/bootstrap-responsive.css') }}
@@ -65,7 +65,7 @@
 </head>
 <body>
 	{% block outer_content %}
-    
+
     <nav>
     	<ul class="site-links">
     		<li class="npr"><a href="http://npr.org"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></li>
@@ -84,10 +84,10 @@
 			<li class="shop"><a href="http://shop.npr.org">Shop</a></li>
 		</ul>
     </nav>
-    
+
 	{% block header_content %}
 	{% endblock header_content %}
-	
+
 	<section class="the-goods">
 		<div class="container">
 			<div class="row">
@@ -123,7 +123,7 @@
 			{% endblock wide_content %}
 		</div>
 	</section>
-        
+
 	<footer>
 		<div class="primary">
 			<ul>
@@ -161,7 +161,7 @@
     </div>
 
 	{% endblock outer_content %}
-    
+
 	{{ JS.push('js/lib/html5.js') }}
 	{{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/moment.js') }}
