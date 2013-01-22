@@ -45,4 +45,5 @@ www/js/templates.js
 www/js/tables.min.js
 www/js/app-map.min.js
 www/js/app-table.min.js
-
+www/js/widget-header.min.js
+www/js/widget-footer.min.js
