@@ -45,7 +45,7 @@ Copy the template
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
 
 # Optional: checkout an initial project branch
-# git checkout init-map
+# git checkout [init-map|init-table|init-chat]
 
 cd $NEW_PROJECT_NAME
 rm -rf .git
