@@ -52,6 +52,7 @@ def configure_targets(deployment_target):
     """
     global S3_BUCKETS
     global SERVERS
+    global DEBUG
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
