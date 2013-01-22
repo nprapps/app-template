@@ -1,6 +1,10 @@
 $(function() {
-    // JST example
-    html = JST.example({ "name": "foobar" });
+    var context = $.extend(APP_CONFIG, {
+        'template_path': 'jst/example.html',
+        'config': JSON.stringify(APP_CONFIG, null, 4)
+    });
 
-    console.log(html);
+    var html = JST.example(context);
+
+    $('#template-example').html(html);
 });

@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import csv
+import json
 from mimetypes import guess_type
 
 import envoy
 from flask import Flask, render_template
 
 import app_config
-from render_utils import make_context 
+from render_utils import flatten_app_config, make_context 
 app = Flask(app_config.PROJECT_NAME)
 
 # Example application views 
@@ -57,9 +58,17 @@ def _templates_js():
 
     return r.std_out, 200, { 'Content-Type': 'application/javascript' }
 
+# Render application configuration
+@app.route('/js/app_config.js')
+def _app_config_js():
+    config = flatten_app_config()
+    js = 'window.APP_CONFIG = ' + json.dumps(config)
+    
+    return js, 200, { 'Content-Type': 'application/javascript' }
+
 # Server arbitrary static files on-demand
 @app.route('/<path:path>')
-def _img(path):
+def _static(path):
     with open('www/%s' % path) as f:
         return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
 

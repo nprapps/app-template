@@ -13,7 +13,7 @@ STAGING_SERVERS = ['cron-staging.nprapps.org']
 
 S3_BUCKETS = []
 SERVERS = []
-DEBUG = False 
+DEBUG = True 
 
 def configure_targets(deployment_target):
     """

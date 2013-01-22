@@ -29,6 +29,7 @@
     </script>
 
     <!-- JS -->
+	{{ JS.push('js/app_config.js') }}
 	{{ JS.push('js/console.js') }}
 	{{ JS.push('js/lib/jquery-1.8.3.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
@@ -89,7 +90,7 @@
 
     <div class="container the-goods">
         <div class="row">
-            <div class="span8">
+            <div id="main-content" class="span8">
                 {% block content %}
                 <h1>{{ project_name }}</h1>
                 App content goes here.
