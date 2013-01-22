@@ -17,6 +17,7 @@
     {{ CSS.push('css/bootstrap.css') }}
     {{ CSS.push('css/bootstrap-responsive.css') }}
     {% block extra_css %}{% endblock extra_css %}
+	{{ CSS.push('less/app-table.css') }}
     {{ CSS.push('less/app.less') }}
     {{ CSS.render('css/app.min.css') }}
 
@@ -115,11 +116,6 @@
 				</div>
 			</div>
 			{% block wide_content %}
-			<div class="row">
-				<div class="span12">
-					<h2>This content goes to 12.</h2>
-				</div>
-			</div>
 			{% endblock wide_content %}
 		</div>
 	</section>

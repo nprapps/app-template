@@ -1,33 +1,35 @@
 {% extends '_base.html' %}
 
 {% block extra_head %}
-{{ CSS.push('css/tablesorter.css') }}
-{{ CSS.render('css/tables.min.css') }}
+{{ CSS.push('less/app-table.less') }}
+{{ CSS.render('css/app-table.min.css') }}
 {% endblock %}
 
 {% block content %}
 <h1>{{ project_name }}</h1>
 
 <div class="app-table">
-    <div class="table-filter">
-        <label for="table-search">Search this table:</label> <input name="search" type="search" />
-    </div>
-
-    <div class="table-pager">
-        <form>
-            <div class="pager-nav">
-                <a href="" class="prev">prev</a>
-                <input class="pagedisplay" readonly="readonly" />
-                <a href="" class="next">next</a>
-            </div>
-
-            Show <select class="pagesize">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select> pages
-        </form>
-    </div>
+	<div class="table-controls">
+		<div class="table-filter">
+			<label for="table-search">Search this table:</label> <input name="search" type="search" />
+		</div>
+	
+		<div class="table-pager">
+			<form>
+				<div class="pager-nav">
+					<a href="" class="prev">prev</a>
+					<input class="pagedisplay" readonly="readonly" />
+					<a href="" class="next">next</a>
+				</div>
+	
+				Show <select class="pagesize">
+					<option value="10">10</option>
+					<option value="50">50</option>
+					<option value="100">100</option>
+				</select> pages
+			</form>
+		</div>
+	</div>
 
     <table class="table tablesorter">
         <thead>
