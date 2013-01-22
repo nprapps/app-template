@@ -9,53 +9,31 @@ import envoy
 from flask import Flask, Markup, abort, render_template
 
 import app_config
-from render_utils import flatten_app_config, make_context 
+from render_utils import flatten_app_config, make_context
 app = Flask(app_config.PROJECT_NAME)
 
-# Example application views 
+# Example application views
 @app.route('/')
-@app.route('/simple.html')
-def simple():
-    """
-    Example view demonstrating rendering a simple HTML page.
-    """
-    return render_template('simple.html', **make_context())
-
-@app.route('/table.html')
-def table():
-    """
-    Example view demonstrating rendering a table page.
-    """
-    context = make_context() 
-
-    with open('data/example.csv') as f:
-        reader = csv.reader(f)
-        context['columns'] = reader.next()
-        context['rows'] = list(reader)
-
-    return render_template('table.html', **context)
-
-@app.route('/map.html')
-def map():
-    """
-    TODO: Example view demonstrating rendering a map page.
-    """
-    return render_template('map.html', **make_context())
+def index():
+  """
+  Example view demonstrating rendering a simple map page.
+  """
+  return render_template('map.html', **make_context())
 
 @app.route('/widget.html')
 def widget():
-    """
-    Embeddable widget example page.
-    """
-    return render_template('widget.html', **make_context())
-
+  """
+  Embeddable widget example page.
+  """
+  return render_template('widget.html', **make_context())
 
 @app.route('/test_widget.html')
 def test_widget():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return render_template('test_widget.html', **make_context())
+  """
+  Example page displaying widget at different embed sizes.
+  """
+  return render_template('test_widget.html', **make_context())
+
 
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
@@ -82,7 +60,7 @@ def _templates_js():
 def _app_config_js():
     config = flatten_app_config()
     js = 'window.APP_CONFIG = ' + json.dumps(config)
-    
+
     return js, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
@@ -101,7 +79,7 @@ def urlencode_filter(s):
     """
     if type(s) == 'Markup':
         s = s.unescape()
-        
+
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
 
