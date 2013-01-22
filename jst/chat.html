@@ -1,0 +1,63 @@
+<div class="chat-user-entry">
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+
+				<div class="chat-login">
+					<div class="form-inline">
+
+						<label for="social">Sign in to chat:</label>
+						<div class="social btn-group">
+							<button class="btn btn-mini npr">NPR</button>
+							<button class="btn btn-mini oauth" data-service="facebook">Facebook</button>
+							<button class="btn btn-mini oauth" data-service="google">Google</button>
+							<button class="btn btn-mini anon">Anonymous</button>
+						</div>
+
+						<p class="register-npr"><a href="http://www.npr.org/templates/reg/" target="_blank">Register with NPR</a></p>
+
+						<div class="chat-anonymous-login">
+							<label>Chat name:
+								<input type="text" class="chat-anonymous-username"></input>
+							</label>
+							<button class="btn btn-mini btn-info">Login</button>
+						</div>
+
+						<div class="chat-npr-login">
+							<label>E-mail address:
+								<input type="text" class="chat-npr-username"></input>
+							</label>
+							<label class="npr">Password:
+								<input type="password" class="chat-npr-password"></input>
+							</label>
+							<button class="btn btn-mini btn-info">Login</button>
+						</div>
+					</div>
+				</div>
+				<div class="chat-editor">
+					<p class="chat-input">
+						<label for="chat-content">Your comment:</label>
+						<textarea name="chat-content" class="chat-content" maxlength="1000"></textarea>
+						<button class="btn btn-mini chat-post">Post</button>
+					</p>
+					<p class="chat-user-info">You are signed in as <span class="chat-username"></span>. <button class="btn btn-mini chat-logout">Logout</button></p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="span12 chat-body-wrap">
+
+			<div class="chat-alerts"></div>
+
+            <div class="chat-body">
+                <img src="img/spinner.gif" class="chat-spinner" />
+            </div>
+
+		</div>
+	</div>
+</div>

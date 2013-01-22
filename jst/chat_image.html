@@ -1,0 +1,17 @@
+<div class="chat-post chat-post-image" data-id="<%= Id %>" data-timestamp="<%= timestamp %>">
+    <div class="chat-post-author-photo">
+    	<%if (Creator.Avatar) { %>
+			<img src="<%= Creator.Avatar %>" alt="<%= Creator.Name %>" />
+		<%}%>
+	</div>
+    <p class="chat-post-info">
+    	<span class="chat-post-author"><%= Creator.Name %></span>
+    	<span class="chat-post-datetime"><%= created_string %></span>
+    </p>
+    <p class="chat-post-caption"><%= Content %></p>
+    <p class="chat-post-content">
+    <% _.each(Media, function(media) { %>
+        <img src="<%= media.Url %>" />
+    <% }); %>
+    </p>
+</div>

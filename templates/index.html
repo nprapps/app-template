@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% block extra_css %}
+{{ CSS.push('less/chat.less') }}
+{% endblock %}
+
 {% block header_content %}
 <header>
 	<div class="container">
@@ -24,15 +28,20 @@
 	</p>
 </div>
 
-<p id="template-example"></p>
 {% endblock %}
 
 
 {% block wide_content %}
 <div class="row">
 	<div class="span12">
-		<h2>This content goes to 12</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-	</div>
+        <div id="live-chat">
+    </div>
 </div>
 {% endblock %}
+
+{% block extra_foot_js %}
+{{ JS.push('js/lib/jquery.cookie.js') }}
+{{ JS.push('js/lib/jquery.total-storage.js') }}
+{{ JS.push('js/auth.js') }}
+{{ JS.push('js/chat.js') }}
+{% endblock extra_foot_js %}
