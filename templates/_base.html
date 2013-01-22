@@ -66,7 +66,7 @@
 <body>
 	{% block outer_content %}
     
-    <div id="nav">
+    <nav>
     	<ul class="site-links">
     		<li class="npr"><a href="http://npr.org"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></li>
     		<li class="news"><a href="http://www.npr.org/sections/news/">News</a></li>
@@ -83,36 +83,48 @@
 			<li class="donate"><a href="http://www.npr.org/stations/donate/index.php">Donate</a></li>
 			<li class="shop"><a href="http://shop.npr.org">Shop</a></li>
 		</ul>
-    </div>
-
-    <div class="container the-goods">
-        <div class="row">
-            <div id="main-content" class="span8">
-                {% block content %}
-                <h1>{{ project_name }}</h1>
-                App content goes here.
-                {% endblock content %}
-            </div>
-            <div class="span4">
-                {# 300x250 ad #}
-                <div class="adwrapper">
-                    <div class="sponsor300">
-				        <script type="text/javascript">
-				        <!--
-					    try {
-						    DFP.renderLocation('desktop');
-                        } catch(e) {
-                            NPR.messaging.warning('Problem fetching/rendering desktop ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
-                        }
-				        // -->
-                        </script>
-                    </div>
+    </nav>
+    
+	{% block header_content %}
+	{% endblock header_content %}
+	
+	<section class="the-goods">
+		<div class="container">
+			<div class="row">
+				<div id="main-content" class="span8">
+					{% block content %}
+					<h1>{{ project_name }}</h1>
+					App content goes here.
+					{% endblock content %}
 				</div>
-            </div>
-        </div>
-	</div>
+				<div class="span4">
+					{# 300x250 ad #}
+					<div class="adwrapper">
+						<div class="sponsor300">
+							<script type="text/javascript">
+							<!--
+							try {
+								DFP.renderLocation('desktop');
+							} catch(e) {
+								NPR.messaging.warning('Problem fetching/rendering desktop ad server code.', 'DFP.renderLocation', NPR.messaging.constants.SPONSORSHIP_ERROR);
+							}
+							// -->
+							</script>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% block wide_content %}
+			<div class="row">
+				<div class="span12">
+					<h2>This content goes to 12.</h2>
+				</div>
+			</div>
+			{% endblock wide_content %}
+		</div>
+	</section>
         
-	<div id="footer">
+	<footer>
 		<div class="primary">
 			<ul>
 				<li><a href="http://www.npr.org" data-action="Click Logo"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR Logo"></a></li>
@@ -133,7 +145,7 @@
 				<li><a href="http://thin.npr.org/">Text-Only</a></li>
 			</ul>
 		</div>
-	</div> <!-- end footer -->
+	</footer>
 
     {# Adhesion ad #}
     <div id="adhesion">
