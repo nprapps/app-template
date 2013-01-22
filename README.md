@@ -6,6 +6,7 @@ nprapps' Project Template
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
 * [Install requirements](#install-requirements)
+* [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
 * [Generate index.html](#generate-indexhtml)
 * [Adding a template/view](#adding-a-templateview)
@@ -74,6 +75,11 @@ npm install less universal-jst
 mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
+
+Project secrets
+---------------
+
+Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
 
 Bootstrap issues
 ----------------
