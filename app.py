@@ -5,7 +5,7 @@ import json
 from mimetypes import guess_type
 
 import envoy
-from flask import Flask, render_template
+from flask import Flask, abort, render_template
 
 import app_config
 from render_utils import flatten_app_config, make_context 
@@ -44,8 +44,11 @@ def map():
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
-    with open('less/%s' % filename) as f:
-        less = f.read()
+    try:
+        with open('less/%s' % filename) as f:
+            less = f.read()
+    except IOError:
+        abort(404)
 
     r = envoy.run('node_modules/.bin/lessc -', data=less)
 
@@ -69,8 +72,11 @@ def _app_config_js():
 # Server arbitrary static files on-demand
 @app.route('/<path:path>')
 def _static(path):
-    with open('www/%s' % path) as f:
-        return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
+    try:
+        with open('www/%s' % path) as f:
+            return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
+    except IOError:
+        abort(404)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)
