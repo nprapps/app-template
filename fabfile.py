@@ -87,6 +87,18 @@ def jst():
     """
     local('node_modules/.bin/jst --template underscore jst www/js/templates.js')
 
+def app_config_js():
+    """
+    Render app_config.js to file.
+    """
+    from app import _app_config_js
+
+    response = _app_config_js()
+    js = response[0]
+
+    with open('www/js/app_config.js', 'w') as f:
+        f.write(js)
+
 def render():
     """
     Render HTML templates and compile assets.
@@ -95,6 +107,7 @@ def render():
     
     less()
     jst()
+    app_config_js()
 
     # Fake out deployment target
     app_config.configure_targets(env.get(settings, None))

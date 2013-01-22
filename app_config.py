@@ -22,6 +22,8 @@ S3_BUCKETS = []
 SERVERS = []
 DEBUG = True 
 
+FB_APP_ID = '138837436154588'
+
 def configure_targets(deployment_target):
     """
     Configure deployment targets. Abstracted so this can be
