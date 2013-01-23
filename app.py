@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import csv
 import json
 from mimetypes import guess_type
 import urllib
@@ -23,7 +24,7 @@ def index():
         context['columns'] = reader.next()
         context['rows'] = list(reader)
 
-    return render_template('table.html', **context)
+    return render_template('index.html', **context)
 
 @app.route('/widget.html')
 def widget():
