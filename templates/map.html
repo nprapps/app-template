@@ -88,7 +88,4 @@
 {% block extra_foot %}
     {# This JS breaks when compressed with other assets #}
     <script type="text/javascript" src="js/lib/mapbox.js"></script>
-
-    {{ JS.push('js/app-map.js') }}
-    {{ JS.render('js/app-map.min.js') }}
 {% endblock %}

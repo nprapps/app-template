@@ -15,9 +15,9 @@ app = Flask(app_config.PROJECT_NAME)
 @app.route('/')
 def index():
     """
-    Example view demonstrating rendering a simple HTML page.
+    Example view demonstrating rendering a map page.
     """
-    return render_template('index.html', **make_context())
+    return render_template('map.html', **make_context())
 
 @app.route('/widget.html')
 def widget():
