@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import csv
 import json
 from mimetypes import guess_type
 import urllib
@@ -15,25 +14,24 @@ app = Flask(app_config.PROJECT_NAME)
 # Example application views
 @app.route('/')
 def index():
-  """
-  Example view demonstrating rendering a simple map page.
-  """
-  return render_template('map.html', **make_context())
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    return render_template('index.html', **make_context())
 
 @app.route('/widget.html')
 def widget():
-  """
-  Embeddable widget example page.
-  """
-  return render_template('widget.html', **make_context())
+    """
+    Embeddable widget example page.
+    """
+    return render_template('widget.html', **make_context())
 
 @app.route('/test_widget.html')
 def test_widget():
-  """
-  Example page displaying widget at different embed sizes.
-  """
-  return render_template('test_widget.html', **make_context())
-
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    return render_template('test_widget.html', **make_context())
 
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
@@ -60,7 +58,7 @@ def _templates_js():
 def _app_config_js():
     config = flatten_app_config()
     js = 'window.APP_CONFIG = ' + json.dumps(config)
-
+    
     return js, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
@@ -79,7 +77,7 @@ def urlencode_filter(s):
     """
     if type(s) == 'Markup':
         s = s.unescape()
-
+        
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
 

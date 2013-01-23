@@ -43,6 +43,10 @@ Copy the template
 
 ```
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
+
+# Optional: checkout an initial project branch
+# git checkout [init-map|init-table|init-chat]
+
 cd $NEW_PROJECT_NAME
 rm -rf .git
 git init
@@ -55,7 +59,7 @@ git push -u origin master
 Configure the project
 ---------------------
 
-* Update ``app_config.py`` with the name of the new project.
+Update ``app_config.py`` with the name of the new project and any other relevant configuration details.
 
 Install requirements
 --------------------
@@ -84,9 +88,7 @@ Project secrets should **never** be stored in ``app_config.py`` or anywhere else
 Bootstrap issues
 ----------------
 
-The app-template can automatically setup your Github repo with our default labels and tickets.
-
-* Run ``fab bootstrap_issues`` and enter your Github username and password.
+The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
 
 Generate index.html
 -------------------
