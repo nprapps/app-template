@@ -73,27 +73,31 @@
 // table controls
 .app-table .table-controls {
 	color: #333;
-	margin-bottom: 18px;
+	margin-bottom: 11px;
 
 	&:after { visibility: hidden; display: block; content: ""; clear: both; height: 0; }
 	label { 
 		font-weight: bold; 
 		font-size: 13px; 
 		line-height: 1;
-		float: left;
-		margin: 10px 5px 0 0;
+		margin: -3px 5px 5px 3px;
+		display: block;
 	}
 	input {
 		font-size: 12px;
 		margin: 0;
 	}
+	
+	.table-filter { float: left; }
+	.table-pager { float: right; border: none; margin: 0; }
 }
 .app-table .table-pager {
-	margin-top: -9px;
+	margin-top: 11px;
 	padding-bottom: 11px;
 	border-bottom: 2px solid #eee;
 
 	&:after { visibility: hidden; display: block; content: ""; clear: both; height: 0; }
+	form { margin: 0; }
 	.pager-size {
 		float: left;
 		white-space: nowrap;
@@ -115,7 +119,7 @@
 		}
 	}
 	.pager-nav {
-		width: 187px;
+		width: 183px;
 		float: right;
 		white-space: nowrap;
 	
@@ -136,9 +140,6 @@
 		.btn { 
 			width: 26px; overflow: hidden;
 			outline: none;
-			
-			&.prev { border-right: 2px solid #fff; }
-			&.next { border-left: 2px solid #fff; }
 		}
 	}
 }
@@ -191,4 +192,25 @@
 @media (max-width: 767px) {
 }
 @media (max-width: 480px) {
+	.app-table .table-controls {
+		margin-bottom: 11px;
+
+		.table-filter { 
+			float: none;
+			margin-bottom: 11px;
+		}
+		.table-pager { 
+			float: none;
+			margin: 0;
+			
+			.pager-nav { 
+				float: none;
+				width: auto;
+				
+				.btn { width: 40%; padding-right: 0; padding-left: 0; }
+				input { width: 20%; }
+			}
+		}
+	}
+	.app-table .table-pager { margin-top: 11px; }
 }

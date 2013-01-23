@@ -11,9 +11,17 @@
 <div class="app-table">
 	<div class="table-controls">
 		<div class="table-filter">
-			<label for="table-search">Search this table:</label>
-			<input name="search" type="search" />
+			<label for="table-search">Search this table:</label>&nbsp;<input name="search" type="search" />
 		</div>
+
+		<div class="table-pager">
+			<form>
+				<div class="pager-nav">
+					<a href="" class="prev btn btn-blue">prev</a><input class="pagedisplay" readonly="readonly" /><a href="" class="next btn btn-blue">next</a>
+				</div>
+			</form>
+		</div>
+
 	</div>
 
 	<table class="table tablesorter">
