@@ -45,6 +45,12 @@ NPR_DFP = {
 
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
+CHAT = {
+    'ID': '74796',
+    'TOKEN': 'FtP7wRfX',
+    'UPDATE_INTERVAL': 5000
+}
+
 def configure_targets(deployment_target):
     """
     Configure deployment targets. Abstracted so this can be
@@ -53,15 +59,20 @@ def configure_targets(deployment_target):
     global S3_BUCKETS
     global SERVERS
     global DEBUG
+    global CHAT
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
+
+        CHAT['ID'] = '78919'
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
+
+        CHAT['ID'] = '74796'
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
