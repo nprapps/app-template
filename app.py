@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import csv
 import json
 from mimetypes import guess_type
 import urllib
@@ -9,10 +8,9 @@ import envoy
 from flask import Flask, Markup, abort, render_template
 
 import app_config
-from render_utils import flatten_app_config, make_context 
+from render_utils import flatten_app_config, make_context
 app = Flask(app_config.PROJECT_NAME)
 
-# Example application views 
 @app.route('/')
 def index():
     """
@@ -33,7 +31,6 @@ def widget():
     Embeddable widget example page.
     """
     return render_template('widget.html', **make_context())
-
 
 @app.route('/test_widget.html')
 def test_widget():
