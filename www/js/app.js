@@ -1,10 +1,19 @@
-$(function() {
-    var context = $.extend(APP_CONFIG, {
-        'template_path': 'jst/example.html',
-        'config': JSON.stringify(APP_CONFIG, null, 4)
+$(document).ready(function() {
+    var $table = $(".app-table");
+
+    // Tables example
+    var table = $table.find(".table").tablesorter({
+        widthFixed: true,
+        widgets: ['zebra']
     });
 
-    var html = JST.example(context);
+    table.tablesorterPager({
+        container: $table.find(".table-pager"),
+        positionFixed: false,
+        size: 10
+    });
 
-    $('#template-example').html(html);
+    table.tablesorterMultiPageFilter({
+        filterSelector: $table.find(".table-filter input")
+    });
 });
