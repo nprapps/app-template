@@ -2,8 +2,51 @@
 @img-root: "../img";
 
 
+// default table styles
+.app-table { margin-bottom: 33px; }
+.app-table table {
+	caption { 
+		font-size: 20px;
+		line-height: 1.2;
+		color: #999;
+		text-align: left;
+		padding-bottom: 30px;
+	}
+	th {
+		padding: 0 10px 15px 10px;
+		border-bottom: 2px solid #eee;
+		padding: 0 10px 10px 10px;
+		text-align: left;
+		white-space: nowrap;
+		vertical-align: bottom;
+		font-weight: bold;
+		color: #333;
+		font-size: 14px;
+		
+		&.left { text-align: left; }
+		&.right { text-align: right; }
+		span { font-weight: normal; color: #999; }
+	}
+	td {
+		vertical-align: top;
+		padding: 15px 10px;
+		font-size: 14px; 
+		line-height: 1.5;
+		text-align: left;
+		color: #333;
+		border-bottom: 1px solid #eee;
+
+		&.left { text-align: left; }
+		&.right { text-align: right; }
+	}
+	.shadedrow {
+		background-color: #eee;
+	}
+}
+
+
 // table controls
-.table-controls {
+.app-table .table-controls {
 	&:after { visibility: hidden; display: block; content: ""; clear: both; height: 0; }
 
 	.table-filter, 
@@ -15,40 +58,38 @@
 
 
 // tablesorter
-table.tablesorter {
-	background-color: #CDCDCD;
-	margin:10px 0pt 15px;
-	font-size: 8pt;
-	width: 100%;
-	text-align: left;
-}
-table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	background-color: #e6EEEE;
-	border: 1px solid #FFF;
-	font-size: 8pt;
-	padding: 4px;
-}
-table.tablesorter thead tr .header {
-	background-image: url('@{img-root}/tablesorter-bg.gif');
-	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;
-}
-table.tablesorter tbody td {
-	color: #3D3D3D;
-	padding: 4px;
-	background-color: #FFF;
-	vertical-align: top;
-}
-table.tablesorter tbody tr.odd td {
-	background-color:#F0F0F6;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url('@{img-root}/tablesorter-asc.gif');
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url('@{img-root}/tablesorter-desc.gif');
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: #8dbdd8;
+.app-table table.tablesorter {
+	th {
+		&.header {
+			background-image: url('@{img-root}/tablesorter-bg.gif');
+			background-repeat: no-repeat;
+			background-position: right center;
+			cursor: pointer;
+			padding: 15px 10px;
+			color: #4774cc;
+			background-color: #eee;
+			border-left: 1px solid #fff;
+			border-bottom: 2px solid #ccc;
+			
+			&:first-child { border-left: none; }
+			&:hover { color: #bccae5; }
+		}
+		&.headerSortUp { 
+			background-image: url('@{img-root}/tablesorter-asc.gif');
+			border-right: 1px solid #fff;
+			border-left: 1px solid #fff;
+		}
+		&.headerSortDown {
+			background-image: url('@{img-root}/tablesorter-desc.gif');
+		}
+		&.headerSortDown, 
+		&.headerSortUp { 
+			background-color: #e6ebf2;
+		}
+	}
+	td { 
+		background-color: #fff;
+		border: none;
+	}
+	tr.even td { background-color: #eee; }
 }
