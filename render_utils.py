@@ -82,7 +82,7 @@ class CSSIncluder(Includer):
 
         for src in self.includes:
             if src.endswith('less'):
-                src = src.replace('less', 'css')
+                src = src.replace('less', '.less.css')
 
             with open('www/%s' % src) as f:
                 print '- compressing %s' % src
