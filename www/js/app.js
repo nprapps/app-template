@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    mapbox.load(['mapbox.mapbox-light','npr.us-wildfires'], function(data){
+    mapbox.load(['npr.map-94vv5tn9','npr.us-wildfires'], function(data){
         window.m = mapbox.map('map');
         m.addLayer(data[0].layer);
         m.addLayer(data[1].layer);
