@@ -3,47 +3,72 @@
 
 
 // default table styles
-.app-table { margin-bottom: 33px; }
-.app-table table {
-	caption { 
-		font-size: 20px;
-		line-height: 1.2;
-		color: #999;
-		text-align: left;
-		padding-bottom: 30px;
-	}
-	th {
-		padding: 0 10px 15px 10px;
-		border-bottom: 2px solid #eee;
-		padding: 0 10px 10px 10px;
-		text-align: left;
-		white-space: nowrap;
-		vertical-align: bottom;
-		font-weight: bold;
-		color: #333;
-		font-size: 14px;
-		
-		&.left { text-align: left; }
-		&.right { text-align: right; }
-		span { font-weight: normal; color: #999; }
-	}
-	td {
-		vertical-align: top;
-		padding: 15px 10px;
-		font-size: 14px; 
-		line-height: 1.5;
-		text-align: left;
-		color: #333;
-		border-bottom: 1px solid #eee;
+.app-table { 
+	margin-bottom: 33px;
 
-		&.left { text-align: left; }
-		&.right { text-align: right; }
+	table {
+		margin-bottom: 0;
+
+		caption { 
+			font-size: 20px;
+			line-height: 1.2;
+			color: #999;
+			text-align: left;
+			padding-bottom: 30px;
+		}
+		th {
+			padding: 0 10px 15px 10px;
+			border-bottom: 2px solid #eee;
+			padding: 0 10px 10px 10px;
+			text-align: left;
+			white-space: nowrap;
+			vertical-align: bottom;
+			font-weight: bold;
+			color: #333;
+			font-size: 14px;
+			
+			&.left { text-align: left; }
+			&.right { text-align: right; }
+			span { font-weight: normal; color: #999; }
+		}
+		td {
+			vertical-align: top;
+			padding: 15px 10px;
+			font-size: 14px; 
+			line-height: 1.5;
+			text-align: left;
+			color: #333;
+			border-bottom: 1px solid #eee;
+	
+			&.left { text-align: left; }
+			&.right { text-align: right; }
+		}
+		.shadedrow {
+			background-color: #eee;
+		}
 	}
-	.shadedrow {
-		background-color: #eee;
+	
+	.table-footer {
+		padding-top: 20px;
+		
+		.table-footnote {
+			padding-bottom: 15px;
+		}
+		h4 {
+			font-weight: bold;
+			color: #666;
+			font-size: 11px; 
+			line-height: 1;
+			margin: 0 0 3px 0;
+		}
+		p { 
+			color: #808080; 
+			margin: 0;
+			font-size: 11px; 
+			line-height: 1.5;
+		}
 	}
 }
-
 
 // table controls
 .app-table .table-controls {
@@ -92,4 +117,16 @@
 		border: none;
 	}
 	tr.even td { background-color: #eee; }
+}
+
+
+// Media queries
+@media (max-width: 979px) {
+	.app-table table {
+		th, td { font-size: 12px; }
+	}
+}
+@media (max-width: 767px) {
+}
+@media (max-width: 480px) {
 }
