@@ -35,3 +35,4 @@ www/*.html
 www/css/*.min.css
 www/css/*.less.css
 www/js/*.min.js
+www/js/templates.js
