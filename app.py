@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import csv
 import json
 from mimetypes import guess_type
 import urllib
@@ -18,7 +17,7 @@ def index():
     """
     Example view demonstrating rendering a simple HTML page.
     """
-    return render_template('simple.html', **make_context())
+    return render_template('index.html', **make_context())
 
 @app.route('/widget.html')
 def widget():
