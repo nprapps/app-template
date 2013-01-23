@@ -8,7 +8,7 @@ import envoy
 from flask import Flask, Markup, abort, render_template
 
 import app_config
-from render_utils import flatten_app_config, make_context 
+from render_utils import flatten_app_config, make_context
 app = Flask(app_config.PROJECT_NAME)
 
 @app.route('/')
