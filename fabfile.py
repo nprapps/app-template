@@ -77,7 +77,7 @@ def less():
     for path in glob('less/*.less'):
         filename = os.path.split(path)[-1]
         name = os.path.splitext(filename)[0]
-        out_path = 'www/css/%s.css' % name
+        out_path = 'www/css/%s.less.css' % name
 
         local('node_modules/.bin/lessc %s %s' % (path, out_path))
 
