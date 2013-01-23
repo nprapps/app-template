@@ -11,23 +11,8 @@
 <div class="app-table">
 	<div class="table-controls">
 		<div class="table-filter">
-			<label for="table-search">Search this table:</label> <input name="search" type="search" />
-		</div>
-
-		<div class="table-pager">
-			<form>
-				<div class="pager-nav">
-					<a href="" class="prev">prev</a>
-					<input class="pagedisplay" readonly="readonly" />
-					<a href="" class="next">next</a>
-				</div>
-
-				Show <select class="pagesize">
-					<option value="10">10</option>
-					<option value="50">50</option>
-					<option value="100">100</option>
-				</select> pages
-			</form>
+			<label for="table-search">Search this table:</label>
+			<input name="search" type="search" />
 		</div>
 	</div>
 
@@ -49,6 +34,22 @@
             {% endfor %}
         </body>
     </table>
+
+	<div class="table-pager">
+		<form>
+			<div class="pager-nav">
+				<a href="" class="prev btn btn-blue">prev</a><input class="pagedisplay" readonly="readonly" /><a href="" class="next btn btn-blue">next</a>
+			</div>
+			<div class="pager-size">
+				<label for="pagesize">Show per page:</label>
+				<select class="pagesize">
+					<option value="10">10</option>
+					<option value="50">50</option>
+					<option value="100">100</option>
+				</select>
+			</div>
+		</form>
+	</div>
     
     <div class="table-footer">
     	<div class="table-footnote">
