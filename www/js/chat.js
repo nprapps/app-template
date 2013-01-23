@@ -199,10 +199,10 @@
             });
 
             // Adds any new alerts with each pass.
-            _.each(alerts, function(alert, index, list) {
+            _.each(alerts, function(chat_alert, index, list) {
                 alerts = [];
-                alert.expires = parseInt(moment().add('seconds', 3).valueOf(), 10);
-                alert_html = JST.alert({ alert: alert });
+                chat_alert.expires = parseInt(moment().add('seconds', 3).valueOf(), 10);
+                alert_html = JST.chat_alert(chat_alert);
                 plugin.$alerts.append(alert_html);
             });
 
