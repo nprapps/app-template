@@ -101,6 +101,7 @@
             plugin.$npr_login_button.on('click', plugin.npr_login_click);
             plugin.$clear.on('click', plugin.clear_click);
             plugin.$comment_button.on('click', plugin.comment_click);
+            plugin.$anonymous_username.keydown(plugin.anonymous_login_keydown);
 
             // Initialize the user and the chat data.
             if (!plugin.settings.read_only) {
@@ -597,6 +598,12 @@
         plugin.comment_click = function() {
             var safe_comment = strip_tags(plugin.$comment.val());
             plugin.post_comment(safe_comment);
+        };
+
+        plugin.anonymous_login_keydown = function(e) {
+            if (e.keyCode == 13) {
+                plugin.$anonymous_login_button.click();
+            }
         };
 
         plugin.init();
