@@ -12,7 +12,7 @@ from etc import github
 """
 Base configuration
 """
-env.project_name = app_config.PROJECT_NAME 
+env.project_name = app_config.PROJECT_NAME
 env.deployed_name = app_config.DEPLOYED_NAME
 env.deploy_to_servers = False
 env.repo_url = 'git@github.com:nprapps/%(project_name)s.git' % env
@@ -104,14 +104,15 @@ def render():
     Render HTML templates and compile assets.
     """
     from flask import g
-    
+
     less()
     jst()
-    app_config_js()
 
     # Fake out deployment target
-    app_config.configure_targets(env.get(settings, None))
+    app_config.configure_targets(env.get('settings', None))
 
+    app_config_js()
+    
     compiled_includes = []
 
     for rule in app.app.url_map.iter_rules():
@@ -131,7 +132,7 @@ def render():
         elif rule_string.endswith('.html'):
             filename = 'www' + rule_string
         else:
-            print 'Skipping %s' % name 
+            print 'Skipping %s' % name
             continue
 
         print 'Rendering %s' % (filename)
@@ -231,7 +232,7 @@ def _deploy_to_s3():
     """
     Deploy the gzipped stuff to
     """
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
+    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
 
     for bucket in env.s3_buckets:
@@ -256,7 +257,7 @@ def deploy(remote='origin'):
 
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
-    
+
 """
 Destruction
 """
@@ -266,7 +267,7 @@ def shiva_the_destroyer():
     """
     with settings(warn_only=True):
         s3cmd = 's3cmd del --recursive %s'
-        
+
         for bucket in env.s3_buckets:
             env.s3_bucket = bucket
             local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s' % env))
