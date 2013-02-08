@@ -274,3 +274,27 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
+
+"""
+App-template meta-commands
+"""
+
+def super_merge():
+    """
+    Merge all master into all init- branches.
+    """
+    
+    answer = prompt("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?" % env, default="Not at all")
+
+    if answer not in ('y','Y','yes','Yes','buzz off','screw you'):
+        return
+
+    local('git checkout master')
+    
+    for branch in ['table', 'map', 'chat']:
+        local('git checkout init-%s' % branch)
+        local('git merge master --no-edit')
+
+    local('git checkout master')
+
+    local('git push --all')
