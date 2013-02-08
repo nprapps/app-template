@@ -290,9 +290,11 @@ def super_merge():
         return
 
     local('git checkout master')
+    local('git pull')
     
     for branch in ['table', 'map', 'chat']:
         local('git checkout init-%s' % branch)
+        local('git pull')
         local('git merge master --no-edit')
 
     local('git checkout master')
