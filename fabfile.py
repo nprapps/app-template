@@ -112,7 +112,7 @@ def render():
     app_config.configure_targets(env.get('settings', None))
 
     app_config_js()
-    
+
     compiled_includes = []
 
     for rule in app.app.url_map.iter_rules():
@@ -283,7 +283,7 @@ def super_merge():
     """
     Merge all master into all init- branches.
     """
-    
+
     answer = prompt("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?" % env, default="Not at all")
 
     if answer not in ('y','Y','yes','Yes','buzz off','screw you'):
@@ -291,7 +291,7 @@ def super_merge():
 
     local('git fetch')
     local('git checkout master')
-    
+
     for branch in ['table', 'map', 'chat']:
         local('git checkout init-%s' % branch)
         local('git merge origin/init-%s --no-edit' % branch)
