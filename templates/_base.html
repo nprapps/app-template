@@ -68,7 +68,7 @@
 </head>
 <body>
 	{% block outer_content %}
-    
+
     <nav>
     	<ul class="site-links">
     		<li class="npr"><a href="http://npr.org"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></li>
@@ -79,7 +79,7 @@
     	</ul>
 		<ul class="social-links">
             <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ TWITTER.TEXT|urlencode }}&amp;url={{ TWITTER.URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
-            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK.APP_ID }}&amp;link={{ FACEBOOK.URL|urlencode }}&name={{ FACEBOOK.TITLE }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK.APP_ID }}&amp;link={{ FACEBOOK.URL|urlencode }}&name={{ FACEBOOK.TITLE }}&picture={{ FACEBOOK.IMAGE_URL|urlencode }}&redirect_uri={{ FACEBOOK.URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
         </ul>
     	<ul class="site-links-2">
 			<li class="stations"><a href="http://www.npr.org/templates/stations/stations/">Stations</a></li>
@@ -87,10 +87,10 @@
 			<li class="shop"><a href="http://shop.npr.org">Shop</a></li>
 		</ul>
     </nav>
-    
+
 	{% block header_content %}
 	{% endblock header_content %}
-	
+
 	<section class="the-goods">
 		<div class="container">
 			<div class="row">
@@ -121,7 +121,7 @@
 			{% endblock wide_content %}
 		</div>
 	</section>
-        
+
 	<footer>
 		<div class="primary">
 			<ul>
@@ -159,7 +159,7 @@
     </div>
 
 	{% endblock outer_content %}
-    
+
 	{{ JS.push('js/lib/html5.js') }}
 	{{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/moment.js') }}
