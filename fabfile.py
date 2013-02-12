@@ -64,7 +64,7 @@ def _confirm_branch():
     """
     if (env.settings == 'production' and env.branch != 'stable'):
         answer = prompt("You are trying to deploy the '%(branch)s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env, default="Not at all")
-        if answer not in ('y','Y','yes','Yes','buzz off','screw you'):
+        if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
             exit()
 
 """
@@ -281,12 +281,11 @@ App-template meta-commands
 
 def super_merge():
     """
-    Merge all master into all init- branches.
+    Merge master branch into all init- branches.
     """
-
     answer = prompt("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?" % env, default="Not at all")
 
-    if answer not in ('y','Y','yes','Yes','buzz off','screw you'):
+    if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
         return
 
     local('git fetch')
