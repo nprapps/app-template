@@ -267,8 +267,13 @@ def _gzip_www():
     local('rm -rf gzip/live-data')
 
 def deploy(remote='origin'):
+    """
+    Deploy the latest app to S3 and, if configured, to our servers.
+    """
     require('settings', provided_by=[production, staging])
-    require('branch', provided_by=[stable, master, branch])
+
+    if env.get('deploy_to_servers', False):
+        require('branch', provided_by=[stable, master, branch])
 
     _confirm_branch()
     render()
@@ -278,8 +283,8 @@ def deploy(remote='origin'):
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
 
-    if env.get('install_crontab', False):
-        install_crontab()
+        if env.get('install_crontab', False):
+            install_crontab()
 
 """
 Destruction
@@ -288,6 +293,8 @@ def shiva_the_destroyer():
     """
     Deletes the app from s3
     """
+    require('settings', provided_by=[production, staging])
+
     with settings(warn_only=True):
         s3cmd = 's3cmd del --recursive %s'
 
@@ -298,8 +305,8 @@ def shiva_the_destroyer():
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
 
-        if env.get('install_crontab', False):
-            uninstall_crontab()
+            if env.get('install_crontab', False):
+                uninstall_crontab()
 
 """
 App-template meta-commands
