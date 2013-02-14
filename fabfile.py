@@ -13,10 +13,11 @@ from etc import github
 Base configuration
 """
 env.deployed_name = app_config.DEPLOYED_NAME
+env.repo_name = app_config.REPOSITORY_NAME
 env.deploy_to_servers = False
 env.install_cron_jobs = False
-env.repo_url = 'git@github.com:nprapps/%(deployed_name)s.git' % env
-env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(deployed_name)s.git' % env
+env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
+env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
 env.path = '/home/%(user)s/apps/%(deployed_name)s' % env

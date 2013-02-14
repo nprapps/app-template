@@ -11,6 +11,7 @@ import os
 
 PROJECT_NAME = 'Project Name'
 DEPLOYED_NAME = 'project-name' 
+REPOSITORY_NAME = 'project-name'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['cron.nprapps.org']
