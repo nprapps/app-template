@@ -224,7 +224,14 @@ def install_crontab():
     require('settings', provided_by=[production, staging])
 
     sudo('cp %(repo_path)s/crontab /etc/cron.d/%(deployed_name)s' % env)
-    sudo('service cron restart')
+
+def uninstall_crontab():
+    """
+    Remove a previously install cron jobs script from cron.d
+    """
+    require('settings', provided_by=[production, staging])
+
+    sudo('rm /etc/cron.d/%(deployed_name)s' % env)
 
 def bootstrap_issues():
     """
@@ -287,6 +294,9 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
+
+        if env.get('install_crontab', False):
+            uninstall_crontab()
 
 """
 App-template meta-commands
