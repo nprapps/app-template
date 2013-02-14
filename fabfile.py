@@ -209,7 +209,6 @@ def checkout_latest(remote='origin'):
     run('cd %(repo_path)s; git fetch %(remote)s' % env)
     run('cd %(repo_path)s; git checkout %(branch)s; git pull %(remote)s %(branch)s' % env)
 
-
 def install_requirements():
     """
     Install the latest requirements.
