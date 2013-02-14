@@ -15,7 +15,7 @@ Base configuration
 env.deployed_name = app_config.DEPLOYED_NAME
 env.repo_name = app_config.REPOSITORY_NAME
 env.deploy_to_servers = False
-env.install_cron_jobs = False
+env.install_crontab = False
 env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
 env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
@@ -267,6 +267,9 @@ def deploy(remote='origin'):
 
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
+
+    if env.get('install_crontab', False):
+        install_crontab()
 
 """
 Destruction
