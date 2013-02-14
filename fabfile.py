@@ -202,6 +202,7 @@ def checkout_latest(remote='origin'):
     Checkout the latest source.
     """
     require('settings', provided_by=[production, staging])
+    require('branch', provided_by=[stable, master, branch])
 
     env.remote = remote
 
