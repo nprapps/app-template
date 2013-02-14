@@ -61,7 +61,7 @@ git push -u origin master
 Configure the project
 ---------------------
 
-Update ``app_config.py`` with the name of the new project and any other relevant configuration details.
+Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
 
 Install requirements
 --------------------
