@@ -14,8 +14,10 @@ Base configuration
 """
 env.deployed_name = app_config.DEPLOYED_NAME
 env.repo_name = app_config.REPOSITORY_NAME
+
 env.deploy_to_servers = False
 env.install_crontab = False
+
 env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
 env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
@@ -262,6 +264,7 @@ def _gzip_www():
     Gzips everything in www and puts it all in gzip
     """
     local('python gzip_www.py')
+    local('rm -rf gzip/live-data')
 
 def deploy(remote='origin'):
     require('settings', provided_by=[production, staging])
