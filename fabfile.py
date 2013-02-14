@@ -12,14 +12,17 @@ from etc import github
 """
 Base configuration
 """
-env.project_name = app_config.PROJECT_NAME
 env.deployed_name = app_config.DEPLOYED_NAME
+env.repo_name = app_config.REPOSITORY_NAME
+
 env.deploy_to_servers = False
-env.repo_url = 'git@github.com:nprapps/%(project_name)s.git' % env
-env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(project_name)s.git' % env
+env.install_crontab = False
+
+env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
+env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(project_name)s' % env
+env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
@@ -201,12 +204,12 @@ def checkout_latest(remote='origin'):
     Checkout the latest source.
     """
     require('settings', provided_by=[production, staging])
+    require('branch', provided_by=[stable, master, branch])
 
     env.remote = remote
 
     run('cd %(repo_path)s; git fetch %(remote)s' % env)
     run('cd %(repo_path)s; git checkout %(branch)s; git pull %(remote)s %(branch)s' % env)
-
 
 def install_requirements():
     """
@@ -215,6 +218,22 @@ def install_requirements():
     require('settings', provided_by=[production, staging])
 
     run('%(virtualenv_path)s/bin/pip install -U -r %(repo_path)s/requirements.txt' % env)
+
+def install_crontab():
+    """
+    Install cron jobs script into cron.d.
+    """
+    require('settings', provided_by=[production, staging])
+
+    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(deployed_name)s' % env)
+
+def uninstall_crontab():
+    """
+    Remove a previously install cron jobs script from cron.d
+    """
+    require('settings', provided_by=[production, staging])
+
+    sudo('rm /etc/cron.d/%(deployed_name)s' % env)
 
 def bootstrap_issues():
     """
@@ -245,6 +264,7 @@ def _gzip_www():
     Gzips everything in www and puts it all in gzip
     """
     local('python gzip_www.py')
+    local('rm -rf gzip/live-data')
 
 def deploy(remote='origin'):
     require('settings', provided_by=[production, staging])
@@ -257,6 +277,9 @@ def deploy(remote='origin'):
 
     if env.get('deploy_to_servers', False):
         checkout_latest(remote)
+
+    if env.get('install_crontab', False):
+        install_crontab()
 
 """
 Destruction
@@ -274,6 +297,9 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
+
+        if env.get('install_crontab', False):
+            uninstall_crontab()
 
 """
 App-template meta-commands
