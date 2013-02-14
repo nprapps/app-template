@@ -27,16 +27,18 @@ What's in here?
 
 The project contains the following folders and important files:
 
-* ``data`` -- Data files, such as those used to generate HTML
+* ``data`` -- Data files, such as those used to generate HTML.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
-* ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates 
-* ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment
-* ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally
-* ``www`` -- Static and compiled assets to be deployed (a.k.a. "the output")
-* ``www/test`` -- Javascript tests and supporting files
+* ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
+* ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
+* ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
+* ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
+* ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
+* ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
-* ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment
+* ``crontab`` -- Cron jobs to be installed as part of the project.
+* ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment.
 
 Copy the template
 -----------------
@@ -161,5 +163,7 @@ Deploy to EC2
 The current configuration is for running cron jobs only. Web server configuration is not included.
 
 * In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
+* Optionally, set ``env.install_crontab`` to ``True``.
 * Run ``fab staging master setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app. 
+
