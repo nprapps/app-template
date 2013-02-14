@@ -12,14 +12,14 @@ from etc import github
 """
 Base configuration
 """
-env.project_name = app_config.PROJECT_NAME
 env.deployed_name = app_config.DEPLOYED_NAME
 env.deploy_to_servers = False
-env.repo_url = 'git@github.com:nprapps/%(project_name)s.git' % env
-env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(project_name)s.git' % env
+env.install_cron_jobs = False
+env.repo_url = 'git@github.com:nprapps/%(deployed_name)s.git' % env
+env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(deployed_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(project_name)s' % env
+env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
@@ -215,6 +215,15 @@ def install_requirements():
     require('settings', provided_by=[production, staging])
 
     run('%(virtualenv_path)s/bin/pip install -U -r %(repo_path)s/requirements.txt' % env)
+
+def install_crontab():
+    """
+    Install cron jobs script into cron.d.
+    """
+    require('settings', provided_by=[production, staging])
+
+    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(deployed_name)s' % env)
+    sudo('service cron restart')
 
 def bootstrap_issues():
     """
