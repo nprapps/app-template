@@ -1,0 +1,1 @@
+* * * * * ubuntu echo $DEPLOYMENT_TARGET > /tmp/cron-test.txt 
