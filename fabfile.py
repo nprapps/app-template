@@ -61,15 +61,6 @@ def branch(branch_name):
     """
     env.branch = branch_name
 
-def _confirm_branch():
-    """
-    Confirm a production deployment.
-    """
-    if (env.settings == 'production' and env.branch != 'stable'):
-        answer = prompt("You are trying to deploy the '%(branch)s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env, default="Not at all")
-        if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
-            exit()
-
 """
 Template-specific functions
 """
@@ -275,7 +266,9 @@ def deploy(remote='origin'):
     if env.get('deploy_to_servers', False):
         require('branch', provided_by=[stable, master, branch])
 
-    _confirm_branch()
+    if (env.settings == 'production' and env.branch != 'stable'):
+        _confirm("You are trying to deploy the '%(branch)s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env)
+
     render()
     _gzip_www()
     _deploy_to_s3()
@@ -289,11 +282,19 @@ def deploy(remote='origin'):
 """
 Destruction
 """
+def _confirm(message):
+    answer = prompt(message, default="Not at all")
+
+    if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
+        exit() 
+
 def shiva_the_destroyer():
     """
     Deletes the app from s3
     """
     require('settings', provided_by=[production, staging])
+
+    _confirm("You are about to destroy everything deployed to %(settings)s for this project.\nDo you know what you're doing?" % env)
 
     with settings(warn_only=True):
         s3cmd = 's3cmd del --recursive %s'
@@ -316,10 +317,7 @@ def super_merge():
     """
     Merge master branch into all init- branches.
     """
-    answer = prompt("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?" % env, default="Not at all")
-
-    if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
-        return
+    _confirm("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?")
 
     local('git fetch')
     local('git checkout master')
