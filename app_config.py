@@ -23,7 +23,7 @@ S3_BUCKETS = []
 SERVERS = []
 DEBUG = True
 
-PROJECT_DESCRIPTION = 'foo'
+PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], DEPLOYED_NAME)
 
 TWITTER = {
