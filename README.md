@@ -92,16 +92,6 @@ Bootstrap issues
 
 The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
 
-Generate index.html
--------------------
-
-The app-template ships with several example templates and corresponding views.
-
-* Choose from the available templates which one to base your project on, e.g. ``templates/table.html``. Move this template to ``templates/index.html`` and delete the others.
-* Never edit ``www/index.html`` or other dynamically generated assets. Instead edit the templates.
-* Choose the view from ``app.py`` that matches your chosen index template. Rename it to ``index``, apply the ``@app.route('/')`` decorator to it and delete the others.  
-* Uncomment and update the ad code and Facebook tags at the top of ``templates/_base.html``. (or make yourself a ticket to do it later).
-
 Adding a template/view
 ----------------------
 
