@@ -8,7 +8,6 @@ nprapps' Project Template
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
-* [Generate index.html](#generate-indexhtml)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
 * [Run javascript tests](#run-javascript-tests)
