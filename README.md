@@ -2,13 +2,13 @@ nprapps' Project Template
 =========================
 
 * [About this template](#about-this-template)
+* [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
-* [Generate index.html](#generate-indexhtml)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
 * [Run javascript tests](#run-javascript-tests)
@@ -16,11 +16,21 @@ nprapps' Project Template
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
+* [Installing cron jobs](#installing-cron-jobs)
 
 About this template
 -------------------
 
 This template provides a a project skeleton suitable for any project that is to be served entirely as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, etc. (It actually supports deploying to servers too, but that's less well-tested.)
+
+Assumptions
+-----------
+
+The following things are assumed to be true in this documentation.
+
+* You are running OSX.
+* You are using Python 2.7. (Probably the version that came OSX.)
+* You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
 
 What's in here?
 ---------------
@@ -157,3 +167,15 @@ The current configuration is for running cron jobs only. Web server configuratio
 * Run ``fab staging master setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app. 
 
+Instal cron jobs
+----------------
+
+Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
+
+```
+* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
+```
+
+**Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
+
+To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.

@@ -1,1 +1,1 @@
-* * * * * ubuntu echo $DEPLOYMENT_TARGET > /tmp/cron-test.txt 
+* * * * * ubuntu bash /home/ubuntu/apps/app-template/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
