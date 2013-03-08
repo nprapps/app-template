@@ -16,8 +16,8 @@
     <!-- CSS -->
     {{ CSS.push('css/bootstrap.css') }}
     {{ CSS.push('css/bootstrap-responsive.css') }}
-    {% block extra_css %}{% endblock extra_css %}
     {{ CSS.push('less/app.less') }}
+    {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
     <!-- AD CODE -->
