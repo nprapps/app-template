@@ -167,13 +167,15 @@ The current configuration is for running cron jobs only. Web server configuratio
 * Run ``fab staging master setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app. 
 
-Installing cron jobs
---------------------
+Instal cron jobs
+----------------
 
-Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure project virtualenv is properly activated prior to execution. For example:
+Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/app-template/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
+* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
 ```
+
+**Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
 To install cronjobs set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
