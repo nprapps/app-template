@@ -178,4 +178,4 @@ Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` 
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
-To install cronjobs set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
