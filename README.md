@@ -5,6 +5,7 @@ nprapps' Project Template
 * [What's in here?](#whats-in-here)
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
+* [Assumptions](#assumptions)
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
@@ -61,6 +62,15 @@ Configure the project
 ---------------------
 
 Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
+
+Assumptions
+-----------
+
+The following things are assumed to be true in this documentation.
+
+* You are running OSX.
+* You are using Python 2.7. (Probably the version that came OSX.)
+* You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
 
 Install requirements
 --------------------
