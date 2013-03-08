@@ -291,7 +291,7 @@ def cron_test():
 
     local('echo $DEPLOYMENT_TARGET > /tmp/cron_test.txt')
 
-""
+"""
 Destruction
 """
 def _confirm(message):
