@@ -113,11 +113,7 @@ def render():
         rule_string = rule.rule
         name = rule.endpoint
 
-        if name == 'static':
-            print 'Skipping %s' % name
-            continue
-
-        if name.startswith('_'):
+        if name == 'static' or name.startswith('_'):
             print 'Skipping %s' % name
             continue
 
