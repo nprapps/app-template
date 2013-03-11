@@ -9,3 +9,4 @@ envoy==0.0.2
 slimit==0.7.4
 cssmin==0.1.4
 requests==0.14.2
+nose==1.2.1

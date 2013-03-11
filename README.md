@@ -11,7 +11,8 @@ nprapps' Project Template
 * [Bootstrap issues](#bootstrap-issues)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
-* [Run javascript tests](#run-javascript-tests)
+* [Run Javascript tests](#run-javascript-tests)
+* [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
@@ -42,6 +43,7 @@ The project contains the following folders and important files:
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
+* ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``www/test`` -- Javascript tests and supporting files.
@@ -127,6 +129,11 @@ Run Javascript tests
 --------------------
 
 With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
+
+Run Python tests
+----------------
+
+Python unit tests are stored in the ``tests`` directory. Run them with ``fab tests``.
 
 Compile static assets
 ---------------------
