@@ -113,11 +113,7 @@ def render():
         rule_string = rule.rule
         name = rule.endpoint
 
-        if name == 'static':
-            print 'Skipping %s' % name
-            continue
-
-        if name.startswith('_'):
+        if name == 'static' or name.startswith('_'):
             print 'Skipping %s' % name
             continue
 
@@ -128,6 +124,11 @@ def render():
         else:
             print 'Skipping %s' % name
             continue
+
+        dirname = os.path.dirname(filename)
+
+        if not (os.path.exists(dirname)):
+            os.makedirs(dirname)
 
         print 'Rendering %s' % (filename)
 
