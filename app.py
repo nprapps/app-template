@@ -24,7 +24,7 @@ def index():
         context['columns'] = reader.next()
         context['rows'] = list(reader)
 
-    return render_template('index.html', **context)
+    return render_template('table.html', **context)
 
 @app.route('/widget.html')
 def widget():
