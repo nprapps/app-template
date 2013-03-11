@@ -14,7 +14,7 @@ app = Flask(app_config.PROJECT_NAME)
 @app.route('/')
 @app.route('/index.html')
 def index():
-    return render_template('index.html', **make_context())
+    return render_template('chat.html', **make_context())
 
 @app.route('/widget.html')
 def widget():
