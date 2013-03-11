@@ -125,6 +125,11 @@ def render():
             print 'Skipping %s' % name
             continue
 
+        dirname = os.path.dirname(filename)
+
+        if not (os.path.exists(dirname)):
+            os.makedirs(dirname)
+
         print 'Rendering %s' % (filename)
 
         with app.app.test_request_context(path=rule_string):
