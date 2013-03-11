@@ -19,7 +19,7 @@
             chat_id: null,
             chat_token: null,
             update_interval: 1000,
-            alert_interval: 500,
+            alert_timeout: 5000,
             read_only: false,
             scribble_host: 'apiv1.scribblelive.com',
             posts_per_page: 50,
@@ -192,7 +192,7 @@
 
             setTimeout(function() {
                 $alert.fadeOut();
-            }, 3000);
+            }, plugin.settings.alert_timeout);
         };
 
         plugin.render_post = function(post) {
@@ -482,6 +482,8 @@
             /*
             * Authorizes an NPR user.
             */
+            plugin.$npr_login_button.attr('disabled', 'disabled');
+
             var username = plugin.$npr_username.val();
             var password = plugin.$npr_password.val();
 
@@ -510,6 +512,8 @@
                     $.totalStorage(OAUTH_COOKIE_NAME, response.user_data);
                     plugin.scribble_auth_user({ auth_route: 'anonymous', username: response.user_data.nick_name });
                     plugin.toggle_user_context(OAUTH_COOKIE_NAME, true);
+                    
+                    plugin.$npr_login_button.removeAttr('disabled');
                 },
                 error: function() {
                     plugin.alert({
@@ -517,6 +521,8 @@
                         title: 'Login failed!',
                         text: 'Your email or password was incorrect.'
                     });
+                
+                    plugin.$npr_login_button.removeAttr('disabled');
                 }
             });
         };
