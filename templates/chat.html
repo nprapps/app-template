@@ -1,0 +1,106 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+    {{ CSS.push('less/chat.less') }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ PROJECT_NAME }}</h1>
+<h2>What is this? &nbsp;&#8226;&nbsp; <span style="white-space:nowrap;">March 11, 2013</span></h2>
+{% endblock %}
+
+{% block wide_content %}
+    <div id="live-chat">
+        <div class="chat-user-entry">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+
+                        <div class="chat-login">
+                            <div class="form-inline">
+
+                                <label for="social">Sign in to chat:</label>
+                                <div class="social btn-group">
+                                    <button class="btn btn-mini oauth" data-service="facebook">Facebook</button>
+                                    <button class="btn btn-mini oauth" data-service="google">Google</button>
+                                    <button class="btn btn-mini npr">NPR</button>
+                                    <a class="btn btn-mini register" href="http://www.npr.org/templates/reg/" target="_blank">Register</a>
+                                </div>
+                                <div class="chat-anonymous-login">
+                                    <label>Chat name:
+                                        <input type="text" class="chat-anonymous-username"></input>
+                                    </label>
+                                    <button class="btn btn-mini btn-info">Login</button>
+                                </div>
+
+                                <div class="chat-npr-login">
+                                    <label>E-mail address:
+                                        <input type="text" class="chat-npr-username"></input>
+                                    </label>
+                                    <label class="npr">Password:
+                                        <input type="password" class="chat-npr-password"></input>
+                                    </label>
+                                    <button class="btn btn-mini btn-info">Login</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-editor">
+                            <p class="chat-input">
+                                <label for="chat-content">Your comment:</label>
+                                <textarea name="chat-content" class="chat-content" maxlength="1000"></textarea>
+                                <button class="btn btn-mini chat-post">Post</button>
+                            </p>
+                            <p class="chat-user-info">You are signed in as <span class="chat-username"></span>. <a class="chat-logout">Logout</a></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="span3 chat-sidebar">
+                    <h3>Sidebar</h3>
+
+                    <div class="description">
+                        Chat description
+                    </div>
+
+                    <div class="credits">
+                        <p>Credits: TKTK</p>
+                        <p>Chat powered by Scribble Live</p>
+                    </div>
+
+                    <div class="terms">
+                        <ul>
+                            <li><a href="http://help.npr.org/npr/includes/customer/npr/custforms/contactus.aspx">Contact</a></li>
+                            <li><a href="http://www.npr.org/about/termsofuse.html">Terms of Use</a></li>
+                            <li><a href="http://www.npr.org/about/privacypolicy.html">Privacy</a></li>
+                            <li><a href="http://thin.npr.org/">Text-Only</a></li>
+                        </ul>
+                        <p>
+                            &copy;2013 NPR
+                        </p>
+                    </div>
+
+                </div>
+                <div class="span9 chat-body-wrap">
+
+                    <div class="chat-alerts"></div>
+
+                    <div class="chat-body">
+                        <img src="img/spinner.gif" class="chat-spinner" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_foot_js %}
+    {{ JS.push('js/lib/jquery.cookie.js') }}
+    {{ JS.push('js/lib/jquery.total-storage.js') }}
+    {{ JS.push('js/auth.js') }}
+    {{ JS.push('js/chat.js') }}
+{% endblock %}
