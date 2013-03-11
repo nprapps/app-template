@@ -10,7 +10,7 @@ They will be exposed to users. Use environment variables instead.
 import os
 
 PROJECT_NAME = 'App Template'
-DEPLOYED_NAME = 'app-template' 
+PROJECT_SLUG = 'app-template' 
 REPOSITORY_NAME = 'app-template'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
@@ -24,7 +24,7 @@ SERVERS = []
 DEBUG = True
 
 PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], DEPLOYED_NAME)
+SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
 TWITTER = {
     'TEXT': PROJECT_NAME,

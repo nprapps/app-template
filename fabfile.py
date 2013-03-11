@@ -12,7 +12,7 @@ from etc import github
 """
 Base configuration
 """
-env.deployed_name = app_config.DEPLOYED_NAME
+env.deployed_name = app_config.PROJECT_SLUG
 env.repo_name = app_config.REPOSITORY_NAME
 
 env.deploy_to_servers = False
