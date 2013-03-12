@@ -4,6 +4,8 @@ from glob import glob
 import os
 
 from fabric.api import *
+from flask import render_template
+from jinja2 import Template
 
 import app
 import app_config
@@ -17,9 +19,10 @@ env.repo_name = app_config.REPOSITORY_NAME
 
 env.deploy_to_servers = False
 env.install_crontab = False
+env.deploy_dynamic_app = False
 
 env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
-env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
+env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
 env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
@@ -247,7 +250,7 @@ Deployment
 """
 def _deploy_to_s3():
     """
-    Deploy the gzipped stuff to
+    Deploy the gzipped stuff to S3.
     """
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
@@ -263,6 +266,31 @@ def _gzip_www():
     """
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
+
+
+def render_server_confs():
+    """
+    Renders server configurations.
+    """
+    require('settings', provided_by=[production, staging])
+
+    services = ['nginx', 'uwsgi']
+    with settings(warn_only=True):
+        local('mkdir confs/rendered')
+
+    context = app_config.get_secrets()
+    context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
+    context['PROJECT_NAME'] = app_config.PROJECT_NAME
+    context['DEPLOYMENT_TARGET'] = env.settings
+
+    for service in services:
+        file_path = 'confs/rendered/%s.%s.conf' % (app_config.PROJECT_SLUG, service)
+
+        with open('confs/%s.conf' % service, 'r') as read_template:
+            with open(file_path, 'wb') as write_template:
+                payload = Template(read_template.read())
+                write_template.write(payload.render(**context))
+
 
 def deploy(remote='origin'):
     """
@@ -305,7 +333,7 @@ def _confirm(message):
     answer = prompt(message, default="Not at all")
 
     if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
-        exit() 
+        exit()
 
 def shiva_the_destroyer():
     """

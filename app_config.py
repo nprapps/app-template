@@ -10,7 +10,7 @@ They will be exposed to users. Use environment variables instead.
 import os
 
 PROJECT_NAME = 'App Template'
-PROJECT_SLUG = 'app-template' 
+PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
@@ -45,6 +45,25 @@ NPR_DFP = {
 }
 
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
+
+
+def get_secrets():
+    """
+    A method for accessing our secrets.
+    """
+    secrets = [
+        'TUMBLR_OAUTH_TOKEN',
+        'TUMBLR_OAUTH_TOKEN_SECRET',
+        'TUMBLR_APP_SECRET',
+        'AWS_SECRET_ACCESS_KEY',
+        'AWS_ACCESS_KEY_ID'
+    ]
+    secrets_dict = {}
+    for secret in secrets:
+        secrets_dict[secret] = os.environ.get(secret, None)
+
+    return secrets_dict
+
 
 def configure_targets(deployment_target):
     """
