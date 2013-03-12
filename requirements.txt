@@ -11,3 +11,4 @@ cssmin==0.1.4
 requests==0.14.2
 nose==1.2.1
 oauth2==1.5.211
+python-tumblpy==0.7.0
