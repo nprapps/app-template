@@ -75,6 +75,20 @@ Configure the project
 
 Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
 
+NPR apps-specific: Update relevant environment variables with API keys, etc., from Dropbox:
+
+You can either source ``~/Dropbox/nprapps/tumblr_oauth_keys.txt`` (variables will only be set for the life of your current shell):
+
+```
+. ~/Dropbox/nprapps/tumblr_oauth_keys.txt
+```
+
+Or you can append its contents to your bash_profile|bashrc|zshrc:
+
+```
+cat ~/Dropbox/nprapps/tumblr_oauth_keys.txt >> ~/.zshrc
+```
+
 Install requirements
 --------------------
 
@@ -111,7 +125,7 @@ A site can have any number of rendered templates (i.e. pages). Each will need a 
 
 * Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
 * Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
-* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``. 
+* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
 Run the project locally
 -----------------------
@@ -142,7 +156,7 @@ Compile LESS to CSS, compile javascript templates to Javascript and minify all a
 
 ```
 workon $NEW_PROJECT_NAME
-fab render 
+fab render
 ```
 
 (This is done automatically whenever you deploy to S3.)
@@ -164,7 +178,7 @@ Deploy to S3
 fab staging master deploy
 ```
 
-Deploy to EC2 
+Deploy to EC2
 -------------
 
 The current configuration is for running cron jobs only. Web server configuration is not included.
@@ -172,7 +186,7 @@ The current configuration is for running cron jobs only. Web server configuratio
 * In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
 * Optionally, set ``env.install_crontab`` to ``True``.
 * Run ``fab staging master setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app. 
+* Run ``fab staging master deploy`` to deploy the app.
 
 Instal cron jobs
 ----------------
@@ -180,7 +194,7 @@ Instal cron jobs
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
+* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
 ```
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
