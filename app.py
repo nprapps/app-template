@@ -33,6 +33,13 @@ def test_widget():
     """
     return render_template('test_widget.html', **make_context())
 
+@app.route('/tumblr-form.html')
+def test_widget():
+    """
+    Example page displaying widget at different embed sizes.
+    """
+    return render_template('tumblr-form.html', **make_context())
+
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -58,7 +65,7 @@ def _templates_js():
 def _app_config_js():
     config = flatten_app_config()
     js = 'window.APP_CONFIG = ' + json.dumps(config)
-    
+
     return js, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
@@ -78,7 +85,7 @@ def urlencode_filter(s):
     """
     if type(s) == 'Markup':
         s = s.unescape()
-        
+
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
 

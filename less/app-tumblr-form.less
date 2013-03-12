@@ -1,0 +1,119 @@
+html {
+    -webkit-text-size-adjust: none; /* prevent font scaling in landscape */
+}
+body {
+    margin: 0;
+    padding: 0;
+    font: 14px/1.5 Arial, Helvetica, sans-serif;
+    color: #111;
+    background-color: #f1f1f1;
+}
+a {
+    color: #4774cc;
+    text-decoration: none;
+
+    &:hover { color: #bccae5; }
+}
+
+.tumblr-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 10px;
+
+    h2 {
+        color: #333;
+        font-style: italic;
+    }
+
+    form {
+        margin: 0;
+        padding: 0;
+    }
+    ul, ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    ol > li {
+        padding: 10px 20px;
+        background-color: #f1f1f1;
+    }
+    ul > li {
+        padding: 0;
+        margin: 0 0 5px 0;
+
+        &:hover { background-color: #eee; }
+    }
+    label {
+        font-weight: bold;
+        font-size: 17px;
+        display: block;
+        margin-bottom: 5px;
+
+        &.header { margin-bottom: 5px; }
+        &.instructions {
+            font-weight: normal;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+    }
+    li.form-intro p {
+        margin: 0;
+    }
+    li.form-photo label.instructions {
+        margin-bottom: 15px;
+    }
+    textarea {
+        width: 95%;
+        padding: 2%;
+        height: 100px;
+        font: 13px/1.5 Arial, Helvetica, sans-serif;
+        color: #111;
+    }
+    input {
+        font: 13px/1.5 Arial, Helvetica, sans-serif;
+        color: #111;
+
+        &.signed-name { width: 70px; }
+        &.signed-location { margin-left: 0; }
+    }
+    input[type='text'] {
+        padding: 5px 10px;
+    }
+    input[type='radio'] {
+        margin-right: 10px;
+        margin-top: -6px;
+    }
+    input[type='file'] {
+        font-size: 16px;
+    }
+    img.sample-photo {
+        float: right;
+        margin: 11px 20px 11px 11px;
+        width: 33%;
+        max-width: 200px;
+    }
+    button[type='submit'] {
+        background-color: #7598c9;
+        border: none;
+        line-height: 45px;
+        height: 45px;
+        color: #fff;
+        padding: 0 20px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    button[type='submit']:hover {
+        opacity: 0.7;
+    }
+
+    button[type='submit']:disabled {
+        background-color: #becfe6;
+        cursor: default;
+        opacity: 1.0;
+    }
+}
+
+@media (max-width: 480px) {
+    .tumblr-form input[type='file'] { font-size: 12px; }
+}

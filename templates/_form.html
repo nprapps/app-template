@@ -1,0 +1,73 @@
+<div class="tumblr-form">
+    <form id="tumblr-form" method="post" enctype="multipart/form-data" action="http://{{ SERVERS[0] }}/family-meal/">
+        <img src="img/family-meal-200.jpg" alt="Sample Photo" class="sample-photo" />
+        <ol>
+            <li class="form-intro">
+                <!-- <h2>This project has now concluded. Thank you for your submissions.</h2> -->
+                <p>This is some text for the form kicker.</p>
+                </li>
+            <li class="form-photo">
+                <label for="image" class="instructions">
+                        <strong>SHOW:</strong><br />Take a photo.
+                </label>
+                <input type="file" name="image" width="90" accept="image/*" disabled="disabled">
+            </li>
+            <li class="form-message">
+                <label for="message" class="instructions">
+                        <strong>SHARE:</strong><br />Tell us about you.
+                </label>
+                <textarea name="message" disabled="disabled"></textarea>
+            </li>
+            <li class="form-signature">
+            <label for="signed_name">Initialed,</label>
+                <input type="text" name="signed_name" placeholder="Your Initials" class="signed-name" disabled="disabled"></input>
+                from
+                <input type="text" name="location" placeholder="Your City And State" class="signed-location" disabled="disabled"></input>
+            </li>
+        </ol>
+    </form>
+    <!--[if IE]>
+    <script type="text/javascript">
+        /*
+        * Handle simple form validation for browsers that do not support
+        * the HTML5 "required" attribute on form elements.
+        */
+        $('#tumblr-form').submit(function(event){
+           var $this = $(this);
+           var inputs = [];
+           inputs.push($this.find('textarea').text());
+           inputs.push($this.find("input[type='file']").attr('value'));
+           inputs.push($this.find("input[name='signed_name']").attr('value'));
+           inputs.push($this.find("input[name='location']").attr('value'));
+           _.each(inputs, function(input){
+               if (input === '') {
+                   event.preventDefault();
+                   $this.find('span.gentle-reminder').show();
+               }
+           });
+        });
+    </script>
+    <![endif]-->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#tumblr-form').submit(function(e) {
+                var btn = $('.form-submit button');
+
+                btn.text('Sending, please wait...');
+                btn.attr('disabled', 'disabled');
+
+                return true;
+            });
+
+            if (/iP(hone|od|ad)/.test(navigator.platform)) {
+                var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+                var version = parseInt(v[1]);
+
+                if (version < 6) {
+                    $('.tumblr-form').html('<p>Sorry, iOS versions older than 6 are not supported.');
+                }
+            }
+        });
+    </script>
+</div>
