@@ -10,7 +10,7 @@ They will be exposed to users. Use environment variables instead.
 import os
 
 PROJECT_NAME = 'App Template'
-PROJECT_SLUG = 'app-template' 
+PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
@@ -46,6 +46,9 @@ NPR_DFP = {
 
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
+TUMBLR_TAGS = 'foo,bar,baz,bang,wolves'
+
+
 def configure_targets(deployment_target):
     """
     Configure deployment targets. Abstracted so this can be
@@ -54,15 +57,21 @@ def configure_targets(deployment_target):
     global S3_BUCKETS
     global SERVERS
     global DEBUG
+    global TUMBLR_URL
+    global TUMBLR_BLOG_ID
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
+        TUMBLR_URL = '{{ project_slug }}.tumblr.com'
+        TUMBLR_BLOG_ID = '{{ project_slug }}'
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
+        TUMBLR_URL = '{{ project_slug }}-staging.tumblr.com'
+        TUMBLR_BLOG_ID = '{{ project_slug}}-staging'
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
