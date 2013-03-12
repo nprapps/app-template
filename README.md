@@ -55,13 +55,15 @@ The project contains the following folders and important files:
 Copy the template
 -----------------
 
+Create a new repository on Github. Everywhere you see ``$NEW_PROJECT_NAME`` in the following script, replace it with the name of the repository you just created.
+
 ```
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
+cd $NEW_PROJECT_NAME
 
 # Optional: checkout an initial project branch
 # git checkout [init-map|init-table|init-chat]
 
-cd $NEW_PROJECT_NAME
 rm -rf .git
 git init
 git add * .gitignore
