@@ -17,7 +17,7 @@ nprapps' Project Template
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
-* [Installing cron jobs](#installing-cron-jobs)
+* [Install cron jobs](#install-cron-jobs)
 
 About this template
 -------------------
@@ -176,8 +176,8 @@ The current configuration is for running cron jobs only. Web server configuratio
 * Run ``fab staging master setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app. 
 
-Instal cron jobs
-----------------
+Install cron jobs
+-----------------
 
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
