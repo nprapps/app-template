@@ -11,6 +11,7 @@ nprapps' Project Template
 * [Bootstrap issues](#bootstrap-issues)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
+* [Copy workflow](#copy-workflow)
 * [Run Javascript tests](#run-javascript-tests)
 * [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)
@@ -140,7 +141,7 @@ View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?
 * We have two sheets – attribution and content
 * This sheet is "published to the web" using Google Docs' interface
 
-This document gets pulled into our app in ``app_config`` under ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
+This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
 
 The app template is outfitted with a few ``fab`` utility functions that make pulling changes and updating your local data easy.
 
@@ -150,21 +151,9 @@ To update the latest document, simply run:
 fab update_copy
 ```
 
-To download the latest document as a .xls:
-
-```
-fab download_copy
-```
-
-To parse the downloaded .xls file and write it as JSON:
-
-```
-fab parse_copy
-```
-
 At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates.
 
-Using our example sheet, to interpolate the ``byline`` key in ``templates/index.html``:
+Using our example sheet, to use the ``byline`` key in ``templates/index.html``:
 
 ```
 {{ COPY.attribution.byline }}
