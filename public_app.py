@@ -13,8 +13,7 @@ def _dynamic_page():
     """
     Example dynamic view demonstrating rendering a simple HTML page.
     """
-    context = {'app_config': app_config}
-    return render_template('index.html', **context)
+    return "SAMPLE DYNAMIC PAGE."
 
 
 if __name__ == '__main__':
