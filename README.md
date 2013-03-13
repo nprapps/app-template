@@ -17,6 +17,7 @@ nprapps' Project Template
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
+* [Install Web services](#install-web-services)
 * [Install cron jobs](#install-cron-jobs)
 
 About this template
