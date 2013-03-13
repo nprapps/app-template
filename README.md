@@ -113,7 +113,7 @@ A site can have any number of rendered templates (i.e. pages). Each will need a 
 
 * Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
 * Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
-* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``. 
+* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
 Run the project locally
 -----------------------
@@ -144,7 +144,7 @@ Compile LESS to CSS, compile javascript templates to Javascript and minify all a
 
 ```
 workon $NEW_PROJECT_NAME
-fab render 
+fab render
 ```
 
 (This is done automatically whenever you deploy to S3.)
@@ -166,15 +166,42 @@ Deploy to S3
 fab staging master deploy
 ```
 
-Deploy to EC2 
+Deploy to EC2
 -------------
+You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic Web application and executing cron jobs.
 
-The current configuration is for running cron jobs only. Web server configuration is not included.
-
+For running a Web application:
 * In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Optionally, set ``env.install_crontab`` to ``True``.
+* Also in ``fabfile.py`` set ``env.deploy_web_services`` to ``True``.
 * Run ``fab staging master setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app. 
+* Run ``fab staging master deploy`` to deploy the app.
+
+For running cron jobs:
+* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
+* Also in ``fabfile.py``, set ``env.install_crontab`` to ``True``.
+* Run ``fab staging master setup`` to configure the server.
+* Run ``fab staging master deploy`` to deploy the app.
+
+You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
+
+Install web services
+---------------------
+
+Web services are defined in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+
+To check that these files are being properly rendered, you can render them locally without deploying them and see the results in the `confs/rendered/` directory. This example will render both the uWSGI and Nginx confs:
+
+```
+fab render_confs()
+```
+
+If you are satisfied with the results, you can update the configuration files independently of the deployment/setup routine with a separate fab command:
+
+```
+fab deploy_confs()
+```
+
+The setup routine will also deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` to ``True`` in the fabfile.
 
 Install cron jobs
 -----------------
@@ -182,7 +209,7 @@ Install cron jobs
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
+* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
 ```
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
