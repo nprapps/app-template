@@ -441,11 +441,17 @@ App-specific commands
 """
 
 def download_copy():
+    """
+    Downloads a Google Doc as an .xls file.
+    """
     base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
     doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
     local('curl -o data/copy.xls "%s"' % doc_url)
 
 def parse_copy():
+    """
+    Parses the downloaded .xls file and writes it as JSON.
+    """
     import xlrd
     KEY_COL = 0
     VALUE_COL = 1
@@ -460,5 +466,8 @@ def parse_copy():
         json.dump(output, f)
 
 def update_copy():
+    """
+    Fetches the latest Google Doc and updates local JSON.
+    """
     download_copy()
     parse_copy()
