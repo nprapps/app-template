@@ -19,7 +19,7 @@ env.repo_name = app_config.REPOSITORY_NAME
 
 env.deploy_to_servers = False
 env.install_crontab = False
-env.deploy_dynamic_app = False
+env.deploy_web_services = False
 
 env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
 env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
@@ -29,6 +29,11 @@ env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
+
+SERVICES = [
+    ('nginx', '/etc/nginx/sites-available/'),
+    ('uwsgi', '/etc/init/')
+]
 
 """
 Environments
@@ -171,6 +176,8 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
+    if env.get('deploy_web_services', False):
+        deploy_confs()
 
 def setup_directories():
     """
@@ -268,13 +275,12 @@ def _gzip_www():
     local('rm -rf gzip/live-data')
 
 
-def render_server_confs():
+def render_confs():
     """
     Renders server configurations.
     """
     require('settings', provided_by=[production, staging])
 
-    services = ['nginx', 'uwsgi']
     with settings(warn_only=True):
         local('mkdir confs/rendered')
 
@@ -283,13 +289,38 @@ def render_server_confs():
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
     context['DEPLOYMENT_TARGET'] = env.settings
 
-    for service in services:
+    for service, remote_path in SERVICES:
         file_path = 'confs/rendered/%s.%s.conf' % (app_config.PROJECT_SLUG, service)
 
         with open('confs/%s.conf' % service, 'r') as read_template:
+
             with open(file_path, 'wb') as write_template:
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
+
+
+def deploy_confs():
+    """
+    Deploys rendered server configurations to the specified server.
+    This will reload nginx and the appropriate uwsgi config.
+    """
+    require('settings', provided_by=[production, staging])
+
+    render_confs()
+
+    for service, remote_path in SERVICES:
+        service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+        file_name = '%s.conf' % service_name
+        local_path = 'confs/rendered/%s' % file_name
+        put(local_path, remote_path, use_sudo=True)
+
+        if service == 'nginx':
+            sudo('ln -s %s%s /etc/nginx/sites-enabled/%s' % (remote_path, file_name, file_name))
+            sudo('service nginx reload')
+
+        else:
+            sudo('initctl reload-configuration')
+            sudo('service %s restart' % service_name)
 
 
 def deploy(remote='origin'):
@@ -332,8 +363,30 @@ Destruction
 def _confirm(message):
     answer = prompt(message, default="Not at all")
 
-    if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
+    if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
         exit()
+
+
+def nuke_confs():
+    """
+    DESTROYS rendered server configurations from the specified server.
+    This will reload nginx and stop the uwsgi config.
+    """
+    require('settings', provided_by=[production, staging])
+
+    for service, remote_path in SERVICES:
+        with settings(warn_only=True):
+            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            file_name = '%s.conf' % service_name
+            sudo('rm -f %s%s' % (remote_path, file_name))
+
+            if service == 'nginx':
+                sudo('service nginx reload')
+
+            else:
+                sudo('service %s stop' % service_name)
+                sudo('initctl reload-configuration')
+
 
 def shiva_the_destroyer():
     """
@@ -352,6 +405,9 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
+
+            if env.get('deploy_web_services', False):
+                nuke_confs()
 
             if env.get('install_crontab', False):
                 uninstall_crontab()
