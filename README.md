@@ -129,10 +129,10 @@ python app.py
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-Copy workflow
+Editing workflow
 -------------------
 
-The app is rigged up to Google Docs for a simple key/value store that provides a copy and editing workflow.
+The app is rigged up to Google Docs for a simple key/value store that provides an editing workflow.
 
 View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
 
@@ -150,6 +150,8 @@ To update the latest document, simply run:
 ```
 fab update_copy
 ```
+
+Note: this ``update_copy`` runs automatically whenever ``fab render`` is called.
 
 At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates.
 
