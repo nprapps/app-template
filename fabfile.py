@@ -2,6 +2,7 @@
 
 from glob import glob
 import os
+import json
 
 from fabric.api import *
 from flask import render_template
@@ -102,6 +103,7 @@ def render():
     """
     from flask import g
 
+    update_copy()
     less()
     jst()
 
@@ -377,3 +379,30 @@ def super_merge():
     local('git checkout master')
 
     local('git push --all')
+
+"""
+App-specific commands
+"""
+
+def download_copy():
+    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
+    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
+    local('curl -o data/copy.xls "%s"' % doc_url)
+
+def parse_copy():
+    import xlrd
+    KEY_COL = 0
+    VALUE_COL = 1
+    output = {}
+    book = xlrd.open_workbook('data/copy.xls')
+    for sheet in book.sheets():
+        output[sheet.name] = {}
+        for n in range(sheet.nrows):
+            output[sheet.name][sheet.cell_value(n, KEY_COL)] = sheet.cell_value(n, VALUE_COL)
+
+    with open('data/copy.json', 'w') as f:
+        json.dump(output, f)
+
+def update_copy():
+    download_copy()
+    parse_copy()

@@ -26,6 +26,8 @@ DEBUG = True
 PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
+COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
+
 TWITTER = {
     'TEXT': PROJECT_NAME,
     'URL': SHARE_URL
