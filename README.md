@@ -19,7 +19,7 @@ nprapps' Project Template
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
-* [Install Web services](#install-web-services)
+* [Install web services](#install-web-services)
 
 About this template
 -------------------
