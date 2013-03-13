@@ -240,11 +240,11 @@ To install your crontab set `env.install_crontab` to `True` at the top of `fabfi
 Install web services
 ---------------------
 
-Web services are defined in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+Web services are configured in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
 
 Running ``fab setup`` will deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` both to ``True`` at the top of ``fabfile.py``.
 
-To check that these files are being properly rendered, you can render them locally without deploying them and see the results in the `confs/rendered/` directory.
+To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
 
 ```
 fab render_confs
