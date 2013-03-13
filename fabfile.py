@@ -383,13 +383,14 @@ def nuke_confs():
         with settings(warn_only=True):
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
             file_name = '%s.conf' % service_name
-            sudo('rm -f %s%s' % (remote_path, file_name))
 
             if service == 'nginx':
+                sudo('rm -f %s%s' % (remote_path, file_name))
                 sudo('service nginx reload')
 
             else:
                 sudo('service %s stop' % service_name)
+                sudo('rm -f %s%s' % (remote_path, file_name))
                 sudo('initctl reload-configuration')
 
 
