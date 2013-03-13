@@ -18,8 +18,8 @@ nprapps' Project Template
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
-* [Install Web services](#install-web-services)
 * [Install cron jobs](#install-cron-jobs)
+* [Install Web services](#install-web-services)
 
 About this template
 -------------------
@@ -224,26 +224,6 @@ For running cron jobs:
 
 You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
 
-Install web services
----------------------
-
-Web services are defined in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
-
-To check that these files are being properly rendered, you can render them locally without deploying them and see the results in the `confs/rendered/` directory. This example will render both the uWSGI and Nginx confs:
-
-```
-fab render_confs()
-```
-
-If you are satisfied with the results, you can update the configuration files independently of the deployment/setup routine with a separate fab command:
-
-```
-fab deploy_confs()
-```
-
-The setup routine will also deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` to ``True`` in the fabfile.
-=======
-
 Install cron jobs
 -----------------
 
@@ -256,3 +236,22 @@ Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
 To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+
+Install web services
+---------------------
+
+Web services are defined in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+
+Running ``fab setup`` will deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` both to ``True`` at the top of ``fabfile.py``.
+
+To check that these files are being properly rendered, you can render them locally without deploying them and see the results in the `confs/rendered/` directory.
+
+```
+fab render_confs
+```
+
+You can also deploy the configuration files independently of the setup command by running:
+
+```
+fab deploy_confs
+```
