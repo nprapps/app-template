@@ -8,8 +8,8 @@ app = Flask(app_config.PROJECT_NAME)
 
 
 # Example application views
-@app.route('/dynamic/view/')
-def index():
+@app.route('/%s/' % app_config.PROJECT_SLUG)
+def _dynamic_page():
     """
     Example dynamic view demonstrating rendering a simple HTML page.
     """

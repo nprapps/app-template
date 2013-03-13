@@ -310,21 +310,22 @@ def deploy_confs():
 
     render_confs()
 
-    run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
+    with settings(warn_only=True):
+        run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
 
-    for service, remote_path in SERVICES:
-        service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
-        file_name = '%s.conf' % service_name
-        local_path = 'confs/rendered/%s' % file_name
-        put(local_path, remote_path, use_sudo=True)
+        for service, remote_path in SERVICES:
+            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            file_name = '%s.conf' % service_name
+            local_path = 'confs/rendered/%s' % file_name
+            put(local_path, remote_path, use_sudo=True)
 
-        if service == 'nginx':
-            sudo('ln -s %s%s /etc/nginx/sites-enabled/%s' % (remote_path, file_name, file_name))
-            sudo('service nginx reload')
+            if service == 'nginx':
+                sudo('ln -s %s%s /etc/nginx/sites-enabled/%s' % (remote_path, file_name, file_name))
+                sudo('service nginx reload')
 
-        else:
-            sudo('initctl reload-configuration')
-            sudo('service %s restart' % service_name)
+            else:
+                sudo('initctl reload-configuration')
+                sudo('service %s restart' % service_name)
 
 
 def deploy(remote='origin'):
