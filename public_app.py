@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import datetime
+
 from flask import Flask, render_template
 
 import app_config
@@ -13,7 +15,7 @@ def _dynamic_page():
     """
     Example dynamic view demonstrating rendering a simple HTML page.
     """
-    return "SAMPLE DYNAMIC PAGE."
+    return datetime.datetime.now().isoformat()
 
 
 if __name__ == '__main__':
