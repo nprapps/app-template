@@ -128,6 +128,54 @@ python app.py
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
+Copy workflow
+-------------------
+
+The app is rigged up to Google Docs for a simple key/value store that provides a copy and editing workflow.
+
+View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
+
+* The first column is the "key"
+* The second column is the "value"
+* We have two sheets – attribution and content
+* This sheet is "published to the web" using Google Docs' interface
+
+This document gets pulled into our app in ``app_config`` under ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
+
+The app template is outfitted with a few ``fab`` utility functions that make pulling changes and updating your local data easy.
+
+To update the latest document, simply run:
+
+```
+fab update_copy
+```
+
+To download the latest document as a .xls:
+
+```
+fab download_copy
+```
+
+To parse the downloaded .xls file and write it as JSON:
+
+```
+fab parse_copy
+```
+
+At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates.
+
+Using our example sheet, to interpolate the ``byline`` key in ``templates/index.html``:
+
+```
+{{ COPY.attribution.byline }}
+```
+
+More generally, you can access anything defined in your Google Doc like so:
+
+```
+{{ COPY.sheet_name.key_name }}
+```
+
 Run Javascript tests
 --------------------
 
@@ -203,6 +251,7 @@ fab deploy_confs()
 ```
 
 The setup routine will also deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` to ``True`` in the fabfile.
+=======
 
 Install cron jobs
 -----------------
