@@ -38,3 +38,5 @@ www/js/*.min.js
 www/js/templates.js
 www/js/app_config.js
 confs/rendered/*
+data/copy.json
+data/copy.xls
