@@ -108,7 +108,7 @@ class Sheet(object):
         if not self._sheet:
             return 'COPY ERROR: sheet `%s`' % self._name
         try:
-            return self._sheet[name]
+            return Markup(self._sheet[name])
         except KeyError:
             return 'COPY ERROR: `%s`' % name
 
