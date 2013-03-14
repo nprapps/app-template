@@ -11,7 +11,7 @@ nprapps' Project Template
 * [Bootstrap issues](#bootstrap-issues)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
-* [Copy workflow](#copy-workflow)
+* [Editing workflow](#editing-workflow)
 * [Run Javascript tests](#run-javascript-tests)
 * [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)

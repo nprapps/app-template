@@ -94,6 +94,9 @@ class CSSIncluder(Includer):
         return '\n'.join(output)
 
 class Sheet(object):
+    """
+    Wrap copy text, for a single worksheet, for error handling.
+    """
     _sheet = {}
     _name = None
 
@@ -111,7 +114,7 @@ class Sheet(object):
 
 class Copy(object):
     """
-    Wraps copy text for error handling.
+    Wraps copy text, for multiple worksheets, for error handling.
     """
     _copy = {}
 

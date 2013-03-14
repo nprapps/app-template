@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 from glob import glob
-import os
 import json
+import os
 
 from fabric.api import *
-from flask import render_template
 from jinja2 import Template
 
 import app
@@ -439,10 +438,6 @@ def super_merge():
     local('git checkout master')
 
     local('git push --all')
-
-"""
-App-specific commands
-"""
 
 def download_copy():
     """
