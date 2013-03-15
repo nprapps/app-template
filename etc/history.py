@@ -20,6 +20,7 @@ history = git.revision_history(git.head())
 
 history.reverse()
 
+app_process = None
 last_filename = None
 
 for i, commit in enumerate(history):
@@ -33,10 +34,10 @@ for i, commit in enumerate(history):
     if not os.path.exists('app.py'):
         print '--> No app.py, skipping.'
         continue
-    
-    p = subprocess.Popen(['python', 'app.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    else:
+        app_process = subprocess.Popen(['python', 'app.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        
     r = envoy.run('phantomjs .screencaptures/screencapture.js %s' % filename)
-    p.kill()
     
     if not os.path.exists(filename):
         print '--> Phantom failed to generate an image.'
@@ -51,6 +52,8 @@ for i, commit in enumerate(history):
             os.remove(filename)
         else:
             last_filename = filename
+
+app_process.terminate()
 
 # Remove temp files
 os.remove('.screencaptures/screencapture.js')
