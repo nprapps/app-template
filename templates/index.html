@@ -24,6 +24,13 @@
     </p>
 </div>
 
+<h2>Example COPY list</h2>
+<dl>
+    {% for row in COPY.example_list %}
+    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
+    {% endfor %}
+</dl>
+
 <p id="template-example"></p>
 {% endblock %}
 

@@ -12,16 +12,21 @@ class Row(object):
     """
     Wraps a row of copy for error handling.
     """
-    _row = []
+    _sheet = None
+    _row = {} 
     _index = 0
 
-    def __init__(self, data, index):
+    def __init__(self, sheet, data, index):
+        self._sheet = sheet
         self._row = data
         self._index = index
 
     def __getattr__(self, name):
+        if not self._row:
+            return 'COPY.%s.%i (row does not exist)' % (self._sheet.name, self._index)
+
         if name not in self._row:
-            return 'COPY ERROR: row `%i` has no column %s' % (self._index, name)
+            return 'COPY.%s.%i.%s [column does not exist]' % (self._sheet.name, self._index, name)
 
         return Markup(self._row[name])
 
@@ -38,30 +43,33 @@ class Sheet(object):
     """
     Wrap copy text, for a single worksheet, for error handling.
     """
+    name = None
     _sheet = []
-    _name = None
+    _columns = []
 
-    def __init__(self, data, name=None):
-        self._sheet = data
-        self._name = name
+    def __init__(self, name, data, columns):
+        self.name = name
+        self._sheet = [Row(self, row, i) for i, row in enumerate(data)]
+        self._columns = columns
 
     def __getitem__(self, i):
         if i > len(self._sheet):
-            return 'COPY ERROR: Row %i not in sheet' % i
+            return Row(self, {}, i)
+
         return self._sheet[i]
 
     def __getattr__(self, name):
         if not self._sheet:
-            return 'COPY ERROR: sheet `%s`' % self._name
+            return 'COPY.%s.%s [sheet does not exist]' % (self.name, name)
 
-        if 'key' not in self._sheet[0]:
-            return 'COPY ERROR: sheet `%s` has no "key" column' % self._name
+        if 'key' not in self._columns:
+            return 'COPY.%s.%s [no key column]' % (self.name, name)
 
         for row in self._sheet:
             if row['key'] == name:
                 return Markup(row['value'])
 
-        return 'COPY ERROR: `%s`' % name
+        return 'COPY.%s.%s [key does not exist]' % (self.name, name)
 
     def __iter__(self):
         return iter(self._sheet)
@@ -82,7 +90,7 @@ class Copy(object):
         try:
             return self._copy[name]
         except KeyError:
-            return Sheet({}, name=name)
+            return Sheet(name, {}, [])
 
     def load(self):
         """
@@ -92,12 +100,14 @@ class Copy(object):
             book = xlrd.open_workbook(COPY_XLS)
         except IOError:
             raise CopyException('"%s" does not exist. Have you run "fab update_copy"?' % COPY_XLS)
+
         for sheet in book.sheets():
-            column_names = sheet.row_values(0)
+            columns = sheet.row_values(0)
             rows = []
+
             for n in range(1, sheet.nrows):
                 # Sheet takes array of rows
-                rows.append(Row(dict(zip(column_names, sheet.row_values(n))), n))
+                rows.append(dict(zip(columns, sheet.row_values(n))))
 
-            self._copy[sheet.name] = Sheet(rows, name=sheet.name)
+            self._copy[sheet.name] = Sheet(sheet.name, rows, columns)
 
