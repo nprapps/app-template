@@ -31,10 +31,11 @@ for i, commit in enumerate(history):
     print "%i Checking out commit %s" % (i, sha)
     envoy.run('git checkout %s' % sha)
 
+    # app.py may not exist in early versions
     if not os.path.exists('app.py'):
         print '--> No app.py, skipping.'
         continue
-    else:
+    elif not app_process:
         app_process = subprocess.Popen(['python', 'app.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         
     r = envoy.run('phantomjs .screencaptures/screencapture.js %s' % filename)
