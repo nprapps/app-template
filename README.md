@@ -56,7 +56,7 @@ The project contains the following folders and important files:
 * ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
 * ``crontab`` -- Cron jobs to be installed as part of the project.
 * ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment.
-* ``public_app.py -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
+* ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
 
