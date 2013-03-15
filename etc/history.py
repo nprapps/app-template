@@ -46,15 +46,15 @@ for i, commit in enumerate(history):
         print '--> Removing duplicate image %s.' % filename
         os.remove(filename)
     else:
-        if filecmp.cmp(filename, '.screencaptures/.darkness.jpg', False):
+        if filecmp.cmp(filename, '.screencaptures/darkness.jpg', False):
             print '--> Removing darkness %s (blank image).' % filename
             os.remove(filename)
         else:
             last_filename = filename
 
 # Remove temp files
-os.remove('.screencaptures/.screencapture.js')
-os.remove('.screencaptures/.darkness.jpg')
+os.remove('.screencaptures/screencapture.js')
+os.remove('.screencaptures/darkness.jpg')
 
 shutil.copyfile(last_filename, '.screencaptures/0.jpg')
 
