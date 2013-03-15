@@ -136,10 +136,10 @@ The app is rigged up to Google Docs for a simple key/value store that provides a
 
 View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
 
-* The first column is the "key"
-* The second column is the "value"
-* We have two sheets – attribution and content
-* This sheet is "published to the web" using Google Docs' interface
+* If there is a column called ``key``, there is expected to be a column called ``value`` and rows will be accessed in templates as key/value pairs
+* Rows may also be accessed in templates by row index using iterators (see below)
+* You may have any number of worksheets
+* This document must be "published to the web" using Google Docs' interface
 
 This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
 
@@ -151,7 +151,7 @@ To update the latest document, simply run:
 fab update_copy
 ```
 
-Note: this ``update_copy`` runs automatically whenever ``fab render`` is called.
+Note: ``update_copy`` runs automatically whenever ``fab render`` is called.
 
 At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates.
 
@@ -165,6 +165,15 @@ More generally, you can access anything defined in your Google Doc like so:
 
 ```
 {{ COPY.sheet_name.key_name }}
+```
+
+You may also access rows using iterators. In this case, the column headers of the spreadsheet become keys and the row cells values. For example:
+
+```
+{% for row in COPY.sheet_name %}
+{{ row.column_one_header %}
+{{ row.column_two_header %}
+{% endfor %}
 ```
 
 Run Javascript tests
