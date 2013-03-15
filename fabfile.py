@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from glob import glob
-import json
 import os
 
 from fabric.api import *
@@ -88,6 +87,20 @@ def jst():
     Render Underscore templates to a JST package.
     """
     local('node_modules/.bin/jst --template underscore jst www/js/templates.js')
+
+def download_copy():
+    """
+    Downloads a Google Doc as an .xls file.
+    """
+    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
+    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
+    local('curl -o data/copy.xls "%s"' % doc_url)
+
+def update_copy():
+    """
+    Fetches the latest Google Doc and updates local JSON.
+    """
+    download_copy()
 
 def app_config_js():
     """
@@ -439,34 +452,3 @@ def super_merge():
 
     local('git push --all')
 
-def download_copy():
-    """
-    Downloads a Google Doc as an .xls file.
-    """
-    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
-    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
-    local('curl -o data/copy.xls "%s"' % doc_url)
-
-def parse_copy():
-    """
-    Parses the downloaded .xls file and writes it as JSON.
-    """
-    import xlrd
-    KEY_COL = 0
-    VALUE_COL = 1
-    output = {}
-    book = xlrd.open_workbook('data/copy.xls')
-    for sheet in book.sheets():
-        output[sheet.name] = {}
-        for n in range(sheet.nrows):
-            output[sheet.name][sheet.cell_value(n, KEY_COL)] = sheet.cell_value(n, VALUE_COL)
-
-    with open('data/copy.json', 'w') as f:
-        json.dump(output, f)
-
-def update_copy():
-    """
-    Fetches the latest Google Doc and updates local JSON.
-    """
-    download_copy()
-    parse_copy()

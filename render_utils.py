@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-import json
-
 from cssmin import cssmin
 from flask import Markup, g
 from slimit import minify
 
 import app_config
+import copytext
 
 class Includer(object):
     """
@@ -93,44 +92,6 @@ class CSSIncluder(Includer):
 
         return '\n'.join(output)
 
-class Sheet(object):
-    """
-    Wrap copy text, for a single worksheet, for error handling.
-    """
-    _sheet = {}
-    _name = None
-
-    def __init__(self, data, name=None):
-        self._sheet = data
-        self._name = name
-
-    def __getattr__(self, name):
-        if not self._sheet:
-            return 'COPY ERROR: sheet `%s`' % self._name
-        try:
-            return Markup(self._sheet[name])
-        except KeyError:
-            return 'COPY ERROR: `%s`' % name
-
-class Copy(object):
-    """
-    Wraps copy text, for multiple worksheets, for error handling.
-    """
-    _copy = {}
-
-    def __init__(self):
-        with open('data/copy.json', 'r') as f:
-            data = json.load(f)
-
-        for sheet, data in data.items():
-            self._copy[sheet] = Sheet(data, name=sheet)
-
-    def __getattr__(self, name):
-        try:
-            return self._copy[name]
-        except KeyError:
-            return Sheet({}, name=name)
-
 def flatten_app_config():
     """
     Returns a copy of app_config containing only
@@ -152,7 +113,7 @@ def make_context():
     """
     context = flatten_app_config()
 
-    context['COPY'] = Copy()
+    context['COPY'] = copytext.Copy()
     context['JS'] = JavascriptIncluder()
     context['CSS'] = CSSIncluder()
 
