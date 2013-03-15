@@ -164,7 +164,7 @@ def render():
             compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
-            f.write(content)
+            f.write(content.encode('utf-8'))
 
     # Un-fake-out deployment target
     app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
