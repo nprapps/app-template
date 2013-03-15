@@ -34,7 +34,7 @@ for i, commit in enumerate(history):
         print '--> No app.py, skipping.'
         continue
     
-    p = subprocess.Popen(['python', 'app.py'])
+    p = subprocess.Popen(['python', 'app.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
     r = envoy.run('phantomjs .screencaptures/screencapture.js %s' % filename)
     p.kill()
     
