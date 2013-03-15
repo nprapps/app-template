@@ -3,6 +3,11 @@
 from flask import Markup
 import xlrd
 
+COPY_XLS = 'data/copy.xls'
+
+class CopyException(Exception):
+    pass
+
 class Row(object):
     """
     Wraps a row of copy for error handling.
@@ -83,7 +88,10 @@ class Copy(object):
         """
         Parses the downloaded .xls file and writes it as JSON.
         """
-        book = xlrd.open_workbook('data/copy.xls')
+        try:
+            book = xlrd.open_workbook(COPY_XLS)
+        except IOError:
+            raise CopyException('"%s" does not exist. Have you run "fab update_copy"?' % COPY_XLS)
         for sheet in book.sheets():
             column_names = sheet.row_values(0)
             rows = []
