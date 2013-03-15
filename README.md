@@ -153,9 +153,7 @@ fab update_copy
 
 Note: ``update_copy`` runs automatically whenever ``fab render`` is called.
 
-At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates.
-
-Using our example sheet, to use the ``byline`` key in ``templates/index.html``:
+At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates. Using our example sheet, to use the ``byline`` key in ``templates/index.html``:
 
 ```
 {{ COPY.attribution.byline }}
@@ -171,8 +169,8 @@ You may also access rows using iterators. In this case, the column headers of th
 
 ```
 {% for row in COPY.sheet_name %}
-{{ row.column_one_header %}
-{{ row.column_two_header %}
+{{ row.column_one_header }}
+{{ row.column_two_header }}
 {% endfor %}
 ```
 
