@@ -30,6 +30,8 @@ pip-log.txt
 .DS_store
 gzip
 
+.screencaptures
+
 node_modules
 www/*.html
 www/css/*.min.css
