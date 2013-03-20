@@ -54,6 +54,7 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
+        'TUMBLR_CONSUMER_KEY',
         'TUMBLR_OAUTH_TOKEN',
         'TUMBLR_OAUTH_TOKEN_SECRET',
         'TUMBLR_APP_SECRET',

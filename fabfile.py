@@ -30,7 +30,7 @@ env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
 
 SERVICES = [
-    ('nginx', '/etc/nginx/sites-available/'),
+    ('nginx', '/etc/nginx/locations-enabled/'),
     ('uwsgi', '/etc/init/')
 ]
 
@@ -200,6 +200,7 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(path)s' % env)
+    run('mkdir -p /var/www/uploads/%(deployed_name)s' % env)
 
 def setup_virtualenv():
     """
@@ -332,7 +333,6 @@ def deploy_confs():
             put(local_path, remote_path, use_sudo=True)
 
             if service == 'nginx':
-                sudo('ln -s %s%s /etc/nginx/sites-enabled/%s' % (remote_path, file_name, file_name))
                 sudo('service nginx reload')
 
             else:
