@@ -39,8 +39,10 @@ describe('app.js', function() {
     });
 
     it('should render a javascript template', function() {
-        var html = JST.example({ 'name': 'test' });
+        var html = JST.example({ 'config': 'test', 'template_path': 'test' });
 
-        expect(html).toMatch('<strong>test</strong>');
+        console.log(html);
+
+        expect(html).toMatch('<code>test</code>');
     });
 });
