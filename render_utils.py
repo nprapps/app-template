@@ -5,6 +5,7 @@ from flask import Markup, g
 from slimit import minify
 
 import app_config
+import copytext
 
 class Includer(object):
     """
@@ -25,7 +26,7 @@ class Includer(object):
     def render(self, path):
         if getattr(g, 'compile_includes', False):
             out_filename = 'www/%s' % path
-            
+
             if out_filename not in g.compiled_includes:
                 print 'Rendering %s' % out_filename
 
@@ -38,7 +39,7 @@ class Includer(object):
             markup = Markup(self.tag_string % path)
         else:
             response = ','.join(self.includes)
-            
+
             response = '\n'.join([
                 self.tag_string % src for src in self.includes
                 ])
@@ -47,7 +48,7 @@ class Includer(object):
 
         del self.includes[:]
 
-        return markup 
+        return markup
 
 class JavascriptIncluder(Includer):
     """
@@ -97,7 +98,7 @@ def flatten_app_config():
     configuration variables.
     """
     config = {}
-    
+
     # Only all-caps [constant] vars get included
     for k, v in app_config.__dict__.items():
         if k.upper() == k:
@@ -110,8 +111,9 @@ def make_context():
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
     """
-    context = flatten_app_config() 
+    context = flatten_app_config()
 
+    context['COPY'] = copytext.Copy()
     context['JS'] = JavascriptIncluder()
     context['CSS'] = CSSIncluder()
 
