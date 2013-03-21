@@ -1,6 +1,6 @@
 <div class="tumblr-form">
-    <form id="tumblr-form" method="post" enctype="multipart/form-data" action="http://{{ SERVERS[0] }}/family-meal/">
-        <img src="img/family-meal-200.jpg" alt="Sample Photo" class="sample-photo" />
+    <form id="tumblr-form" method="post" enctype="multipart/form-data" action="http://{{ SERVERS[0] }}/{{ PROJECT_SLUG }}/">
+        <img src="img/replace-me.jpg" alt="Sample Photo" class="sample-photo" />
         <ol>
             <li class="form-intro">
                 <!-- <h2>This project has now concluded. Thank you for your submissions.</h2> -->
@@ -10,7 +10,7 @@
                 <label for="image" class="instructions">
                         <strong>SHOW:</strong><br />Take a photo.
                 </label>
-                <input type="file" name="image" width="90" accept="image/*" disabled="disabled">
+                <input type="file" name="image" width="90" accept="image/*">
             </li>
             <li class="form-message">
                 <label for="message" class="instructions">
