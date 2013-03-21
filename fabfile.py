@@ -443,7 +443,7 @@ def super_merge():
     local('git fetch')
     local('git checkout master')
 
-    for branch in ['table', 'map', 'chat']:
+    for branch in ['table', 'map', 'chat', 'tumblr']:
         local('git checkout init-%s' % branch)
         local('git merge origin/init-%s --no-edit' % branch)
         local('git merge master --no-edit')
