@@ -16,13 +16,13 @@
                 <label for="message" class="instructions">
                         <strong>SHARE:</strong><br />Tell us about you.
                 </label>
-                <textarea name="message" disabled="disabled"></textarea>
+                <textarea name="message"></textarea>
             </li>
             <li class="form-signature">
             <label for="signed_name">Initialed,</label>
-                <input type="text" name="signed_name" placeholder="Your Initials" class="signed-name" disabled="disabled"></input>
+                <input type="text" name="signed_name" placeholder="Your Initials" class="signed-name"></input>
                 from
-                <input type="text" name="location" placeholder="Your City And State" class="signed-location" disabled="disabled"></input>
+                <input type="text" name="location" placeholder="Your City And State" class="signed-location"></input>
             </li>
         </ol>
     </form>
@@ -55,7 +55,7 @@
                 var btn = $('.form-submit button');
 
                 btn.text('Sending, please wait...');
-                btn.attr('disabled', 'disabled');
+                // btn.attr('disabled', 'disabled');
 
                 return true;
             });
