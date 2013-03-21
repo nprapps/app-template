@@ -16,6 +16,7 @@ nprapps' Project Template
 * [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
+* [Deploy the app](#deploy-the-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
@@ -27,6 +28,8 @@ About this template
 This template provides a a project skeleton suitable for any project that is to be served entirely as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, installing cron jobs on servers, copy-editing via Google Spreadsheets and a whole raft of other stuff.
 
 **Please note:** This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+
+The ``init-tumblr`` branch provides an HTML form for embedding and a mechanism to crowdsource user-submitted content via a Tumblog.
 
 Assumptions
 -----------
@@ -42,6 +45,7 @@ What's in here?
 
 The project contains the following folders and important files:
 
+* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> render_confs``, don't edit anything in ``confs/rendered`` directly.
 * ``data`` -- Data files, such as those used to generate HTML.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
@@ -141,13 +145,22 @@ Run the project locally
 -----------------------
 
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
-
 ```
 workon $NEW_PROJECT_NAME
 python app.py
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
+
+On the ``init-tumblr`` branch, ``app.py`` is used for the Tumblr form which will be baked out to a flat file that can then be embedded in the tumblog.
+
+To run the simple app that will post to Tumblr (via an intermediate server for image uplaods):
+
+```
+python public_app.py
+```
+
+This will run the simple app on [localhost:8001](http://localhost:8001).
 
 Editing workflow
 -------------------
@@ -225,6 +238,15 @@ If you want to test the app once you've rendered it out, just use the Python web
 cd www
 python -m SimpleHTTPServer
 ```
+
+Deploy the app
+-----------------
+
+There are two parts – deploy the form to S3 and the simple app (`public_app.py`) to EC2. See the next two sections for more details on S3 and EC2, but a high level workflow is:
+
+* Run ``fab <ENV> master setup`` to configure the server (where ``<ENV>`` is either staging or production).
+* Run ``fab <ENV> master deploy`` to deploy the app.
+* Run ``fab <ENV> deploy_confs`` to render the server conf files (nginx and uwsgi) and then deploy them to the server. This will also restart the app on the server.
 
 Deploy to S3
 ------------
