@@ -6,6 +6,7 @@ nprapps' Project Template
 * [What's in here?](#whats-in-here)
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
+* [Tumblog setup](#tumblog-setup)
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
@@ -90,7 +91,7 @@ Configure the project
 Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
 
 NPR apps-specific: Update relevant environment variables with API keys, etc., from Dropbox:
-
+tumblog-setup
 You can either source ``~/Dropbox/nprapps/tumblr_oauth_keys.txt`` (variables will only be set for the life of your current shell):
 
 ```
@@ -102,6 +103,22 @@ Or you can append its contents to your bash_profile|bashrc|zshrc:
 ```
 cat ~/Dropbox/nprapps/tumblr_oauth_keys.txt >> ~/.zshrc
 ```
+
+Tumblog setup
+-------------------
+
+Log into our NPR apps tumblr account and create two new blogs:
+
+* $NEW_TUMBLOG_NAME.tumblr.com (this will be our production blog)
+* $NEW_TUMBLOG_NAME-staging.tumblr.com (this will be our staging blog)
+
+## Theme edits
+
+Copy and paste our custom Tumblr theme into Tumblr's blog editor.
+
+## Disqus setup
+
+Navigate to "customize blog" and enter our Disqus shortname (found in Dropbox) under "Disqus shortname."
 
 Install requirements
 --------------------
