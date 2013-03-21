@@ -4,6 +4,7 @@ from glob import glob
 import os
 
 from fabric.api import *
+from jinja2 import Template
 
 import app
 import app_config
@@ -15,17 +16,23 @@ Base configuration
 env.deployed_name = app_config.PROJECT_SLUG
 env.repo_name = app_config.REPOSITORY_NAME
 
-env.deploy_to_servers = False
+env.deploy_to_servers = True
 env.install_crontab = False
+env.deploy_web_services = True
 
 env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
-env.alt_repo_url = None #'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
+env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
 env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
+
+SERVICES = [
+    ('nginx', '/etc/nginx/locations-enabled/'),
+    ('uwsgi', '/etc/init/')
+]
 
 """
 Environments
@@ -81,6 +88,20 @@ def jst():
     """
     local('node_modules/.bin/jst --template underscore jst www/js/templates.js')
 
+def download_copy():
+    """
+    Downloads a Google Doc as an .xls file.
+    """
+    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
+    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
+    local('curl -o data/copy.xls "%s"' % doc_url)
+
+def update_copy():
+    """
+    Fetches the latest Google Doc and updates local JSON.
+    """
+    download_copy()
+
 def app_config_js():
     """
     Render app_config.js to file.
@@ -99,6 +120,7 @@ def render():
     """
     from flask import g
 
+    update_copy()
     less()
     jst()
 
@@ -142,10 +164,16 @@ def render():
             compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
-            f.write(content)
+            f.write(content.encode('utf-8'))
 
     # Un-fake-out deployment target
     app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
+
+def tests():
+    """
+    Run Python unit tests.
+    """
+    local('nosetests')
 
 """
 Setup
@@ -162,6 +190,8 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
+    if env.get('deploy_web_services', False):
+        deploy_confs()
 
 def setup_directories():
     """
@@ -170,6 +200,7 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(path)s' % env)
+    run('mkdir -p /var/www/uploads/%(deployed_name)s' % env)
 
 def setup_virtualenv():
     """
@@ -241,7 +272,7 @@ Deployment
 """
 def _deploy_to_s3():
     """
-    Deploy the gzipped stuff to
+    Deploy the gzipped stuff to S3.
     """
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
@@ -257,6 +288,57 @@ def _gzip_www():
     """
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
+
+
+def render_confs():
+    """
+    Renders server configurations.
+    """
+    require('settings', provided_by=[production, staging])
+
+    with settings(warn_only=True):
+        local('mkdir confs/rendered')
+
+    context = app_config.get_secrets()
+    context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
+    context['PROJECT_NAME'] = app_config.PROJECT_NAME
+    context['DEPLOYMENT_TARGET'] = env.settings
+
+    for service, remote_path in SERVICES:
+        file_path = 'confs/rendered/%s.%s.conf' % (app_config.PROJECT_SLUG, service)
+
+        with open('confs/%s.conf' % service, 'r') as read_template:
+
+            with open(file_path, 'wb') as write_template:
+                payload = Template(read_template.read())
+                write_template.write(payload.render(**context))
+
+
+def deploy_confs():
+    """
+    Deploys rendered server configurations to the specified server.
+    This will reload nginx and the appropriate uwsgi config.
+    """
+    require('settings', provided_by=[production, staging])
+
+    render_confs()
+
+    with settings(warn_only=True):
+        run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
+
+        for service, remote_path in SERVICES:
+            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            file_name = '%s.conf' % service_name
+            local_path = 'confs/rendered/%s' % file_name
+            put(local_path, remote_path, use_sudo=True)
+
+            if service == 'nginx':
+                sudo('service nginx reload')
+
+            else:
+                sudo('initctl reload-configuration')
+                sudo('service %s restart' % service_name)
+
 
 def deploy(remote='origin'):
     """
@@ -298,8 +380,31 @@ Destruction
 def _confirm(message):
     answer = prompt(message, default="Not at all")
 
-    if answer.lower() not in ('y', 'yes', 'buzz off','screw you'):
-        exit() 
+    if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
+        exit()
+
+
+def nuke_confs():
+    """
+    DESTROYS rendered server configurations from the specified server.
+    This will reload nginx and stop the uwsgi config.
+    """
+    require('settings', provided_by=[production, staging])
+
+    for service, remote_path in SERVICES:
+        with settings(warn_only=True):
+            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            file_name = '%s.conf' % service_name
+
+            if service == 'nginx':
+                sudo('rm -f %s%s' % (remote_path, file_name))
+                sudo('service nginx reload')
+
+            else:
+                sudo('service %s stop' % service_name)
+                sudo('rm -f %s%s' % (remote_path, file_name))
+                sudo('initctl reload-configuration')
+
 
 def shiva_the_destroyer():
     """
@@ -318,6 +423,9 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
+
+            if env.get('deploy_web_services', False):
+                nuke_confs()
 
             if env.get('install_crontab', False):
                 uninstall_crontab()
@@ -343,3 +451,4 @@ def super_merge():
     local('git checkout master')
 
     local('git push --all')
+
