@@ -267,6 +267,13 @@ def bootstrap_issues():
     github.create_default_labels(auth)
     github.create_default_tickets(auth)
 
+def create_log_file():
+    """
+    Creates the log file for recording Tumblr POSTs.
+    """
+    local('sudo touch /var/log/%s.log' % app_config.PROJECT_SLUG)
+    local('sudo chown `whoami` /var/log/%s.log' % app_config.PROJECT_SLUG)
+
 """
 Deployment
 """
