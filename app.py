@@ -9,6 +9,7 @@ from flask import Flask, Markup, abort, render_template
 
 import app_config
 from render_utils import flatten_app_config, make_context
+
 app = Flask(app_config.PROJECT_NAME)
 
 # Example application views
@@ -73,7 +74,6 @@ def _app_config_js():
 def _static(path):
     try:
         with open('www/%s' % path) as f:
-            print guess_type(path)[0]
             return f.read(), 200, { 'Content-Type': guess_type(path)[0] }
     except IOError:
         abort(404)

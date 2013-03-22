@@ -17,14 +17,14 @@ app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 logger = logging.getLogger('tumblr')
-file_handler = logging.FileHandler('/var/log/familymeal.log')
+file_handler = logging.FileHandler('/var/log/%s.log' % app_config.PROJECT_SLUG)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 
-@app.route('/family-meal/', methods=['POST'])
+@app.route('/%s/' % app_config.PROJECT_SLUG, methods=['POST'])
 def _post_to_tumblr():
     """
     Handles the POST to Tumblr.
@@ -61,7 +61,7 @@ def _post_to_tumblr():
 
         caption = render_template('caption.html', **context)
         t = Tumblpy(
-            app_key=app_config.TUMBLR_KEY,
+            app_key=os.environ['TUMBLR_CONSUMER_KEY'],
             app_secret=os.environ['TUMBLR_APP_SECRET'],
             oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
             oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])

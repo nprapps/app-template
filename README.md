@@ -6,23 +6,31 @@ nprapps' Project Template
 * [What's in here?](#whats-in-here)
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
+* [Tumblog setup](#tumblog-setup)
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
 * [Bootstrap issues](#bootstrap-issues)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
+* [Editing workflow](#editing-workflow)
 * [Run Javascript tests](#run-javascript-tests)
 * [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
+* [Deploy the app](#deploy-the-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
-* [Installing cron jobs](#installing-cron-jobs)
+* [Install cron jobs](#install-cron-jobs)
+* [Install web services](#install-web-services)
 
 About this template
 -------------------
 
-This template provides a a project skeleton suitable for any project that is to be served entirely as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, etc. (It actually supports deploying to servers too, but that's less well-tested.)
+This template provides a a project skeleton suitable for any project that is to be served entirely as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, installing cron jobs on servers, copy-editing via Google Spreadsheets and a whole raft of other stuff.
+
+**Please note:** This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+
+The ``init-tumblr`` branch provides an HTML form for embedding and a mechanism to crowdsource user-submitted content via a Tumblog.
 
 Assumptions
 -----------
@@ -38,6 +46,7 @@ What's in here?
 
 The project contains the following folders and important files:
 
+* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> render_confs``, don't edit anything in ``confs/rendered`` directly.
 * ``data`` -- Data files, such as those used to generate HTML.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
@@ -49,19 +58,25 @@ The project contains the following folders and important files:
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
+* ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
 * ``crontab`` -- Cron jobs to be installed as part of the project.
 * ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment.
+* ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
+* ``render_utils.py`` -- Code supporting template rendering.
+* ``requirements.txt`` -- Python requirements.
 
 Copy the template
 -----------------
 
+Create a new repository on Github. Everywhere you see ``$NEW_PROJECT_NAME`` in the following script, replace it with the name of the repository you just created.
+
 ```
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
+cd $NEW_PROJECT_NAME
 
 # Optional: checkout an initial project branch
 # git checkout [init-map|init-table|init-chat]
 
-cd $NEW_PROJECT_NAME
 rm -rf .git
 git init
 git add * .gitignore
@@ -74,6 +89,36 @@ Configure the project
 ---------------------
 
 Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
+
+NPR apps-specific: Update relevant environment variables with API keys, etc., from Dropbox:
+tumblog-setup
+You can either source ``~/Dropbox/nprapps/tumblr_oauth_keys.txt`` (variables will only be set for the life of your current shell):
+
+```
+. ~/Dropbox/nprapps/tumblr_oauth_keys.txt
+```
+
+Or you can append its contents to your bash_profile|bashrc|zshrc:
+
+```
+cat ~/Dropbox/nprapps/tumblr_oauth_keys.txt >> ~/.zshrc
+```
+
+Tumblog setup
+-------------------
+
+Log into our NPR apps tumblr account and create two new blogs:
+
+* $NEW_TUMBLOG_NAME.tumblr.com (this will be our production blog)
+* $NEW_TUMBLOG_NAME-staging.tumblr.com (this will be our staging blog)
+
+## Theme edits
+
+Copy and paste our custom Tumblr theme into Tumblr's blog editor.
+
+## Disqus setup
+
+Navigate to "customize blog" and enter our Disqus shortname (found in Dropbox) under "Disqus shortname."
 
 Install requirements
 --------------------
@@ -111,19 +156,73 @@ A site can have any number of rendered templates (i.e. pages). Each will need a 
 
 * Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
 * Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
-* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``. 
+* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
 Run the project locally
 -----------------------
 
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
-
 ```
 workon $NEW_PROJECT_NAME
 python app.py
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
+
+On the ``init-tumblr`` branch, ``app.py`` is used for the Tumblr form which will be baked out to a flat file that can then be embedded in the tumblog.
+
+To run the simple app that will post to Tumblr (via an intermediate server for image uplaods):
+
+```
+python public_app.py
+```
+
+This will run the simple app on [localhost:8001](http://localhost:8001).
+
+Editing workflow
+-------------------
+
+The app is rigged up to Google Docs for a simple key/value store that provides an editing workflow.
+
+View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
+
+* If there is a column called ``key``, there is expected to be a column called ``value`` and rows will be accessed in templates as key/value pairs
+* Rows may also be accessed in templates by row index using iterators (see below)
+* You may have any number of worksheets
+* This document must be "published to the web" using Google Docs' interface
+
+This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
+
+The app template is outfitted with a few ``fab`` utility functions that make pulling changes and updating your local data easy.
+
+To update the latest document, simply run:
+
+```
+fab update_copy
+```
+
+Note: ``update_copy`` runs automatically whenever ``fab render`` is called.
+
+At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates. Using our example sheet, to use the ``byline`` key in ``templates/index.html``:
+
+```
+{{ COPY.attribution.byline }}
+```
+
+More generally, you can access anything defined in your Google Doc like so:
+
+```
+{{ COPY.sheet_name.key_name }}
+```
+
+You may also access rows using iterators. In this case, the column headers of the spreadsheet become keys and the row cells values. For example:
+
+```
+{% for row in COPY.sheet_name %}
+{{ row.column_one_header }}
+{{ row.column_two_header }}
+{% endfor %}
+```
 
 Run Javascript tests
 --------------------
@@ -142,7 +241,7 @@ Compile LESS to CSS, compile javascript templates to Javascript and minify all a
 
 ```
 workon $NEW_PROJECT_NAME
-fab render 
+fab render
 ```
 
 (This is done automatically whenever you deploy to S3.)
@@ -157,6 +256,15 @@ cd www
 python -m SimpleHTTPServer
 ```
 
+Deploy the app
+-----------------
+
+There are two parts – deploy the form to S3 and the simple app (`public_app.py`) to EC2. See the next two sections for more details on S3 and EC2, but a high level workflow is:
+
+* Run ``fab <ENV> master setup`` to configure the server (where ``<ENV>`` is either staging or production).
+* Run ``fab <ENV> master deploy`` to deploy the app.
+* Run ``fab <ENV> deploy_confs`` to render the server conf files (nginx and uwsgi) and then deploy them to the server. This will also restart the app on the server.
+
 Deploy to S3
 ------------
 
@@ -164,25 +272,52 @@ Deploy to S3
 fab staging master deploy
 ```
 
-Deploy to EC2 
+Deploy to EC2
 -------------
+You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic Web application and executing cron jobs.
 
-The current configuration is for running cron jobs only. Web server configuration is not included.
-
+For running a Web application:
 * In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Optionally, set ``env.install_crontab`` to ``True``.
+* Also in ``fabfile.py`` set ``env.deploy_web_services`` to ``True``.
 * Run ``fab staging master setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app. 
+* Run ``fab staging master deploy`` to deploy the app.
 
-Instal cron jobs
-----------------
+For running cron jobs:
+* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
+* Also in ``fabfile.py``, set ``env.install_crontab`` to ``True``.
+* Run ``fab staging master setup`` to configure the server.
+* Run ``fab staging master deploy`` to deploy the app.
+
+You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
+
+Install cron jobs
+-----------------
 
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test 
+* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
 ```
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
 To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+
+Install web services
+---------------------
+
+Web services are configured in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+
+Running ``fab setup`` will deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` both to ``True`` at the top of ``fabfile.py``.
+
+To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
+
+```
+fab render_confs
+```
+
+You can also deploy the configuration files independently of the setup command by running:
+
+```
+fab deploy_confs
+```
