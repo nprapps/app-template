@@ -1,14 +1,79 @@
 #!/usr/bin/env python
 
+import datetime
 import json
 import os
 from sets import *
+import time as pytime
 import urlparse
 
 import oauth2 as oauth
 from tumblpy import Tumblpy
 
 import app_config
+
+
+def _parse_log():
+    with open(app_config.LOG_PATH, 'rb') as f:
+        output_dict = {}
+        for line in f:
+            entry_dict = {}
+            l = line.split(' ')
+            date = l[0]
+            time = l[1]
+            timestamp = datetime.datetime.strptime("%s %s" % (date, time), "%Y-%m-%d %H:%M:%S,%f")
+            entry_dict['timestamp'] = pytime.mktime(timestamp.timetuple())
+            entry_dict['msg_type'] = l[2]
+            entry_dict['msg_code'] = l[3]
+            info = l[4:]
+            output_dict.setdefault(date, {})
+            output_dict[date].setdefault(str(timestamp.hour), {})
+            output_dict[date][str(timestamp.hour)].setdefault('items', [])
+            output_dict[date][str(timestamp.hour)]['items'].append(entry_dict)
+
+        return output_dict
+
+def parse_log_last_24():
+    data = _parse_log()
+
+    today = datetime.date.today()
+    todaytetime = datetime.datetime(today.year, today.month, today.day, 0, 0, 0)
+
+    daily_errors = 0
+    daily_success = 0
+
+    today_logs = data.get('%s-%s-%s' % (today.year, today.month, today.day), None)
+
+    if not today_logs:
+        print 'No logs today. Sorry!'
+
+    if today_logs:
+        for hour in today_logs:
+            errors = []
+            success = []
+            for item in today_logs[hour]['items']:
+                if item['msg_type'] == 'INFO':
+                    success.append(item)
+                else:
+                    errors.append(item)
+
+            print hour + ":00"
+            print '  %s errors.' % len(errors)
+            daily_errors += len(errors)
+            print '  %s successes.' % len(success)
+            daily_success += len(success)
+
+
+        total = daily_errors + daily_success
+        print '\n-----------------\n%s total errors.' % daily_errors
+        print '%s total success.' % daily_success
+        print '%s total posts.' % total
+
+
+def parse_log_to_json():
+    data = _parse_log()
+    with open('data/%s-log.json' % app_config.PROJECT_SLUG, 'wb') as f:
+        f.write(json.dumps(data))
 
 def generate_new_oauth_tokens():
     """

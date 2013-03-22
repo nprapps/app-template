@@ -50,6 +50,9 @@ GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
 TUMBLR_TAGS = 'foo,bar,baz,bang,wolves'
 
+# LOG_PATH = '/var/log/%s.log' % PROJECT_SLUG
+LOG_PATH = 'data/test.log'
+
 def get_secrets():
     """
     A method for accessing our secrets.

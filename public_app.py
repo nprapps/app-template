@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 import re
 import time
@@ -16,8 +17,8 @@ import app_config
 app = Flask(app_config.PROJECT_NAME)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-logger = logging.getLogger('tumblr')
-file_handler = logging.FileHandler('/var/log/%s.log' % app_config.PROJECT_SLUG)
+logger = logging.getLogger('tumblr-%s' % app_config.PROJECT_SLUG)
+file_handler = RotatingFileHandler(app_config.LOG_PATH, maxBytes=10000, backupCount=1)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)

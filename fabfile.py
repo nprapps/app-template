@@ -9,6 +9,7 @@ from jinja2 import Template
 import app
 import app_config
 from etc import github
+import tumblr_utils
 
 """
 Base configuration
@@ -436,6 +437,15 @@ def shiva_the_destroyer():
 
             if env.get('install_crontab', False):
                 uninstall_crontab()
+
+"""
+Logging
+"""
+def parse_log_to_json():
+    tumblr_utils.parse_log_to_json()
+
+def parse_log_last_24():
+    tumblr_utils.parse_log_last_24()
 
 """
 App-template meta-commands
