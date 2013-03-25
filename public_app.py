@@ -8,8 +8,7 @@ import re
 import time
 
 from flask import Flask, redirect, render_template
-from tumblpy import Tumblpy
-from tumblpy import TumblpyError
+from tumblpy import Tumblpy, TumblpyError
 from werkzeug import secure_filename
 
 import app_config
