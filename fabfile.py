@@ -275,6 +275,13 @@ def create_log_file():
     local('sudo touch /var/log/%s.log' % app_config.PROJECT_SLUG)
     local('sudo chown `whoami` /var/log/%s.log' % app_config.PROJECT_SLUG)
 
+
+def install_scout_plugins():
+    """
+    Install plugins to Scout.
+    """
+    run('ln -s %(repo_path)s/scout/*.rb ~/.scout' % env)
+
 """
 Deployment
 """
