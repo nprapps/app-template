@@ -21,18 +21,19 @@ env.deploy_to_servers = True
 env.install_crontab = False
 env.deploy_web_services = True
 
-env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
-env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
+env.repo_url = 'git://github.com/nprapps/%(repo_name)s.git' % env
+env.alt_repo_url = None
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
+env.path = '/home/%(user)s/apps/%(repo_name)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
 
 SERVICES = [
-    ('nginx', '/etc/nginx/locations-enabled/'),
-    ('uwsgi', '/etc/init/')
+    ('app', '%(repo_path)s' % env , 'ini'),
+    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
+    ('uwsgi', '/etc/init/', 'conf'),
 ]
 
 """
@@ -89,20 +90,6 @@ def jst():
     """
     local('node_modules/.bin/jst --template underscore jst www/js/templates.js')
 
-def download_copy():
-    """
-    Downloads a Google Doc as an .xls file.
-    """
-    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
-    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
-    local('curl -o data/copy.xls "%s"' % doc_url)
-
-def update_copy():
-    """
-    Fetches the latest Google Doc and updates local JSON.
-    """
-    download_copy()
-
 def app_config_js():
     """
     Render app_config.js to file.
@@ -121,7 +108,6 @@ def render():
     """
     from flask import g
 
-    update_copy()
     less()
     jst()
 
@@ -165,7 +151,7 @@ def render():
             compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
-            f.write(content.encode('utf-8'))
+            f.write(content)
 
     # Un-fake-out deployment target
     app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
@@ -191,7 +177,6 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
-    create_log_file()
     if env.get('deploy_web_services', False):
         deploy_confs()
 
@@ -202,7 +187,8 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(path)s' % env)
-    run('mkdir -p /var/www/uploads/%(deployed_name)s' % env)
+    sudo('chmod -R 777 /var/www/uploads')
+    run('mkdir -p /var/www/uploads/%s' % app_config.PROJECT_SLUG)
 
 def setup_virtualenv():
     """
@@ -274,21 +260,24 @@ def create_log_file():
     Creates the log file for recording Tumblr POSTs.
     """
     sudo('touch /var/log/%s.log' % app_config.PROJECT_SLUG)
-    sudo('chown `whoami` /var/log/%s.log' % app_config.PROJECT_SLUG)
-
+    sudo('chown ubuntu /var/log/%s.log' % app_config.PROJECT_SLUG)
 
 def install_scout_plugins():
     """
     Install plugins to Scout.
     """
-    run('ln -s %(repo_path)s/scout/*.rb ~/.scout' % env)
+    with settings(warn_only=True):
+        run('ln -s %(repo_path)s/scout/*.rb ~/.scout' % env)
+
+def generate_new_oauth_tokens():
+    tumblr_utils.generate_new_oauth_tokens()
 
 """
 Deployment
 """
 def _deploy_to_s3():
     """
-    Deploy the gzipped stuff to S3.
+    Deploy the gzipped stuff to
     """
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
@@ -305,7 +294,6 @@ def _gzip_www():
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
 
-
 def render_confs():
     """
     Renders server configurations.
@@ -318,17 +306,17 @@ def render_confs():
     context = app_config.get_secrets()
     context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
+    context['REPOSITORY_NAME'] = app_config.REPOSITORY_NAME
     context['DEPLOYMENT_TARGET'] = env.settings
 
-    for service, remote_path in SERVICES:
-        file_path = 'confs/rendered/%s.%s.conf' % (app_config.PROJECT_SLUG, service)
+    for service, remote_path, extension in SERVICES:
+        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_SLUG, service, extension)
 
-        with open('confs/%s.conf' % service, 'r') as read_template:
+        with open('confs/%s.%s' % (service, extension),  'r') as read_template:
 
             with open(file_path, 'wb') as write_template:
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
-
 
 def deploy_confs():
     """
@@ -341,20 +329,20 @@ def deploy_confs():
 
     with settings(warn_only=True):
         run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
+        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_SLUG)
 
-        for service, remote_path in SERVICES:
+        for service, remote_path, extension in SERVICES:
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
-            file_name = '%s.conf' % service_name
+            file_name = '%s.%s' % (service_name, extension)
             local_path = 'confs/rendered/%s' % file_name
             put(local_path, remote_path, use_sudo=True)
 
             if service == 'nginx':
                 sudo('service nginx reload')
 
-            else:
+            if service == 'uwsgi':
                 sudo('initctl reload-configuration')
                 sudo('service %s restart' % service_name)
-
 
 def deploy(remote='origin'):
     """
@@ -378,6 +366,19 @@ def deploy(remote='origin'):
         if env.get('install_crontab', False):
             install_crontab()
 
+def write_json_data():
+    """
+    Writes JSON file to www/live-data/.
+    """
+    tumblr_utils.write_json_data()
+
+def deploy_json_data():
+    """
+    Deploys JSON file to S3.
+    """
+    write_json_data()
+    tumblr_utils.deploy_json_data(env.s3_buckets)
+
 """
 Cron jobs
 """
@@ -399,29 +400,6 @@ def _confirm(message):
     if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
         exit()
 
-
-def nuke_confs():
-    """
-    DESTROYS rendered server configurations from the specified server.
-    This will reload nginx and stop the uwsgi config.
-    """
-    require('settings', provided_by=[production, staging])
-
-    for service, remote_path in SERVICES:
-        with settings(warn_only=True):
-            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
-            file_name = '%s.conf' % service_name
-
-            if service == 'nginx':
-                sudo('rm -f %s%s' % (remote_path, file_name))
-                sudo('service nginx reload')
-
-            else:
-                sudo('service %s stop' % service_name)
-                sudo('rm -f %s%s' % (remote_path, file_name))
-                sudo('initctl reload-configuration')
-
-
 def shiva_the_destroyer():
     """
     Deletes the app from s3
@@ -439,9 +417,6 @@ def shiva_the_destroyer():
 
         if env.get('deploy_to_servers', False):
             run('rm -rf %(path)s' % env)
-
-            if env.get('deploy_web_services', False):
-                nuke_confs()
 
             if env.get('install_crontab', False):
                 uninstall_crontab()
@@ -468,7 +443,7 @@ def super_merge():
     local('git fetch')
     local('git checkout master')
 
-    for branch in ['table', 'map', 'chat', 'tumblr']:
+    for branch in ['table', 'map', 'chat']:
         local('git checkout init-%s' % branch)
         local('git merge origin/init-%s --no-edit' % branch)
         local('git merge master --no-edit')
@@ -476,4 +451,3 @@ def super_merge():
     local('git checkout master')
 
     local('git push --all')
-
