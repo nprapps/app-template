@@ -191,6 +191,7 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
+    create_log_file()
     if env.get('deploy_web_services', False):
         deploy_confs()
 
@@ -272,8 +273,8 @@ def create_log_file():
     """
     Creates the log file for recording Tumblr POSTs.
     """
-    local('sudo touch /var/log/%s.log' % app_config.PROJECT_SLUG)
-    local('sudo chown `whoami` /var/log/%s.log' % app_config.PROJECT_SLUG)
+    sudo('touch /var/log/%s.log' % app_config.PROJECT_SLUG)
+    sudo('chown `whoami` /var/log/%s.log' % app_config.PROJECT_SLUG)
 
 
 def install_scout_plugins():
