@@ -37,5 +37,5 @@ www/css/*.less.css
 www/js/*.min.js
 www/js/templates.js
 www/js/app_config.js
-confs/rendered/*
+confs/rendered
 data/copy.xls
