@@ -298,8 +298,6 @@ def _render_theme():
     """
     Renders tumblr theme file.
     """
-    require('settings', provided_by=[production, staging])
-
     context = {}
 
     for TEMPLATE in ['_form.html', '_prompt.html', '_social.html']:
@@ -315,8 +313,11 @@ def _render_theme():
 
     context['STATIC_URL'] = 'http://127.0.0.1:8000/'
     context['STATIC_CSS'] = '%sless/tumblr.less' % context['STATIC_URL']
+    print env.settings
     if env.settings == 'production':
         context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.deployed_name)
+        context['STATIC_CSS'] = '%scss/tumblr.less.css' % context['STATIC_URL']
+
 
     with open('tumblr/theme.html', 'rb') as read_template:
         payload = Template(read_template.read())
@@ -324,11 +325,13 @@ def _render_theme():
 
 def write_theme():
     require('settings', provided_by=[production, staging])
+
     with open('tumblr/rendered-theme.html', 'wb') as write_template:
         write_template.write(_render_theme())
 
 def copy_theme():
     require('settings', provided_by=[production, staging])
+
     write_theme()
     local('pbcopy < tumblr/rendered-theme.html')
 
