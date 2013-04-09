@@ -22,6 +22,8 @@ nprapps' Project Template
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
+* [Deploy Tumblr themes](#deploy-tumblr-themes)
+
 
 About this template
 -------------------
@@ -321,3 +323,12 @@ You can also deploy the configuration files independently of the setup command b
 ```
 fab deploy_confs
 ```
+
+Deploy Tumblr themes
+---------------------
+
+The base Tumblr theme is in the `tumblr/theme.html` file. There are included templates in `templates/`: `_form.html`, `_prompt.html` and `_social.html`. There are also two new constants in `app_config.py`: `PROJECT_CREDITS` and `PROJECT_SHORTLINK`. These should be changed on a per-project basis.
+
+To deploy a Tumblr theme with **local** URLs, type `fab staging copy_theme` and the theme will be copied to your clipboard to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab staging write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
+
+To deploy a Tumblr theme with **production** URLs, type `fab production copy_theme` and the theme will be copied to your clipbaord to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab production write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
