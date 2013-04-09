@@ -304,9 +304,8 @@ def _render_theme():
 
     for TEMPLATE in ['_form.html', '_prompt.html', '_social.html']:
         with open('templates/%s' % TEMPLATE, 'rb') as read_template:
-            mini_context = {'SERVERS': env.hosts}
             payload = Template(read_template.read())
-            payload = payload.render(mini_context)
+            payload = payload.render({'SERVERS': env.hosts})
             parsed_path = TEMPLATE.split('_')[1].split('.')
             context['%s_%s' % (parsed_path[0].upper(), parsed_path[1].upper())] = payload
 
