@@ -31,7 +31,7 @@ env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
 
 SERVICES = [
-    ('app', '%(repo_path)s' % env , 'ini'),
+    ('app', '%(repo_path)s' % env, 'ini'),
     ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
     ('uwsgi', '/etc/init/', 'conf'),
 ]
@@ -293,6 +293,45 @@ def _gzip_www():
     """
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
+
+def render_theme():
+    """
+    Renders tumblr theme file.
+    """
+    require('settings', provided_by=[production, staging])
+
+    context = {}
+
+    for TEMPLATE in ['_form.html', '_prompt.html', '_social.html']:
+        with open('templates/%s' % TEMPLATE, 'rb') as read_template:
+            mini_context = {'SERVERS': env.hosts}
+            payload = Template(read_template.read())
+            payload = payload.render(mini_context)
+            parsed_path = TEMPLATE.split('_')[1].split('.')
+            context['%s_%s' % (parsed_path[0].upper(), parsed_path[1].upper())] = payload
+
+    for config in ['NAME', 'CREDITS', 'SHORTLINK']:
+        config = 'PROJECT_%s' % config
+        context[config] = getattr(app_config, config)
+
+    context['STATIC_URL'] = 'http://127.0.0.1:8000/'
+    context['STATIC_CSS'] = '%sless/tumblr.less' % context['STATIC_URL']
+    if env.settings == 'production':
+        context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.deployed_name)
+
+    with open('tumblr/theme.html', 'rb') as read_template:
+        payload = Template(read_template.read())
+        return payload.render(**context)
+
+def write_theme():
+    require('settings', provided_by=[production, staging])
+    with open('tumblr/rendered-theme.html', 'wb') as write_template:
+        write_template.write(render_theme())
+
+def copy_theme():
+    require('settings', provided_by=[production, staging])
+    write_theme()
+    local('pbcopy < tumblr/rendered-theme.html')
 
 def render_confs():
     """

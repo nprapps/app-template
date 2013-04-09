@@ -14,6 +14,9 @@ PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
 CONFIG_NAME = PROJECT_SLUG.replace('-', '').upper()
 
+PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer and Alyson Hurt / NPR'
+PROJECT_SHORTLINK = 'npr.org/foo'
+
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['54.244.84.250']
 
