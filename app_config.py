@@ -12,12 +12,13 @@ import os
 PROJECT_NAME = 'App Template'
 PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
+CONFIG_NAME = PROJECT_SLUG.replace('-', '').upper()
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
-PRODUCTION_SERVERS = ['cron.nprapps.org']
+PRODUCTION_SERVERS = ['54.244.84.250']
 
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
-STAGING_SERVERS = ['54.245.198.194']
+STAGING_SERVERS = ['54.244.169.197']
 
 S3_BUCKETS = []
 SERVERS = []
@@ -48,7 +49,8 @@ NPR_DFP = {
 
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
-TUMBLR_TAGS = 'foo,bar,baz,bang,wolves'
+TUMBLR_TAGS = 'ford,sass,hoopy,frood,magrathea'
+TUMBLR_FILENAME = 'www/live-data/%s-data.json' % PROJECT_SLUG
 
 # LOG_PATH = '/var/log/%s.log' % PROJECT_SLUG
 LOG_PATH = 'data/test.log'
@@ -58,16 +60,17 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'TUMBLR_CONSUMER_KEY',
-        'TUMBLR_OAUTH_TOKEN',
-        'TUMBLR_OAUTH_TOKEN_SECRET',
-        'TUMBLR_APP_SECRET',
+        '%s_TUMBLR_APP_KEY' % CONFIG_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN' % CONFIG_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % CONFIG_NAME,
+        '%s_TUMBLR_APP_SECRET' % CONFIG_NAME,
         'AWS_SECRET_ACCESS_KEY',
         'AWS_ACCESS_KEY_ID'
     ]
     secrets_dict = {}
     for secret in secrets:
-        secrets_dict[secret] = os.environ.get(secret, None)
+        # Saves the secret with the old name.
+        secrets_dict[secret.replace('%s_' % CONFIG_NAME, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
@@ -92,8 +95,8 @@ def configure_targets(deployment_target):
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
-        TUMBLR_URL = '{{ project_slug }}-staging.tumblr.com'
-        TUMBLR_BLOG_ID = '{{ project_slug}}-staging'
+        TUMBLR_URL = 'staging-{{ project_slug }}.tumblr.com'
+        TUMBLR_BLOG_ID = 'staging-{{ project_slug}}'
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
