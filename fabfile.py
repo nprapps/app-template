@@ -294,7 +294,7 @@ def _gzip_www():
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
 
-def render_theme():
+def _render_theme():
     """
     Renders tumblr theme file.
     """
@@ -326,7 +326,7 @@ def render_theme():
 def write_theme():
     require('settings', provided_by=[production, staging])
     with open('tumblr/rendered-theme.html', 'wb') as write_template:
-        write_template.write(render_theme())
+        write_template.write(_render_theme())
 
 def copy_theme():
     require('settings', provided_by=[production, staging])
