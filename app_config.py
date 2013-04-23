@@ -20,8 +20,9 @@ PROJECT_NAME = 'App Template'
 # Use dashes, not underscores
 PROJECT_SLUG = 'app-template'
 
-# The name of the repository containing the source 
+# The name of the repository containing the source
 REPOSITORY_NAME = 'app-template'
+DEPLOYED_NAME = 'apptemplate'
 
 """
 DEPLOYMENT
@@ -91,14 +92,17 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'AWS_SECRET_ACCESS_KEY',
-        'AWS_ACCESS_KEY_ID'
+        '%s_TUMBLR_APP_KEY' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % DEPLOYED_NAME,
+        '%s_TUMBLR_APP_SECRET' % DEPLOYED_NAME
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
-        secrets_dict[secret] = os.environ.get(secret, None)
+        # Saves the secret with the old name.
+        secrets_dict[secret.replace('%s_' % DEPLOYED_NAME, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
