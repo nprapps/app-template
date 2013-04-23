@@ -6,6 +6,7 @@ nprapps' Project Template
 * [Configure the project](#configure-the-project)
 * [Bootstrap issues](#bootstrap-issues)
 * [Develop with the template](#develop-with-the-template)
+* [Merging init branches](#merging-init-branches)
 
 About this template
 -------------------
@@ -48,7 +49,25 @@ Bootstrap issues
 The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
 
 Develop with the template
-----------------------------
+-------------------------
 
 If you followed the [Copy the template](#copy-the-template) instructions above you will have replaced `README.md` (this file) with `PROJECT_README.md`. See that file for all the details of how build projects with the app-template.
+
+Merging init branches
+---------------------
+
+To merge changes on ``master`` into each of the ``init-`` branches, use the following process:
+
+```
+git fetch
+git checkout master
+
+# For each branch
+git checkout init-foo
+git merge origin/init-foo --no-edit
+git merge master --no-edit
+
+git checkout master
+git push --all
+```
 
