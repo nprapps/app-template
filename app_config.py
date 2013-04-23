@@ -5,32 +5,55 @@ Project-wide application configuration.
 
 DO NOT STORE SECRETS, PASSWORDS, ETC. IN THIS FILE.
 They will be exposed to users. Use environment variables instead.
+See get_secrets() below for a fast way to access them.
 """
 
 import os
 
+"""
+NAMES
+"""
+# Project name used for display
 PROJECT_NAME = 'App Template'
+
+# Project name used for paths on the filesystem and in urls
+# Use dashes, not underscores
 PROJECT_SLUG = 'app-template'
+
+# The name of the repository containing the source
 REPOSITORY_NAME = 'app-template'
 DEPLOYED_NAME = 'apptemplate'
-
 PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer, Alyson Hurt and Matt Stiles / NPR'
 PROJECT_SHORTLINK = 'npr.org/foo'
 
+
+"""
+DEPLOYMENT
+"""
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['54.244.84.250']
 
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 STAGING_SERVERS = ['54.244.169.197']
 
+# These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
 SERVERS = []
 DEBUG = True
 
-PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
+LOG_PATH = '/var/log/%s.log' % PROJECT_SLUG
+
+"""
+COPY EDITING
+"""
+COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
+
+"""
+SHARING
+"""
+PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
 
 TWITTER = {
     'TEXT': PROJECT_NAME,
@@ -50,14 +73,18 @@ NPR_DFP = {
     'TARGET': '\/news_politics;storyid=171421875'
 }
 
+"""
+SERVICES
+"""
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
 TUMBLR_TAGS = 'ford,sass,hoopy,frood,magrathea'
 TUMBLR_FILENAME = 'www/live-data/%s-data.json' % PROJECT_SLUG
 
-# LOG_PATH = '/var/log/%s.log' % PROJECT_SLUG
-LOG_PATH = 'data/test.log'
 
+"""
+Utilities
+"""
 def get_secrets():
     """
     A method for accessing our secrets.
@@ -101,6 +128,9 @@ def configure_targets(deployment_target):
         TUMBLR_URL = 'staging-%s.tumblr.com' % PROJECT_SLUG
         TUMBLR_BLOG_ID = 'staging-%s' % PROJECT_SLUG
 
+"""
+Run automated configuration
+"""
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
 configure_targets(DEPLOYMENT_TARGET)

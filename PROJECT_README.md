@@ -1,13 +1,11 @@
-nprapps' Project Template
-=========================
+$NEW_PROJECT_NAME
+========================
 
-* [About this template](#about-this-template)
-* [Copy the template](#copy-the-template)
-* [Configure the project](#configure-the-project)
-* [Tumblog setup](#tumblog-setup)
+* [What is this?](#what-is-this)
+* [Assumptions](#assumptions)
+* [What's in here?](#whats-in-here)
 * [Install requirements](#install-requirements)
 * [Project secrets](#project-secrets)
-* [Bootstrap issues](#bootstrap-issues)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
 * [Editing workflow](#editing-workflow)
@@ -15,78 +13,48 @@ nprapps' Project Template
 * [Run Python tests](#run-python-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
-* [Deploy the app](#deploy-the-app)
 * [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
-* [Deploy Tumblr themes](#deploy-tumblr-themes)
-* [Bootstrap issues](#bootstrap-issues)
-* [Develop with the template](#develop-with-the-template)
 
-About this template
--------------------
+What is this?
+-------------
 
-This template provides a a project skeleton suitable for NPR projects that are designed to be served as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, installing cron jobs on servers, copy-editing via Google Spreadsheets and a whole bunch of other stuff.
+**Describe $NEW_PROJECT_NAME here.**
 
-**Please note:** This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+Assumptions
+-----------
 
-Copy the template
------------------
+The following things are assumed to be true in this documentation.
 
-Create a new repository on Github. Everywhere you see ``$NEW_PROJECT_NAME`` in the following script, replace it with the name of the repository you just created.
+* You are running OSX.
+* You are using Python 2.7. (Probably the version that came OSX.)
+* You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
 
-```
-git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
-cd $NEW_PROJECT_NAME
+What's in here?
+---------------
 
-# Optional: checkout an initial project branch
-# git checkout [init-map|init-table|init-chat|init-tumblr]
+The project contains the following folders and important files:
 
-rm -rf .git
-git init
-mv PROJECT_README.md README.md
-git add * .gitignore
-git commit -am "Initial import from app-template."
-git remote add origin git@github.com:nprapps/$NEW_PROJECT_NAME.git
-git push -u origin master
-```
-
-Configure the project
----------------------
-
-Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
-
-<<<<<<< HEAD
-NPR apps-specific: Update relevant environment variables with API keys, etc., from Dropbox:
-tumblog-setup
-You can either source ``~/Dropbox/nprapps/tumblr_oauth_keys.txt`` (variables will only be set for the life of your current shell):
-
-```
-. ~/Dropbox/nprapps/tumblr_oauth_keys.txt
-```
-
-Or you can append its contents to your bash_profile|bashrc|zshrc:
-
-```
-cat ~/Dropbox/nprapps/tumblr_oauth_keys.txt >> ~/.zshrc
-```
-
-Tumblog setup
--------------------
-
-Log into our NPR apps tumblr account and create two new blogs:
-
-* $NEW_TUMBLOG_NAME.tumblr.com (this will be our production blog)
-* $NEW_TUMBLOG_NAME-staging.tumblr.com (this will be our staging blog)
-
-## Theme edits
-
-Copy and paste our custom Tumblr theme into Tumblr's blog editor.
-
-## Disqus setup
-
-Navigate to "customize blog" and enter our Disqus shortname (found in Dropbox) under "Disqus shortname."
+* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> render_confs``, don't edit anything in ``confs/rendered`` directly.
+* ``data`` -- Data files, such as those used to generate HTML.
+* ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
+* ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
+* ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
+* ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
+* ``tests`` -- Python unit tests.
+* ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
+* ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
+* ``www/test`` -- Javascript tests and supporting files.
+* ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
+* ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
+* ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
+* ``crontab`` -- Cron jobs to be installed as part of the project.
+* ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment.
+* ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
+* ``render_utils.py`` -- Code supporting template rendering.
+* ``requirements.txt`` -- Python requirements.
 
 Install requirements
 --------------------
@@ -111,28 +79,27 @@ Project secrets
 ---------------
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
-=======
-Edit ``README.md`` and document the project name and what it will do.
->>>>>>> master
 
-Bootstrap issues
-----------------
+Adding a template/view
+----------------------
 
-The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
+A site can have any number of rendered templates (i.e. pages). Each will need a corresponding view. To create a new one:
 
-Develop with the template
-----------------------------
-If you followed the [Copy the template](#copy-the-template) instructions above you will have replaced `README.md` (this file) with `PROJECT_README.md`. See that file for all the details of how build projects with the app-template.
+* Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
+* Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
+* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
-On the ``init-tumblr`` branch, ``app.py`` is used for the Tumblr form which will be baked out to a flat file that can then be embedded in the tumblog.
+Run the project locally
+-----------------------
 
-To run the simple app that will post to Tumblr (via an intermediate server for image uplaods):
+A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
 ```
-python public_app.py
+workon $NEW_PROJECT_NAME
+python app.py
 ```
 
-This will run the simple app on [localhost:8001](http://localhost:8001).
+Visit [localhost:8000](http://localhost:8000) in your browser.
 
 Editing workflow
 -------------------
@@ -211,15 +178,6 @@ cd www
 python -m SimpleHTTPServer
 ```
 
-Deploy the app
------------------
-
-There are two parts – deploy the form to S3 and the simple app (`public_app.py`) to EC2. See the next two sections for more details on S3 and EC2, but a high level workflow is:
-
-* Run ``fab <ENV> master setup`` to configure the server (where ``<ENV>`` is either staging or production).
-* Run ``fab <ENV> master deploy`` to deploy the app.
-* Run ``fab <ENV> deploy_confs`` to render the server conf files (nginx and uwsgi) and then deploy them to the server. This will also restart the app on the server.
-
 Deploy to S3
 ------------
 
@@ -276,12 +234,3 @@ You can also deploy the configuration files independently of the setup command b
 ```
 fab deploy_confs
 ```
-
-Deploy Tumblr themes
----------------------
-
-The base Tumblr theme is in the `tumblr/theme.html` file. There are included templates in `templates/`: `_form.html`, `_prompt.html` and `_social.html`. There are also two new constants in `app_config.py`: `PROJECT_CREDITS` and `PROJECT_SHORTLINK`. These should be changed on a per-project basis.
-
-To deploy a Tumblr theme with **local** URLs, type `fab staging copy_theme` and the theme will be copied to your clipboard to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab staging write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
-
-To deploy a Tumblr theme with **production** URLs, type `fab production copy_theme` and the theme will be copied to your clipbaord to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab production write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
