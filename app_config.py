@@ -32,6 +32,17 @@ PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
 STAGING_SERVERS = ['54.245.198.194']
 
+# Should code be deployed to the web/cron servers?
+DEPLOY_TO_SERVERS = False
+
+# Should the crontab file be installed on the servers?
+# If True, DEPLOY_TO_SERVERS must also be True
+DEPLOY_CRONTAB = False
+
+# Should the service configurations be installed on the servers?
+# If True, DEPLOY_TO_SERVERS must also be True
+DEPLOY_SERVICES = False
+
 # These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
 SERVERS = []
