@@ -22,7 +22,7 @@ PROJECT_SLUG = 'app-template'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = 'app-template'
-DEPLOYED_NAME = 'apptemplate'
+
 PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer, Alyson Hurt and Matt Stiles / NPR'
 PROJECT_SHORTLINK = 'npr.org/foo'
 
@@ -101,17 +101,17 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        '%s_TUMBLR_APP_KEY' % DEPLOYED_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN' % DEPLOYED_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % DEPLOYED_NAME,
-        '%s_TUMBLR_APP_SECRET' % DEPLOYED_NAME
+        '%s_TUMBLR_APP_KEY' % PROJECT_SLUG,
+        '%s_TUMBLR_OAUTH_TOKEN' % PROJECT_SLUG,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % PROJECT_SLUG,
+        '%s_TUMBLR_APP_SECRET' % PROJECT_SLUG
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
         # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % DEPLOYED_NAME, '')] = os.environ.get(secret, None)
+        secrets_dict[secret.replace('%s_' % PROJECT_SLUG, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 

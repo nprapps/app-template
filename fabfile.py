@@ -331,7 +331,7 @@ def _render_theme():
     context['STATIC_CSS'] = '%sless/tumblr.less' % context['STATIC_URL']
     print env.settings
     if env.settings == 'production':
-        context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.deployed_name)
+        context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.project_slug)
         context['STATIC_CSS'] = '%scss/tumblr.less.css' % context['STATIC_URL']
 
 
@@ -361,9 +361,8 @@ def render_confs():
         local('mkdir confs/rendered')
 
     context = app_config.get_secrets()
-    context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
+    context['PROJECT_SLUG'] = env.project_slug
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
-    context['DEPLOYED_NAME'] = env.deployed_name
     context['DEPLOYMENT_TARGET'] = env.settings
 
     for service, remote_path, extension in SERVICES:
