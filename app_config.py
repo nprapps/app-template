@@ -45,7 +45,7 @@ COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
 """
 SHARING
 """
-PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
+PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
 
@@ -80,10 +80,6 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'TUMBLR_CONSUMER_KEY',
-        'TUMBLR_OAUTH_TOKEN',
-        'TUMBLR_OAUTH_TOKEN_SECRET',
-        'TUMBLR_APP_SECRET',
         'AWS_SECRET_ACCESS_KEY',
         'AWS_ACCESS_KEY_ID'
     ]
