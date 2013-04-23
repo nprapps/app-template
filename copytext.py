@@ -59,7 +59,7 @@ class Sheet(object):
         return self._sheet[i]
 
     def __getattr__(self, name):
-        if not self._sheet:
+        if not self._sheet and not self._columns:
             return 'COPY.%s.%s [sheet does not exist]' % (self.name, name)
 
         if 'key' not in self._columns:
