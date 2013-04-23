@@ -15,6 +15,8 @@ from tumblpy import Tumblpy
 
 import app_config
 
+secrets = app_config.get_secrets()
+
 
 def _parse_log():
     with open(app_config.LOG_PATH, 'rb') as f:
@@ -111,10 +113,10 @@ def generate_new_oauth_tokens():
 
 def dump_tumblr_json():
     t = Tumblpy(
-        app_key=app_config.TUMBLR_KEY,
-        app_secret=os.environ['%s_TUMBLR_APP_SECRET' % app_config.CONFIG_NAME],
-        oauth_token=os.environ['%s_TUMBLR_OAUTH_TOKEN' % app_config.CONFIG_NAME],
-        oauth_token_secret=os.environ['%s_TUMBLR_OAUTH_TOKEN_SECRET' % app_config.CONFIG_NAME])
+        app_key=secrets['TUMBLR_CONSUMER_KEY'],
+        app_secret=secrets['TUMBLR_APP_SECRET'],
+        oauth_token=secrets['TUMBLR_OAUTH_TOKEN'],
+        oauth_token_secret=secrets['TUMBLR_OAUTH_TOKEN_SECRET'])
 
     limit = 10
     pages = range(0, 20)
@@ -145,7 +147,7 @@ def write_json_data():
     print "Starting."
     # Set constants
     base_url = 'http://api.tumblr.com/v2/blog/%s.tumblr.com/posts/photo' % app_config.TUMBLR_BLOG_ID
-    key_param = '?api_key=%s' % os.environ.get('%s_TUMBLR_APP_KEY' % app_config.CONFIG_NAME)
+    key_param = '?api_key=%s' % secrets['TUMBLR_APP_KEY']
     limit_param = '&limit=20'
     limit = 20
     new_limit = limit

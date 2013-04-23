@@ -67,11 +67,12 @@ def _post_to_tumblr():
 
     caption = render_template('caption.html', **context)
 
+    secrets = app_config.get_secrets()
     t = Tumblpy(
-        app_key=os.environ['TUMBLR_CONSUMER_KEY'],
-        app_secret=os.environ['TUMBLR_APP_SECRET'],
-        oauth_token=os.environ['TUMBLR_OAUTH_TOKEN'],
-        oauth_token_secret=os.environ['TUMBLR_OAUTH_TOKEN_SECRET'])
+        app_key=secrets['TUMBLR_CONSUMER_KEY'],
+        app_secret=secrets['TUMBLR_APP_SECRET'],
+        oauth_token=secrets['TUMBLR_OAUTH_TOKEN'],
+        oauth_token_secret=secrets['TUMBLR_OAUTH_TOKEN_SECRET'])
 
     file_path = '/uploads/%s/%s_%s' % (
         app_config.PROJECT_SLUG,
