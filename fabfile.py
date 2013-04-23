@@ -431,25 +431,3 @@ def shiva_the_destroyer():
             if env['deploy_services']:
                 nuke_confs()
 
-"""
-App-template meta-commands
-"""
-
-def super_merge():
-    """
-    Merge master branch into all init- branches.
-    """
-    _confirm("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?")
-
-    local('git fetch')
-    local('git checkout master')
-
-    for branch in ['table', 'map', 'chat', 'tumblr']:
-        local('git checkout init-%s' % branch)
-        local('git merge origin/init-%s --no-edit' % branch)
-        local('git merge master --no-edit')
-
-    local('git checkout master')
-
-    local('git push --all')
-
