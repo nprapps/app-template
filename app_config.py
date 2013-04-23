@@ -92,14 +92,14 @@ def configure_targets(deployment_target):
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         SERVERS = PRODUCTION_SERVERS
         DEBUG = False
-        TUMBLR_URL = '{{ project_slug }}.tumblr.com'
-        TUMBLR_BLOG_ID = '{{ project_slug }}'
+        TUMBLR_URL = '%s.tumblr.com' % PROJECT_SLUG
+        TUMBLR_BLOG_ID = PROJECT_SLUG
     else:
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
-        TUMBLR_URL = 'staging-{{ project_slug }}.tumblr.com'
-        TUMBLR_BLOG_ID = 'staging-{{ project_slug}}'
+        TUMBLR_URL = 'staging-%s.tumblr.com' % PROJECT_SLUG
+        TUMBLR_BLOG_ID = 'staging-%s' % PROJECT_SLUG
 
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
