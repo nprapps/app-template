@@ -331,14 +331,19 @@ def deploy_confs():
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
             file_name = '%s.conf' % service_name
             local_path = 'confs/rendered/%s' % file_name
-            put(local_path, remote_path, use_sudo=True)
+            remote_path = '%s%s' % (remote_path, file_name)
 
-            if service == 'nginx':
-                sudo('service nginx reload')
+            a = local('md5 -q %s' % local_path, capture=True)
+            b = run('md5sum %s' % remote_path).split()[0]
 
-            else:
-                sudo('initctl reload-configuration')
-                sudo('service %s restart' % service_name)
+            if a != b:
+                put(local_path, remote_path, use_sudo=True)
+
+                if service == 'nginx':
+                    sudo('service nginx reload')
+                else:
+                    sudo('initctl reload-configuration')
+                    sudo('service %s restart' % service_name)
 
 
 def deploy(remote='origin'):
@@ -362,6 +367,9 @@ def deploy(remote='origin'):
 
         if env['deploy_crontab']:
             install_crontab()
+
+        if env['deploy_services']:
+            deploy_confs()
 
 """
 Cron jobs
@@ -400,7 +408,6 @@ def nuke_confs():
             if service == 'nginx':
                 sudo('rm -f %s%s' % (remote_path, file_name))
                 sudo('service nginx reload')
-
             else:
                 sudo('service %s stop' % service_name)
                 sudo('rm -f %s%s' % (remote_path, file_name))
