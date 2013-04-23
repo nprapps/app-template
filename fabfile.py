@@ -192,6 +192,7 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
+    create_log_file()
     if env.get('deploy_web_services', False):
         deploy_confs()
 
