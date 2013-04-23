@@ -12,6 +12,7 @@ import os
 PROJECT_NAME = 'App Template'
 PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
+DEPLOYED_NAME = 'apptemplate'
 
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['cron.nprapps.org']
@@ -54,16 +55,15 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        'TUMBLR_CONSUMER_KEY',
-        'TUMBLR_OAUTH_TOKEN',
-        'TUMBLR_OAUTH_TOKEN_SECRET',
-        'TUMBLR_APP_SECRET',
-        'AWS_SECRET_ACCESS_KEY',
-        'AWS_ACCESS_KEY_ID'
+        '%s_TUMBLR_APP_KEY' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % DEPLOYED_NAME,
+        '%s_TUMBLR_APP_SECRET' % DEPLOYED_NAME
     ]
     secrets_dict = {}
     for secret in secrets:
-        secrets_dict[secret] = os.environ.get(secret, None)
+        # Saves the secret with the old name.
+        secrets_dict[secret.replace('%s_' % DEPLOYED_NAME, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
