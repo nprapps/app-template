@@ -22,7 +22,6 @@ PROJECT_SLUG = 'app-template'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = 'app-template'
-DEPLOYED_NAME = 'apptemplate'
 
 """
 DEPLOYMENT
@@ -91,18 +90,20 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
+    env_var_prefix = PROJECT_SLUG.replace('-', '')
+
     secrets = [
-        '%s_TUMBLR_APP_KEY' % DEPLOYED_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN' % DEPLOYED_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % DEPLOYED_NAME,
-        '%s_TUMBLR_APP_SECRET' % DEPLOYED_NAME
+        '%s_TUMBLR_APP_KEY' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % env_var_prefix,
+        '%s_TUMBLR_APP_SECRET' % env_var_prefix
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
         # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % DEPLOYED_NAME, '')] = os.environ.get(secret, None)
+        secrets_dict[secret.replace('%s_' % env_var_prefix, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
