@@ -14,18 +14,18 @@ import tumblr_utils
 """
 Base configuration
 """
-env.deployed_name = app_config.PROJECT_SLUG
-env.repo_name = app_config.REPOSITORY_NAME
+env.project_slug = app_config.PROJECT_SLUG
+env.repository_name = app_config.REPOSITORY_NAME
 
-env.deploy_to_servers = True
-env.install_crontab = False
-env.deploy_web_services = True
+env.deploy_to_servers = app_config.DEPLOY_TO_SERVERS
+env.deploy_crontab = app_config.DEPLOY_CRONTAB
+env.deploy_services = app_config.DEPLOY_SERVICES
 
-env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
-env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
+env.repo_url = 'git@github.com:nprapps/%(repository_name)s.git' % env
+env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repository_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
+env.path = '/home/%(user)s/apps/%(project_slug)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
@@ -193,7 +193,7 @@ def setup():
     checkout_latest()
     install_requirements()
     create_log_file()
-    if env.get('deploy_web_services', False):
+    if env['deploy_services']:
         deploy_confs()
 
 def setup_directories():
@@ -204,7 +204,7 @@ def setup_directories():
 
     run('mkdir -p %(path)s' % env)
     sudo('chmod -R 777 /var/www/uploads')
-    run('mkdir -p /var/www/uploads/%s' % app_config.PROJECT_SLUG)
+    run('mkdir -p /var/www/uploads/%(project_slug)s' % env)
 
 def setup_virtualenv():
     """
@@ -252,7 +252,7 @@ def install_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(deployed_name)s' % env)
+    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(project_slug)s' % env)
 
 def uninstall_crontab():
     """
@@ -260,7 +260,7 @@ def uninstall_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('rm /etc/cron.d/%(deployed_name)s' % env)
+    sudo('rm /etc/cron.d/%(project_slug)s' % env)
 
 def bootstrap_issues():
     """
@@ -300,8 +300,8 @@ def _deploy_to_s3():
 
     for bucket in env.s3_buckets:
         env.s3_bucket = bucket
-        local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s/' % env))
-        local(s3cmd_gzip % ('s3://%(s3_bucket)s/%(deployed_name)s/' % env))
+        local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
+        local(s3cmd_gzip % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
 
 def _gzip_www():
     """
@@ -417,10 +417,10 @@ def deploy(remote='origin'):
     _gzip_www()
     _deploy_to_s3()
 
-    if env.get('deploy_to_servers', False):
+    if env['deploy_to_servers']:
         checkout_latest(remote)
 
-        if env.get('install_crontab', False):
+        if env['deploy_crontab']:
             install_crontab()
 
 def write_json_data():
@@ -493,45 +493,13 @@ def shiva_the_destroyer():
 
         for bucket in env.s3_buckets:
             env.s3_bucket = bucket
-            local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s' % env))
+            local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s' % env))
 
-        if env.get('deploy_to_servers', False):
+        if env['deploy_to_servers']:
             run('rm -rf %(path)s' % env)
 
-            if env.get('deploy_web_services', False):
-                nuke_confs()
-
-            if env.get('install_crontab', False):
+            if env['deploy_crontab']:
                 uninstall_crontab()
 
-"""
-Logging
-"""
-def parse_log_to_json():
-    tumblr_utils.parse_log_to_json()
-
-def parse_log_last_24():
-    tumblr_utils.parse_log_last_24()
-
-"""
-App-template meta-commands
-"""
-
-def super_merge():
-    """
-    Merge master branch into all init- branches.
-    """
-    _confirm("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?")
-
-    local('git fetch')
-    local('git checkout master')
-
-    for branch in ['table', 'map', 'chat', 'tumblr']:
-        local('git checkout init-%s' % branch)
-        local('git merge origin/init-%s --no-edit' % branch)
-        local('git merge master --no-edit')
-
-    local('git checkout master')
-
-    local('git push --all')
-
+            if env['deploy_services']:
+                nuke_confs()

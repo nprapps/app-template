@@ -23,6 +23,7 @@ nprapps' Project Template
 * [Deploy Tumblr themes](#deploy-tumblr-themes)
 * [Bootstrap issues](#bootstrap-issues)
 * [Develop with the template](#develop-with-the-template)
+* [Merging init branches](#merging-init-branches)
 
 About this template
 -------------------
@@ -285,3 +286,24 @@ The base Tumblr theme is in the `tumblr/theme.html` file. There are included tem
 To deploy a Tumblr theme with **local** URLs, type `fab staging copy_theme` and the theme will be copied to your clipboard to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab staging write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
 
 To deploy a Tumblr theme with **production** URLs, type `fab production copy_theme` and the theme will be copied to your clipbaord to paste into Tumblr. **Note:** This only works on Mac OSX. On Linux or Windows, use `fab production write_theme` and manually copy the theme HTML from `tumblr/rendered-theme.html`.
+-------------------------
+
+If you followed the [Copy the template](#copy-the-template) instructions above you will have replaced `README.md` (this file) with `PROJECT_README.md`. See that file for all the details of how build projects with the app-template.
+
+Merging init branches
+---------------------
+
+To merge changes on ``master`` into each of the ``init-`` branches, use the following process:
+
+```
+git fetch
+git checkout master
+
+# For each branch
+git checkout init-foo
+git merge origin/init-foo --no-edit
+git merge master --no-edit
+
+git checkout master
+git push --all
+```
