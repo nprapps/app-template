@@ -12,7 +12,7 @@ import os
 PROJECT_NAME = 'App Template'
 PROJECT_SLUG = 'app-template'
 REPOSITORY_NAME = 'app-template'
-CONFIG_NAME = PROJECT_SLUG.replace('-', '').upper()
+DEPLOYED_NAME = 'apptemplate'
 
 PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer, Alyson Hurt and Matt Stiles / NPR'
 PROJECT_SHORTLINK = 'npr.org/foo'
@@ -63,15 +63,17 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        '%s_TUMBLR_APP_KEY' % CONFIG_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN' % CONFIG_NAME,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % CONFIG_NAME,
-        '%s_TUMBLR_APP_SECRET' % CONFIG_NAME
+        '%s_TUMBLR_APP_KEY' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN' % DEPLOYED_NAME,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % DEPLOYED_NAME,
+        '%s_TUMBLR_APP_SECRET' % DEPLOYED_NAME
     ]
+
     secrets_dict = {}
+
     for secret in secrets:
         # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % CONFIG_NAME, '')] = os.environ.get(secret, None)
+        secrets_dict[secret.replace('%s_' % DEPLOYED_NAME, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
