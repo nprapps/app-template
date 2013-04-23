@@ -113,7 +113,7 @@ def generate_new_oauth_tokens():
 
 def dump_tumblr_json():
     t = Tumblpy(
-        app_key=secrets['TUMBLR_CONSUMER_KEY'],
+        app_key=secrets['TUMBLR_APP_KEY'],
         app_secret=secrets['TUMBLR_APP_SECRET'],
         oauth_token=secrets['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=secrets['TUMBLR_OAUTH_TOKEN_SECRET'])

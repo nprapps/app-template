@@ -69,7 +69,7 @@ def _post_to_tumblr():
 
     secrets = app_config.get_secrets()
     t = Tumblpy(
-        app_key=secrets['TUMBLR_CONSUMER_KEY'],
+        app_key=secrets['TUMBLR_APP_KEY'],
         app_secret=secrets['TUMBLR_APP_SECRET'],
         oauth_token=secrets['TUMBLR_OAUTH_TOKEN'],
         oauth_token_secret=secrets['TUMBLR_OAUTH_TOKEN_SECRET'])
