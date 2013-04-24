@@ -30,6 +30,9 @@ env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
 
+# Services are the server-side services we want to enable and configure.
+# A three-tuple following this format:
+# (service name, service deployment path, service config file extension)
 SERVICES = [
     ('app', '%(repo_path)s' % env, 'ini'),
     ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
@@ -38,6 +41,10 @@ SERVICES = [
 
 """
 Environments
+
+Changing environment requires a full-stack test.
+An environment points to both a server and an S3
+bucket.
 """
 def production():
     env.settings = 'production'
@@ -51,6 +58,8 @@ def staging():
 
 """
 Branches
+
+Changing branches requires deploying that branch to a host.
 """
 def stable():
     """
@@ -72,6 +81,10 @@ def branch(branch_name):
 
 """
 Template-specific functions
+
+Changing the template functions should produce output
+with fab render without any exceptions. Any file used
+by the site templates should be rendered by fab render.
 """
 def less():
     """
@@ -179,6 +192,10 @@ def tests():
 
 """
 Setup
+
+Changing setup commands requires a test deployment to a server.
+Setup will create directories, install requirements and set up logs.
+It may also need to set up Web services.
 """
 def setup():
     """
@@ -290,6 +307,11 @@ def generate_new_oauth_tokens():
 
 """
 Deployment
+
+Changes to deployment requires a full-stack test. Deployment
+has two primary functions: Pushing flat files to S3 and deploying
+code to a remote server if required. It may also generate a theme
+file for tumblr.
 """
 def _deploy_to_s3():
     """
@@ -457,6 +479,10 @@ def cron_test():
 
 """
 Destruction
+
+Changes to destruction require setup/deploy to a test host in order to test.
+Destruction should remove all files related to the project from both a remote
+host and S3.
 """
 def _confirm(message):
     answer = prompt(message, default="Not at all")
