@@ -58,7 +58,6 @@ Configure the project
 
 Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
 
-<<<<<<< HEAD
 NPR apps-specific: Update relevant environment variables with API keys, etc., from Dropbox:
 tumblog-setup
 You can either source ``~/Dropbox/nprapps/tumblr_oauth_keys.txt`` (variables will only be set for the life of your current shell):
@@ -112,9 +111,6 @@ Project secrets
 ---------------
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
-=======
-Edit ``README.md`` and document the project name and what it will do.
->>>>>>> master
 
 Bootstrap issues
 ----------------
