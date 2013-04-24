@@ -100,18 +100,20 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
+    env_var_prefix = PROJECT_SLUG.replace('-', '')
+
     secrets = [
-        '%s_TUMBLR_APP_KEY' % PROJECT_SLUG,
-        '%s_TUMBLR_OAUTH_TOKEN' % PROJECT_SLUG,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % PROJECT_SLUG,
-        '%s_TUMBLR_APP_SECRET' % PROJECT_SLUG
+        '%s_TUMBLR_APP_KEY' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % env_var_prefix,
+        '%s_TUMBLR_APP_SECRET' % env_var_prefix
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
         # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % PROJECT_SLUG, '')] = os.environ.get(secret, None)
+        secrets_dict[secret.replace('%s_' % env_var_prefix, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
