@@ -419,14 +419,14 @@ def deploy_confs():
             a = local('md5 -q %s' % local_path, capture=True)
             b = run('md5sum %s' % remote_path).split()[0]
 
-            if a != b:
-                put(local_path, remote_path, use_sudo=True)
+            # if a != b:
+            #     put(local_path, remote_path, use_sudo=True)
 
-                if service == 'nginx':
-                    sudo('service nginx reload')
-                else:
-                    sudo('initctl reload-configuration')
-                    sudo('service %s restart' % service_name)
+            if service == 'nginx':
+                sudo('service nginx reload')
+            else:
+                sudo('initctl reload-configuration')
+                sudo('service %s restart' % service_name)
 
 def deploy(remote='origin'):
     """
