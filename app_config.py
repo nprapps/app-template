@@ -100,7 +100,7 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
-    env_var_prefix = PROJECT_SLUG.replace('-', '')
+    env_var_prefix = PROJECT_SLUG.replace('-', '').upper()
 
     secrets = [
         '%s_TUMBLR_APP_KEY' % env_var_prefix,

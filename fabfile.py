@@ -386,6 +386,7 @@ def render_confs():
     context['PROJECT_SLUG'] = env.project_slug
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
     context['DEPLOYMENT_TARGET'] = env.settings
+    context['CONFIG_NAME'] = env.project_slug.replace('-', '').upper()
 
     for service, remote_path, extension in SERVICES:
         file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_SLUG, service, extension)
