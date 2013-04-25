@@ -34,9 +34,9 @@ env.forward_agent = True
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVICES = [
-    ('app', '%(repo_path)s' % env, 'ini'),
-    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
+    ('app', '%(repo_path)s/' % env, 'ini'),
     ('uwsgi', '/etc/init/', 'conf'),
+    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
 ]
 
 """
@@ -416,17 +416,25 @@ def deploy_confs():
             local_path = 'confs/rendered/%s' % file_name
             remote_path = '%s%s' % (remote_path, file_name)
 
-            a = local('md5 -q %s' % local_path, capture=True)
-            b = run('md5sum %s' % remote_path).split()[0]
-
-            # if a != b:
-            #     put(local_path, remote_path, use_sudo=True)
+            put(local_path, remote_path, use_sudo=True)
 
             if service == 'nginx':
                 sudo('service nginx reload')
             else:
                 sudo('initctl reload-configuration')
                 sudo('service %s restart' % service_name)
+
+            # a = local('md5 -q %s' % local_path, capture=True)
+            # b = run('md5sum %s' % remote_path).split()[0]
+
+            # if a != b:
+            #     put(local_path, remote_path, use_sudo=True)
+
+            #     if service == 'nginx':
+            #         sudo('service nginx reload')
+            #     else:
+            #         sudo('initctl reload-configuration')
+            #         sudo('service %s restart' % service_name)
 
 def deploy(remote='origin'):
     """
@@ -499,7 +507,7 @@ def nuke_confs():
     """
     require('settings', provided_by=[production, staging])
 
-    for service, remote_path in SERVICES:
+    for service, remote_path, extension in SERVICES:
         with settings(warn_only=True):
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
             file_name = '%s.conf' % service_name
