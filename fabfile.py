@@ -13,18 +13,18 @@ from etc import github
 """
 Base configuration
 """
-env.deployed_name = app_config.PROJECT_SLUG
-env.repo_name = app_config.REPOSITORY_NAME
+env.project_slug = app_config.PROJECT_SLUG
+env.repository_name = app_config.REPOSITORY_NAME
 
-env.deploy_to_servers = True
-env.install_crontab = False
-env.deploy_web_services = True
+env.deploy_to_servers = app_config.DEPLOY_TO_SERVERS
+env.deploy_crontab = app_config.DEPLOY_CRONTAB
+env.deploy_services = app_config.DEPLOY_SERVICES
 
-env.repo_url = 'git@github.com:nprapps/%(repo_name)s.git' % env
-env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repo_name)s.git' % env
+env.repo_url = 'git@github.com:nprapps/%(repository_name)s.git' % env
+env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repository_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(deployed_name)s' % env
+env.path = '/home/%(user)s/apps/%(project_slug)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
@@ -36,6 +36,10 @@ SERVICES = [
 
 """
 Environments
+
+Changing environment requires a full-stack test.
+An environment points to both a server and an S3
+bucket.
 """
 def production():
     env.settings = 'production'
@@ -49,6 +53,8 @@ def staging():
 
 """
 Branches
+
+Changing branches requires deploying that branch to a host.
 """
 def stable():
     """
@@ -70,6 +76,10 @@ def branch(branch_name):
 
 """
 Template-specific functions
+
+Changing the template functions should produce output
+with fab render without any exceptions. Any file used
+by the site templates should be rendered by fab render.
 """
 def less():
     """
@@ -177,6 +187,10 @@ def tests():
 
 """
 Setup
+
+Changing setup commands requires a test deployment to a server.
+Setup will create directories, install requirements and set up logs.
+It may also need to set up Web services.
 """
 def setup():
     """
@@ -190,7 +204,8 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
-    if env.get('deploy_web_services', False):
+
+    if env['deploy_services']:
         deploy_confs()
 
 def setup_directories():
@@ -200,7 +215,7 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(path)s' % env)
-    run('mkdir -p /var/www/uploads/%(deployed_name)s' % env)
+    run('mkdir -p /var/www/uploads/%(project_slug)s' % env)
 
 def setup_virtualenv():
     """
@@ -248,7 +263,7 @@ def install_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(deployed_name)s' % env)
+    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(project_slug)s' % env)
 
 def uninstall_crontab():
     """
@@ -256,7 +271,7 @@ def uninstall_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('rm /etc/cron.d/%(deployed_name)s' % env)
+    sudo('rm /etc/cron.d/%(project_slug)s' % env)
 
 def bootstrap_issues():
     """
@@ -264,11 +279,15 @@ def bootstrap_issues():
     """
     auth = github.get_auth()
     github.delete_existing_labels(auth)
-    github.create_default_labels(auth)
-    github.create_default_tickets(auth)
+    github.create_labels(auth)
+    github.create_tickets(auth)
 
 """
 Deployment
+
+Changes to deployment requires a full-stack test. Deployment
+has two primary functions: Pushing flat files to S3 and deploying
+code to a remote server if required.
 """
 def _deploy_to_s3():
     """
@@ -279,8 +298,8 @@ def _deploy_to_s3():
 
     for bucket in env.s3_buckets:
         env.s3_bucket = bucket
-        local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s/' % env))
-        local(s3cmd_gzip % ('s3://%(s3_bucket)s/%(deployed_name)s/' % env))
+        local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
+        local(s3cmd_gzip % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
 
 def _gzip_www():
     """
@@ -330,14 +349,19 @@ def deploy_confs():
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
             file_name = '%s.conf' % service_name
             local_path = 'confs/rendered/%s' % file_name
-            put(local_path, remote_path, use_sudo=True)
+            remote_path = '%s%s' % (remote_path, file_name)
 
-            if service == 'nginx':
-                sudo('service nginx reload')
+            a = local('md5 -q %s' % local_path, capture=True)
+            b = run('md5sum %s' % remote_path).split()[0]
 
-            else:
-                sudo('initctl reload-configuration')
-                sudo('service %s restart' % service_name)
+            if a != b:
+                put(local_path, remote_path, use_sudo=True)
+
+                if service == 'nginx':
+                    sudo('service nginx reload')
+                else:
+                    sudo('initctl reload-configuration')
+                    sudo('service %s restart' % service_name)
 
 
 def deploy(remote='origin'):
@@ -356,11 +380,14 @@ def deploy(remote='origin'):
     _gzip_www()
     _deploy_to_s3()
 
-    if env.get('deploy_to_servers', False):
+    if env['deploy_to_servers']:
         checkout_latest(remote)
 
-        if env.get('install_crontab', False):
+        if env['deploy_crontab']:
             install_crontab()
+
+        if env['deploy_services']:
+            deploy_confs()
 
 """
 Cron jobs
@@ -376,6 +403,10 @@ def cron_test():
 
 """
 Destruction
+
+Changes to destruction require setup/deploy to a test host in order to test.
+Destruction should remove all files related to the project from both a remote
+host and S3.
 """
 def _confirm(message):
     answer = prompt(message, default="Not at all")
@@ -399,7 +430,6 @@ def nuke_confs():
             if service == 'nginx':
                 sudo('rm -f %s%s' % (remote_path, file_name))
                 sudo('service nginx reload')
-
             else:
                 sudo('service %s stop' % service_name)
                 sudo('rm -f %s%s' % (remote_path, file_name))
@@ -419,36 +449,14 @@ def shiva_the_destroyer():
 
         for bucket in env.s3_buckets:
             env.s3_bucket = bucket
-            local(s3cmd % ('s3://%(s3_bucket)s/%(deployed_name)s' % env))
+            local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s' % env))
 
-        if env.get('deploy_to_servers', False):
+        if env['deploy_to_servers']:
             run('rm -rf %(path)s' % env)
 
-            if env.get('deploy_web_services', False):
-                nuke_confs()
-
-            if env.get('install_crontab', False):
+            if env['deploy_crontab']:
                 uninstall_crontab()
 
-"""
-App-template meta-commands
-"""
-
-def super_merge():
-    """
-    Merge master branch into all init- branches.
-    """
-    _confirm("You are about to merge 'master' into all 'init-' branches.\nDo you know what you're doing?")
-
-    local('git fetch')
-    local('git checkout master')
-
-    for branch in ['table', 'map', 'chat', 'tumblr']:
-        local('git checkout init-%s' % branch)
-        local('git merge origin/init-%s --no-edit' % branch)
-        local('git merge master --no-edit')
-
-    local('git checkout master')
-
-    local('git push --all')
+            if env['deploy_services']:
+                nuke_confs()
 

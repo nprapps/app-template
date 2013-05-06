@@ -5,28 +5,60 @@ Project-wide application configuration.
 
 DO NOT STORE SECRETS, PASSWORDS, ETC. IN THIS FILE.
 They will be exposed to users. Use environment variables instead.
+See get_secrets() below for a fast way to access them.
 """
 
 import os
 
+"""
+NAMES
+"""
+# Project name used for display
 PROJECT_NAME = 'App Template'
+
+# Project name used for paths on the filesystem and in urls
+# Use dashes, not underscores
 PROJECT_SLUG = 'app-template'
+
+# The name of the repository containing the source
 REPOSITORY_NAME = 'app-template'
 
+"""
+DEPLOYMENT
+"""
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
-STAGING_SERVERS = ['54.245.198.194']
+STAGING_SERVERS = ['50.112.92.131']
 
+# Should code be deployed to the web/cron servers?
+DEPLOY_TO_SERVERS = False
+
+# Should the crontab file be installed on the servers?
+# If True, DEPLOY_TO_SERVERS must also be True
+DEPLOY_CRONTAB = False
+
+# Should the service configurations be installed on the servers?
+# If True, DEPLOY_TO_SERVERS must also be True
+DEPLOY_SERVICES = False
+
+# These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
 SERVERS = []
 DEBUG = True
 
-PROJECT_DESCRIPTION = 'An opinionated project template for client-side apps.'
+"""
+COPY EDITING
+"""
+COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
+
+"""
+SHARING
+"""
+PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
 
 TWITTER = {
     'TEXT': PROJECT_NAME,
@@ -46,6 +78,9 @@ NPR_DFP = {
     'TARGET': '\/news_politics;storyid=171421875'
 }
 
+"""
+SERVICES
+"""
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
 CHAT = {
@@ -54,21 +89,27 @@ CHAT = {
     'UPDATE_INTERVAL': 5000
 }
 
+"""
+Utilities
+"""
 def get_secrets():
     """
     A method for accessing our secrets.
     """
+    env_var_prefix = PROJECT_SLUG.replace('-', '')
+
     secrets = [
-        'TUMBLR_CONSUMER_KEY',
-        'TUMBLR_OAUTH_TOKEN',
-        'TUMBLR_OAUTH_TOKEN_SECRET',
-        'TUMBLR_APP_SECRET',
-        'AWS_SECRET_ACCESS_KEY',
-        'AWS_ACCESS_KEY_ID'
+        '%s_TUMBLR_APP_KEY' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN' % env_var_prefix,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % env_var_prefix,
+        '%s_TUMBLR_APP_SECRET' % env_var_prefix
     ]
+
     secrets_dict = {}
+
     for secret in secrets:
-        secrets_dict[secret] = os.environ.get(secret, None)
+        # Saves the secret with the old name.
+        secrets_dict[secret.replace('%s_' % env_var_prefix, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
@@ -95,6 +136,10 @@ def configure_targets(deployment_target):
 
         CHAT['ID'] = '74796'
 
+"""
+Run automated configuration
+"""
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
 configure_targets(DEPLOYMENT_TARGET)
+
