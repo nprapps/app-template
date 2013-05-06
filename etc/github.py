@@ -54,13 +54,13 @@ def delete_existing_labels(auth):
 
         requests.delete(url + '/' + label['name'], auth=auth)
 
-def create_default_labels(auth):
+def create_labels(auth, filename='etc/default_labels.csv'):
     """
-    Creates default labels in Github issues.
+    Creates labels in Github issues.
     """
     url = 'https://api.github.com/repos/%s/labels' % get_repo_path()
 
-    with open('etc/default_labels.csv') as f:
+    with open(filename) as f:
         labels = list(csv.DictReader(f))
 
     print 'Creating %i labels' % len(labels)
@@ -71,13 +71,13 @@ def create_default_labels(auth):
 
         requests.post(url, data=data, auth=auth)
 
-def create_default_tickets(auth):
+def create_tickets(auth, filename='etc/default_tickets.csv'):
     """
-    Creates default tickets it Github issues.
+    Creates tickets in Github issues.
     """
     url = 'https://api.github.com/repos/%s/issues' % get_repo_path()
 
-    with open('etc/default_tickets.csv') as f:
+    with open(filename) as f:
         tickets = list(csv.DictReader(f))
 
     print 'Creating %i tickets' % len(tickets)
