@@ -279,8 +279,8 @@ def bootstrap_issues():
     """
     auth = github.get_auth()
     github.delete_existing_labels(auth)
-    github.create_default_labels(auth)
-    github.create_default_tickets(auth)
+    github.create_labels(auth)
+    github.create_tickets(auth)
 
 """
 Deployment
