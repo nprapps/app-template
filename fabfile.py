@@ -477,6 +477,7 @@ def app_template_bootstrap(project_slug, project_name=None, repository_name=None
     local('rm -rf .git')
     local('git init')
     local('mv PROJECT_README.md README.md')
+    local('rm *.pyc')
     local('git add --ignore-errors * .gitignore')
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
