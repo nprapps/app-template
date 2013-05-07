@@ -470,14 +470,18 @@ def app_template_bootstrap(project_slug, project_name=None, repository_name=None
     project_name = project_name or project_slug
     repository_name = repository_name or project_slug
 
-    local('sed -i "s|\$NEW_PROJECT_SLUG|%s|g" PROJECT_README.md app_config.py' % project_slug)
-    local('sed -i "s|\$NEW_PROJECT_NAME|%s|g" PROJECT_README.md app_config.py' % project_name)
-    local('sed -i "s|\$NEW_REPOSITORY_NAME|%s|g" PROJECT_README.md app_config.py' % repository_name)
+    local('mkvirtualenv --no-site-packages %s' % project_slug)
+    local('pip install -r requirements.txt')
+    local('npm install less universal-jst')
+
+    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%s|g\' PROJECT_README.md app_config.py' % project_slug)
+    local('sed -i "" \'s|$NEW_PROJECT_NAME|%s|g\' PROJECT_README.md app_config.py' % project_name)
+    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%s|g\' PROJECT_README.md app_config.py' % repository_name)
 
     local('rm -rf .git')
     local('git init')
     local('mv PROJECT_README.md README.md')
-    local('git add * .gitignore')
+    local('git add --ignore-errors * .gitignore')
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
     local('git push -u origin master')
