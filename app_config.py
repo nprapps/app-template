@@ -14,14 +14,14 @@ import os
 NAMES
 """
 # Project name used for display
-PROJECT_NAME = 'App Template'
+PROJECT_NAME = '$NEW_PROJECT_NAME'
 
 # Project name used for paths on the filesystem and in urls
 # Use dashes, not underscores
-PROJECT_SLUG = 'app-template'
+PROJECT_SLUG = '$NEW_PROJECT_SLUG'
 
 # The name of the repository containing the source
-REPOSITORY_NAME = 'app-template'
+REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
 
 PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer, Alyson Hurt and Matt Stiles / NPR'
 PROJECT_SHORTLINK = 'npr.org/foo'
