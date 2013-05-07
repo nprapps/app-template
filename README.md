@@ -34,13 +34,6 @@ npm install less universal-jst
 fab app_template_bootstrap:$NEW_PROJECT_NAME
 ```
 
-Configure the project
----------------------
-
-Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
-
-Edit ``README.md`` and document the project name and what it will do.
-
 Bootstrap issues
 ----------------
 
