@@ -27,21 +27,12 @@ cd $NEW_PROJECT_NAME
 # Optional: checkout an initial project branch
 # git checkout [init-map|init-table|init-chat|init-tumblr]
 
-rm -rf .git
-git init
-mv PROJECT_README.md README.md
-git add * .gitignore
-git commit -am "Initial import from app-template."
-git remote add origin git@github.com:nprapps/$NEW_PROJECT_NAME.git
-git push -u origin master
+mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+pip install -r requirements.txt
+npm install less universal-jst
+
+fab app_template_bootstrap:$NEW_PROJECT_NAME
 ```
-
-Configure the project
----------------------
-
-Edit ``app_config.py`` and update ``PROJECT_NAME``, ``DEPLOYED_NAME``, ``REPOSITORY_NAME`` any other relevant configuration details.
-
-Edit ``README.md`` and document the project name and what it will do.
 
 Bootstrap issues
 ----------------

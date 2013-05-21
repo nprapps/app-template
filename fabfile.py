@@ -459,4 +459,27 @@ def shiva_the_destroyer():
 
             if env['deploy_services']:
                 nuke_confs()
+"""
+App-template specific setup. Not relevant after the project is running.
+"""
+
+def app_template_bootstrap(project_slug, project_name=None, repository_name=None):
+    """
+    Execute the bootstrap tasks for a new project.
+    """
+    project_name = project_name or project_slug
+    repository_name = repository_name or project_slug
+
+    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%s|g\' PROJECT_README.md app_config.py' % project_slug)
+    local('sed -i "" \'s|$NEW_PROJECT_NAME|%s|g\' PROJECT_README.md app_config.py' % project_name)
+    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%s|g\' PROJECT_README.md app_config.py' % repository_name)
+
+    local('rm -rf .git')
+    local('git init')
+    local('mv PROJECT_README.md README.md')
+    local('rm *.pyc')
+    local('git add * .gitignore')
+    local('git commit -am "Initial import from app-template."')
+    local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
+    local('git push -u origin master')
 
