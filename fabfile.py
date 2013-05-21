@@ -463,10 +463,12 @@ def shiva_the_destroyer():
 App-template specific setup. Not relevant after the project is running.
 """
 
-def app_template_bootstrap(project_slug, project_name=None, repository_name=None):
+def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
+    project_slug = os.getcwd().split('/')[-1]
+
     project_name = project_name or project_slug
     repository_name = repository_name or project_slug
 
@@ -483,3 +485,4 @@ def app_template_bootstrap(project_slug, project_name=None, repository_name=None
     local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
     local('git push -u origin master')
 
+    local('npm install less universal-jst')
