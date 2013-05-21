@@ -29,9 +29,8 @@ cd $NEW_PROJECT_NAME
 
 mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 pip install -r requirements.txt
-npm install less universal-jst
 
-fab app_template_bootstrap:$NEW_PROJECT_NAME
+fab app_template_bootstrap
 ```
 
 Bootstrap issues
