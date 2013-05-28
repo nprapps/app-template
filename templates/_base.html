@@ -89,6 +89,8 @@
         </ul>
     </nav>
 
+    {% block map_content %}
+
     {% block header_content %}
     {% endblock header_content %}
 
@@ -159,6 +161,7 @@
         </script>
     </div>
 
+    {% endblock map_content %}
     {% endblock outer_content %}
 
     {{ JS.push('js/lib/underscore.js') }}
