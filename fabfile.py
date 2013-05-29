@@ -545,14 +545,15 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
-    project_slug = os.getcwd().split('/')[-1]
+    env.project_slug = os.getcwd().split('/')[-1]
+    env.project_name = project_name or project_slug
+    env.repository_name = repository_name or project_slug
 
-    project_name = project_name or project_slug
-    repository_name = repository_name or project_slug
+    _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
 
-    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%s|g\' PROJECT_README.md app_config.py' % project_slug)
-    local('sed -i "" \'s|$NEW_PROJECT_NAME|%s|g\' PROJECT_README.md app_config.py' % project_name)
-    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%s|g\' PROJECT_README.md app_config.py' % repository_name)
+    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%(project_slug)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_PROJECT_NAME|%(project_name)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
 
     local('rm -rf .git')
     local('git init')
@@ -560,7 +561,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('rm *.pyc')
     local('git add * .gitignore')
     local('git commit -am "Initial import from app-template."')
-    local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
+    local('git remote add origin https://github.com/nprapps/%(repository_name)s.git' % env)
     local('git push -u origin master')
 
     local('npm install less universal-jst')

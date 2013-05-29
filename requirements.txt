@@ -14,3 +14,4 @@ xlrd==0.9.0
 dulwich==0.8.7
 oauth2==1.5.211
 python-tumblpy==0.7.0
+boto==2.9.5
