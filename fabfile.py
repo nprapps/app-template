@@ -285,8 +285,8 @@ def bootstrap_issues():
     """
     auth = github.get_auth()
     github.delete_existing_labels(auth)
-    github.create_default_labels(auth)
-    github.create_default_tickets(auth)
+    github.create_labels(auth)
+    github.create_tickets(auth)
 
 def create_log_file():
     """
@@ -383,7 +383,7 @@ def render_confs():
         local('mkdir confs/rendered')
 
     context = app_config.get_secrets()
-    context['PROJECT_SLUG'] = env.project_slug
+    context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
     context['DEPLOYMENT_TARGET'] = env.settings
     context['CONFIG_NAME'] = env.project_slug.replace('-', '').upper()
@@ -416,25 +416,17 @@ def deploy_confs():
             local_path = 'confs/rendered/%s' % file_name
             remote_path = '%s%s' % (remote_path, file_name)
 
-            put(local_path, remote_path, use_sudo=True)
+            a = local('md5 -q %s' % local_path, capture=True)
+            b = run('md5sum %s' % remote_path).split()[0]
 
-            if service == 'nginx':
-                sudo('service nginx reload')
-            else:
-                sudo('initctl reload-configuration')
-                sudo('service %s restart' % service_name)
+            if a != b:
+                put(local_path, remote_path, use_sudo=True)
 
-            # a = local('md5 -q %s' % local_path, capture=True)
-            # b = run('md5sum %s' % remote_path).split()[0]
-
-            # if a != b:
-            #     put(local_path, remote_path, use_sudo=True)
-
-            #     if service == 'nginx':
-            #         sudo('service nginx reload')
-            #     else:
-            #         sudo('initctl reload-configuration')
-            #         sudo('service %s restart' % service_name)
+                if service == 'nginx':
+                    sudo('service nginx reload')
+                else:
+                    sudo('initctl reload-configuration')
+                    sudo('service %s restart' % service_name)
 
 def deploy(remote='origin'):
     """
@@ -549,21 +541,28 @@ def shiva_the_destroyer():
 App-template specific setup. Not relevant after the project is running.
 """
 
-def app_template_bootstrap(project_slug, project_name, repository_name):
+def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
+    project_slug = os.getcwd().split('/')[-1]
+
     project_name = project_name or project_slug
     repository_name = repository_name or project_slug
 
-    local('sed -i "s|\$NEW_PROJECT_SLUG|%s|g" PROJECT_README.md app_config.py' % project_slug)
-    local('sed -i "s|\$NEW_PROJECT_NAME|%s|g" PROJECT_README.md app_config.py' % project_name)
-    local('sed -i "s|\$NEW_REPOSITORY_NAME|%s|g" PROJECT_README.md app_config.py' % repository_name)
+    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%s|g\' PROJECT_README.md app_config.py' % project_slug)
+    local('sed -i "" \'s|$NEW_PROJECT_NAME|%s|g\' PROJECT_README.md app_config.py' % project_name)
+    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%s|g\' PROJECT_README.md app_config.py' % repository_name)
 
     local('rm -rf .git')
     local('git init')
     local('mv PROJECT_README.md README.md')
+    local('rm *.pyc')
     local('git add * .gitignore')
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
     local('git push -u origin master')
+
+    local('npm install less universal-jst')
+    
+    update_copy()

@@ -26,7 +26,6 @@ REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
 PROJECT_CREDITS = 'Jeremy Bowers, Brian Boyer, Alyson Hurt and Matt Stiles / NPR'
 PROJECT_SHORTLINK = 'npr.org/foo'
 
-
 """
 DEPLOYMENT
 """
@@ -89,7 +88,7 @@ SERVICES
 """
 GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
 
-TUMBLR_TAGS = 'ford,sass,hoopy,frood,magrathea'
+TUMBLR_TAGS = 'TODO,TKTK,CHANGEME'
 TUMBLR_FILENAME = 'www/live-data/%s-data.json' % PROJECT_SLUG
 
 

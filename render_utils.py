@@ -1,11 +1,27 @@
 #!/usr/bin/env python
 
 from cssmin import cssmin
-from flask import Markup, g
+from flask import Markup, g, render_template
 from slimit import minify
 
 import app_config
 import copytext
+
+CSS_HEADER = '''
+/*
+ * Looking for the full, uncompressed source? Try here:
+ *
+ * https://github.com/nprapps/%s
+ */
+''' % app_config.REPOSITORY_NAME
+
+JS_HEADER = '''
+/*
+ * Looking for the full, uncompressed source? Try here:
+ *
+ * https://github.com/nprapps/%s
+ */
+''' % app_config.REPOSITORY_NAME
 
 class Includer(object):
     """
@@ -61,11 +77,20 @@ class JavascriptIncluder(Includer):
 
     def _compress(self):
         output = []
+        src_paths = []
 
         for src in self.includes:
+            src_paths.append('www/%s' % src)
+
             with open('www/%s' % src) as f:
                 print '- compressing %s' % src
                 output.append(minify(f.read()))
+
+        context = make_context()
+        context['paths'] = src_paths
+
+        header = render_template('_js_header.js', **context) 
+        output.insert(0, header) 
 
         return '\n'.join(output)
 
@@ -81,14 +106,27 @@ class CSSIncluder(Includer):
     def _compress(self):
         output = []
 
+        src_paths = []
+
         for src in self.includes:
+
             if src.endswith('less'):
+                src_paths.append('%s' % src)
                 src = src.replace('less', 'css') # less/example.less -> css/example.css
                 src = '%s.less.css' % src[:-4]   # css/example.css -> css/example.less.css
+            else:
+                src_paths.append('www/%s' % src)
 
             with open('www/%s' % src) as f:
                 print '- compressing %s' % src
                 output.append(cssmin(f.read()))
+
+        context = make_context()
+        context['paths'] = src_paths
+
+        header = render_template('_css_header.css', **context) 
+        output.insert(0, header) 
+
 
         return '\n'.join(output)
 
