@@ -486,3 +486,5 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git push -u origin master')
 
     local('npm install less universal-jst')
+    
+    update_copy()
