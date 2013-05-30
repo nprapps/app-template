@@ -332,6 +332,9 @@ def _gzip_www():
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
 
+"""
+Bits about the Tumblr theme.
+"""
 def _render_theme():
     """
     Renders tumblr theme file.
@@ -351,28 +354,36 @@ def _render_theme():
 
     context['STATIC_URL'] = 'http://127.0.0.1:8000/'
     context['STATIC_CSS'] = '%sless/tumblr.less' % context['STATIC_URL']
-    print env.settings
+
     if env.settings == 'production':
         context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.project_slug)
         context['STATIC_CSS'] = '%scss/tumblr.less.css' % context['STATIC_URL']
 
-
-    with open('tumblr/theme.html', 'rb') as read_template:
+    with open('templates/tumblr-theme.html', 'rb') as read_template:
         payload = Template(read_template.read())
         return payload.render(**context)
+
 
 def write_theme():
     require('settings', provided_by=[production, staging])
 
-    with open('tumblr/rendered-theme.html', 'wb') as write_template:
+    with settings(warn_only=True):
+        local('mkdir tumblr/rendered')
+
+    with open('tumblr/rendered/theme.html', 'wb') as write_template:
         write_template.write(_render_theme())
+
 
 def copy_theme():
     require('settings', provided_by=[production, staging])
 
     write_theme()
-    local('pbcopy < tumblr/rendered-theme.html')
+    local('pbcopy < tumblr/rendered/theme.html')
 
+
+"""
+Bits about the server config files.
+"""
 def render_confs():
     """
     Renders server configurations.
