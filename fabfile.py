@@ -540,7 +540,6 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
-
 def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
@@ -565,5 +564,5 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git push -u origin master')
 
     local('npm install less universal-jst')
-    
+
     update_copy()
