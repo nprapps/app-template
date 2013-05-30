@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from cssmin import cssmin
-from flask import Markup, g, render_template
+from flask import Markup, g, render_template, request
 from slimit import minify
 
 import app_config
@@ -39,6 +39,16 @@ class Includer(object):
     def _compress(self):
         raise NotImplementedError()
 
+    def _relativize_path(self, path):
+        relative_path = path
+        depth = len(request.path.split('/')) - 2
+
+        while depth > 0:
+            relative_path = '../%s' % relative_path
+            depth -= 1
+
+        return relative_path
+
     def render(self, path):
         if getattr(g, 'compile_includes', False):
             out_filename = 'www/%s' % path
@@ -52,13 +62,13 @@ class Includer(object):
             # See "fab render"
             g.compiled_includes.append(out_filename)
 
-            markup = Markup(self.tag_string % path)
+            markup = Markup(self.tag_string % self._relativize_path(path))
         else:
             response = ','.join(self.includes)
 
             response = '\n'.join([
-                self.tag_string % src for src in self.includes
-                ])
+                self.tag_string % self._relativize_path(src) for src in self.includes
+            ])
 
             markup = Markup(response)
 
