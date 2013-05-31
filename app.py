@@ -50,6 +50,10 @@ def tumblr_form():
 def test_dir():
     return render_template('index.html', **make_context())
 
+# Render Tumblr theme
+@app.route('/tumblr-theme.html')
+def _tumblr_theme():
+    return render_template('tumblr-theme.html', **make_context())
 
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
