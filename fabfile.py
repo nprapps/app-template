@@ -29,9 +29,13 @@ env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
 
+# Services are the server-side services we want to enable and configure.
+# A three-tuple following this format:
+# (service name, service deployment path, service config file extension)
 SERVICES = [
-    ('nginx', '/etc/nginx/locations-enabled/'),
-    ('uwsgi', '/etc/init/')
+    ('app', '%(repo_path)s/' % env, 'ini'),
+    ('uwsgi', '/etc/init/', 'conf'),
+    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
 ]
 
 """
@@ -322,11 +326,12 @@ def render_confs():
     context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
     context['DEPLOYMENT_TARGET'] = env.settings
+    context['CONFIG_NAME'] = env.project_slug.replace('-', '').upper()
 
-    for service, remote_path in SERVICES:
-        file_path = 'confs/rendered/%s.%s.conf' % (app_config.PROJECT_SLUG, service)
+    for service, remote_path, extension in SERVICES:
+        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_SLUG, service, extension)
 
-        with open('confs/%s.conf' % service, 'r') as read_template:
+        with open('confs/%s.%s' % (service, extension),  'r') as read_template:
 
             with open(file_path, 'wb') as write_template:
                 payload = Template(read_template.read())
@@ -344,10 +349,11 @@ def deploy_confs():
 
     with settings(warn_only=True):
         run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
+        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_SLUG)
 
-        for service, remote_path in SERVICES:
+        for service, remote_path, extension in SERVICES:
             service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
-            file_name = '%s.conf' % service_name
+            file_name = '%s.%s' % (service_name, extension)
             local_path = 'confs/rendered/%s' % file_name
             remote_path = '%s%s' % (remote_path, file_name)
 
@@ -462,19 +468,19 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
-
 def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
-    project_slug = os.getcwd().split('/')[-1]
+    env.project_slug = os.getcwd().split('/')[-1]
+    env.project_name = project_name or env.project_slug
+    env.repository_name = repository_name or env.project_slug
 
-    project_name = project_name or project_slug
-    repository_name = repository_name or project_slug
+    _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
 
-    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%s|g\' PROJECT_README.md app_config.py' % project_slug)
-    local('sed -i "" \'s|$NEW_PROJECT_NAME|%s|g\' PROJECT_README.md app_config.py' % project_name)
-    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%s|g\' PROJECT_README.md app_config.py' % repository_name)
+    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%(project_slug)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_PROJECT_NAME|%(project_name)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
 
     local('rm -rf .git')
     local('git init')
@@ -482,9 +488,9 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('rm *.pyc')
     local('git add * .gitignore')
     local('git commit -am "Initial import from app-template."')
-    local('git remote add origin git@github.com:nprapps/%s.git' % repository_name)
+    local('git remote add origin https://github.com/nprapps/%(repository_name)s.git' % env)
     local('git push -u origin master')
 
     local('npm install less universal-jst')
-    
+
     update_copy()
