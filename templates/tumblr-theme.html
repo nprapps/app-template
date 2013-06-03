@@ -54,7 +54,7 @@
             })();
         </script>
 
-        {{ SOCIAL_HTML }}
+        {% include "_social.html" %}
 
         <script type="text/javascript" src="http://assets.tumblr.com/javascript/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/app-tumblr.js"></script>
@@ -80,7 +80,7 @@
                     <h1><a href="/">{Title}</a></h1>
                     {/block:IfShowBlogTitle}
 
-                    <div class="project-prompt">{{ PROMPT_HTML }}</div>
+                    <div class="project-prompt">{% include "_prompt.html" %}</div>
 
                     <div class="mobile-prompt">
                         <span></span>
@@ -249,7 +249,7 @@
         </section> <!-- #container -->
 
 
-        <div id="project-form" class="modal">{{ FORM_HTML }}</div>
+        <div id="project-form" class="modal">{% include "_form.html" %}</div>
 
         <div class="modal-bg"></div>
 

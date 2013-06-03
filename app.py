@@ -92,6 +92,13 @@ def _static(path):
         abort(404)
 
 
+# Render tumblr theme
+@app.route('/tumblr-theme.html')
+def _render_tumblr_theme():
+    context = flatten_app_config()
+    return render_template('tumblr-theme.html', **context)
+
+
 @app.template_filter('urlencode')
 def urlencode_filter(s):
     """

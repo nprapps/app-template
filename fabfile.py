@@ -46,6 +46,7 @@ Changing environment requires a full-stack test.
 An environment points to both a server and an S3
 bucket.
 """
+
 def production():
     env.settings = 'production'
     env.s3_buckets = app_config.PRODUCTION_S3_BUCKETS
@@ -55,6 +56,12 @@ def staging():
     env.settings = 'staging'
     env.s3_buckets = app_config.STAGING_S3_BUCKETS
     env.hosts = app_config.STAGING_SERVERS
+
+
+def local():
+    env.settings = 'local'
+    env.s3_buckets = None
+    env.hosts = ['127.0.0.1:8000']
 
 """
 Branches
@@ -335,50 +342,43 @@ def _gzip_www():
 """
 Bits about the Tumblr theme.
 """
-def _render_theme():
+def render_theme():
     """
-    Renders tumblr theme file.
+    Renders the tumblr theme.
+    Requires knowing what environment you want.
     """
-    context = {}
-
-    for TEMPLATE in ['_form.html', '_prompt.html', '_social.html']:
-        with open('templates/%s' % TEMPLATE, 'rb') as read_template:
-            payload = Template(read_template.read())
-            payload = payload.render({'SERVERS': env.hosts})
-            parsed_path = TEMPLATE.split('_')[1].split('.')
-            context['%s_%s' % (parsed_path[0].upper(), parsed_path[1].upper())] = payload
-
-    for config in ['NAME', 'CREDITS', 'SHORTLINK']:
-        config = 'PROJECT_%s' % config
-        context[config] = getattr(app_config, config)
-
-    context['STATIC_URL'] = 'http://127.0.0.1:8000/'
-    context['STATIC_CSS'] = '%sless/tumblr.less' % context['STATIC_URL']
-
-    if env.settings == 'production':
-        context['STATIC_URL'] = 'http://%s/%s/' % (env.s3_buckets[0], env.project_slug)
-        context['STATIC_CSS'] = '%scss/tumblr.less.css' % context['STATIC_URL']
-
-    with open('templates/tumblr-theme.html', 'rb') as read_template:
-        payload = Template(read_template.read())
-        return payload.render(**context)
-
-
-def write_theme():
     require('settings', provided_by=[production, staging])
 
-    with settings(warn_only=True):
-        local('mkdir tumblr/rendered')
+    from flask import g
 
-    with open('tumblr/rendered/theme.html', 'wb') as write_template:
-        write_template.write(_render_theme())
+    # Fake out deployment target
+    app_config.configure_targets(env.get('settings', None))
+
+    compiled_includes = []
+
+    path = 'tumblr-theme.html'
+    with app.app.test_request_context(path=path):
+
+        g.compile_includes = True
+        g.compiled_includes = compiled_includes
+
+        view = app.__dict__['_render_tumblr_theme']
+        content = view()
+
+        compiled_includes = g.compiled_includes
+
+    with open('tumblr/rendered-theme.html', 'w') as f:
+        f.write(content.encode('utf-8'))
+
+    # Un-fake-out deployment target
+    app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
 
 
 def copy_theme():
     require('settings', provided_by=[production, staging])
 
-    write_theme()
-    local('pbcopy < tumblr/rendered/theme.html')
+    render_theme()
+    local('pbcopy < tumblr/rendered-theme.html')
 
 
 """

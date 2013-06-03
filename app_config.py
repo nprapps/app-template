@@ -126,6 +126,8 @@ def configure_targets(deployment_target):
     global DEBUG
     global TUMBLR_URL
     global TUMBLR_BLOG_ID
+    global STATIC_URL
+    global STATIC_CSS
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
@@ -133,12 +135,26 @@ def configure_targets(deployment_target):
         DEBUG = False
         TUMBLR_URL = '%s.tumblr.com' % PROJECT_SLUG
         TUMBLR_BLOG_ID = PROJECT_SLUG
-    else:
+        STATIC_URL = 'http://%s/%s/' % (S3_BUCKETS[0], PROJECT_SLUG)
+        STATIC_CSS = '%scss/tumblr.less.css' % STATIC_URL
+
+    elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         SERVERS = STAGING_SERVERS
         DEBUG = True
         TUMBLR_URL = 'staging-%s.tumblr.com' % PROJECT_SLUG
         TUMBLR_BLOG_ID = 'staging-%s' % PROJECT_SLUG
+        STATIC_URL = 'http://%s/%s/' % (S3_BUCKETS[0], PROJECT_SLUG)
+        STATIC_CSS = '%scss/tumblr.less.css' % STATIC_URL
+
+    else:
+        S3_BUCKETS = None
+        SERVERS = ['127.0.0.1:8000']
+        DEBUG = True
+        TUMBLR_URL = None
+        TUMBLR_BLOG_ID = None
+        STATIC_URL = 'http://127.0.0.1:8000/'
+        STATIC_CSS = '%sless/tumblr.less' % STATIC_URL
 
 """
 Run automated configuration
