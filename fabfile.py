@@ -58,8 +58,8 @@ def staging():
     env.hosts = app_config.STAGING_SERVERS
 
 
-def local():
-    env.settings = 'local'
+def development():
+    env.settings = 'development'
     env.s3_buckets = None
     env.hosts = ['127.0.0.1:8000']
 
@@ -347,7 +347,7 @@ def render_theme():
     Renders the tumblr theme.
     Requires knowing what environment you want.
     """
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[production, staging, development])
 
     from flask import g
 
@@ -367,7 +367,7 @@ def render_theme():
 
         compiled_includes = g.compiled_includes
 
-    with open('tumblr/rendered-theme.html', 'w') as f:
+    with open('tumblr-theme.html', 'w') as f:
         f.write(content.encode('utf-8'))
 
     # Un-fake-out deployment target
@@ -375,10 +375,10 @@ def render_theme():
 
 
 def copy_theme():
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[production, staging, development])
 
     render_theme()
-    local('pbcopy < tumblr/rendered-theme.html')
+    local('pbcopy < tumblr-theme.html')
 
 
 """
