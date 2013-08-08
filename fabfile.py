@@ -486,7 +486,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('sed -i "" \'s|$NEW_PROJECT_SLUG|%(project_slug)s|g\' PROJECT_README.md app_config.py' % env)
     local('sed -i "" \'s|$NEW_PROJECT_NAME|%(project_name)s|g\' PROJECT_README.md app_config.py' % env)
     local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
-    local('sed -i "" \'s|$NEW_PROJECT_PATH|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_PROJECT_PATH|%(project_path)s|g\' PROJECT_README.md app_config.py' % env)
 
     local('rm -rf .git')
     local('git init')
