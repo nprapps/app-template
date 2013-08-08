@@ -260,6 +260,7 @@ def install_requirements():
     require('settings', provided_by=[production, staging])
 
     run('%(virtualenv_path)s/bin/pip install -U -r %(repo_path)s/requirements.txt' % env)
+    run('cd %(repo_path)s; npm install less universal-jst')
 
 def install_crontab():
     """
