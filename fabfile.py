@@ -326,11 +326,11 @@ def render_confs():
     context = app_config.get_secrets()
     context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
+    context['PROJECT_PATH'] = app_config.PROJECT_PATH
     context['DEPLOYMENT_TARGET'] = env.settings
-    context['CONFIG_NAME'] = env.project_slug.replace('-', '').upper()
 
     for service, remote_path, extension in SERVICES:
-        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_SLUG, service, extension)
+        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_PATH, service, extension)
 
         with open('confs/%s.%s' % (service, extension),  'r') as read_template:
 
@@ -349,11 +349,11 @@ def deploy_confs():
     render_confs()
 
     with settings(warn_only=True):
-        run('touch /tmp/%s.sock' % app_config.PROJECT_SLUG)
-        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_SLUG)
+        run('touch /tmp/%s.sock' % app_config.PROJECT_PATH)
+        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_PATH)
 
         for service, remote_path, extension in SERVICES:
-            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
             file_name = '%s.%s' % (service_name, extension)
             local_path = 'confs/rendered/%s' % file_name
             remote_path = '%s%s' % (remote_path, file_name)
@@ -431,7 +431,7 @@ def nuke_confs():
 
     for service, remote_path in SERVICES:
         with settings(warn_only=True):
-            service_name = '%s.%s' % (app_config.PROJECT_SLUG, service)
+            service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
             file_name = '%s.conf' % service_name
 
             if service == 'nginx':
@@ -469,19 +469,21 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
-def app_template_bootstrap(project_name=None, repository_name=None):
+def app_template_bootstrap(project_name=None, repository_name=None, path_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
     env.project_slug = os.getcwd().split('/')[-1]
     env.project_name = project_name or env.project_slug
     env.repository_name = repository_name or env.project_slug
+    env.path_name = path_name or repository_name.replace('-', '_') or env.project_slug.replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
 
     local('sed -i "" \'s|$NEW_PROJECT_SLUG|%(project_slug)s|g\' PROJECT_README.md app_config.py' % env)
     local('sed -i "" \'s|$NEW_PROJECT_NAME|%(project_name)s|g\' PROJECT_README.md app_config.py' % env)
     local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
+    local('sed -i "" \'s|$NEW_PROJECT_PATH|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
 
     local('rm -rf .git')
     local('git init')

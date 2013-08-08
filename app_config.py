@@ -16,12 +16,15 @@ NAMES
 # Project name used for display
 PROJECT_NAME = '$NEW_PROJECT_NAME'
 
-# Project name used for paths on the filesystem and in urls
-# Use dashes, not underscores
+# Project name in urls
+# Use dashes, not underscores!
 PROJECT_SLUG = '$NEW_PROJECT_SLUG'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
+
+# The name to be used in paths on the server
+PROJECT_PATH = '$NEW_PROJECT_PATH'
 
 """
 DEPLOYMENT
@@ -59,7 +62,6 @@ SHARING
 PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-
 TWITTER = {
     'TEXT': PROJECT_NAME,
     'URL': SHARE_URL
@@ -92,7 +94,7 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
-    env_var_prefix = PROJECT_SLUG.replace('-', '')
+    env_var_prefix = PROJECT_PATH.replace('-', '')
 
     secrets = [
         '%s_TUMBLR_APP_KEY' % env_var_prefix,
