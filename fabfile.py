@@ -469,7 +469,7 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
-def app_template_bootstrap(project_name=None, repository_name=None, path_name=None):
+def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
@@ -478,9 +478,8 @@ def app_template_bootstrap(project_name=None, repository_name=None, path_name=No
     env.repository_name = repository_name or env.project_slug
     env.path_name = path_name or repository_name or env.project_slug
 
-    # Unless explicitly told otherwise, use underscores instead of dashes
-    if not path_name:
-        env.path_name = env.path_name.replace('-', '_')
+    # Use underscores instead of dashes in paths
+    env.path_name = env.path_name.replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
 
