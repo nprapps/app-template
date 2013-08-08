@@ -15,6 +15,7 @@ Base configuration
 """
 env.project_slug = app_config.PROJECT_SLUG
 env.repository_name = app_config.REPOSITORY_NAME
+env.project_path = app_config.PROJECT_PATH
 
 env.deploy_to_servers = app_config.DEPLOY_TO_SERVERS
 env.deploy_crontab = app_config.DEPLOY_CRONTAB
@@ -24,7 +25,7 @@ env.repo_url = 'git@github.com:nprapps/%(repository_name)s.git' % env
 env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repository_name)s.git' % env
 env.user = 'ubuntu'
 env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(project_slug)s' % env
+env.path = '/home/%(user)s/apps/%(project_path)s' % env
 env.repo_path = '%(path)s/repository' % env
 env.virtualenv_path = '%(path)s/virtualenv' % env
 env.forward_agent = True
@@ -219,7 +220,7 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(path)s' % env)
-    run('mkdir -p /var/www/uploads/%(project_slug)s' % env)
+    run('mkdir -p /var/www/uploads/%(project_path)s' % env)
 
 def setup_virtualenv():
     """
@@ -268,7 +269,7 @@ def install_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(project_slug)s' % env)
+    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(project_path)s' % env)
 
 def uninstall_crontab():
     """
@@ -276,7 +277,7 @@ def uninstall_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('rm /etc/cron.d/%(project_slug)s' % env)
+    sudo('rm /etc/cron.d/%(project_path)s' % env)
 
 def bootstrap_issues():
     """
