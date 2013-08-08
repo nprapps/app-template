@@ -476,7 +476,11 @@ def app_template_bootstrap(project_name=None, repository_name=None, path_name=No
     env.project_slug = os.getcwd().split('/')[-1]
     env.project_name = project_name or env.project_slug
     env.repository_name = repository_name or env.project_slug
-    env.path_name = path_name or repository_name.replace('-', '_') or env.project_slug.replace('-', '_')
+    env.path_name = path_name or repository_name or env.project_slug
+
+    # Unless explicitly told otherwise, use underscores instead of dashes
+    if not path_name:
+        env.path_name = env.path_name.replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
 
