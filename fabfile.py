@@ -301,7 +301,7 @@ def _get_installed_conf_path(service, remote_path, extension):
     """
     Derive the installed path for a conf file.
     """
-    return '%s/%s.%s' % (remote_path, service, extension)
+    return '%s/%s.%s.%s' % (remote_path, app_config.PROJECT_FILENAME, service, extension)
 
 
 def _get_installed_service_name(service):

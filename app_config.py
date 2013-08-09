@@ -58,9 +58,9 @@ DEPLOY_SERVICES = False
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
 SERVER_SERVICES = [
-    ('app', '%s/' % SERVER_REPOSITORY_PATH, 'ini'),
-    ('uwsgi', '/etc/init/', 'conf'),
-    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
+    ('app', SERVER_REPOSITORY_PATH, 'ini'),
+    ('uwsgi', '/etc/init', 'conf'),
+    ('nginx', '/etc/nginx/locations-enabled', 'conf'),
 ]
 
 # These variables will be set at runtime. See configure_targets() below
