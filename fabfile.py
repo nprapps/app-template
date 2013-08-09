@@ -167,11 +167,12 @@ Setup
 
 Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements and set up logs.
-It may also need to set up Web services.
 """
 def setup():
     """
     Setup servers for deployment.
+
+    NB: This does not setup services or push to S3. Run deploy() next.
     """
     require('settings', provided_by=[production, staging])
     require('branch', provided_by=[stable, master, branch])
@@ -181,9 +182,6 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
-
-    if app_config.DEPLOY_SERVICES:
-        deploy_confs()
 
 def setup_directories():
     """
