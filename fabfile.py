@@ -310,6 +310,20 @@ def _get_installed_service_name(service):
     return '%s.%s' % (app_config.PROJECT_FILENAME, service)
 
 
+def _get_service_log_path(service):
+    """
+    Derive a log path for a service.
+    """
+    return '/var/log/%s.%s.log' % (app_config.PROJECT_FILENAME, service)
+
+
+def _get_service_socket_path(service):
+    """
+    Derive a socket path for a service.
+    """
+    return ('/tmp/%s.%s.sock' % (app_config.PROJECT_FILENAME, service))
+
+
 def render_confs():
     """
     Renders server configurations.
@@ -345,9 +359,6 @@ def deploy_confs():
     render_confs()
 
     with settings(warn_only=True):
-        run('touch /tmp/%s.sock' % app_config.PROJECT_FILENAME)
-        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_FILENAME)
-
         for service, remote_path, extension in app_config.SERVER_SERVICES:
             rendered_path = _get_rendered_conf_path(service, extension)
             installed_path = _get_installed_conf_path(service, remote_path, extension)
@@ -356,14 +367,28 @@ def deploy_confs():
             b = run('md5sum %s' % installed_path).split()[0]
 
             if a != b:
+                print 'Updating %s' % installed_path
                 put(rendered_path, installed_path, use_sudo=True)
 
                 if service == 'nginx':
                     sudo('service nginx reload')
                 elif service == 'uwsgi':
+
                     service_name = _get_installed_service_name(service)
                     sudo('initctl reload-configuration')
                     sudo('service %s restart' % service_name)
+                elif service == 'app':
+                    socket_path = _get_service_socket_path(service)
+                    run('touch %s' % socket_path)
+                    sudo('chmod 644 %s' % socket_path)
+                    sudo('chown www-data:www-data %s' % socket_path)
+
+                    log_path = _get_service_log_path(service)
+                    sudo('touch %s' % log_path)
+                    sudo('chmod 644 %s' % log_path)
+                    sudo('chown www-data:www-data %s' % log_path)
+            else:
+                print '%s has not changed' % rendered_path
 
 
 def deploy(remote='origin'):
@@ -436,6 +461,12 @@ def nuke_confs():
                 service_name = _get_installed_service_name(service)
                 sudo('service %s stop' % service_name)
                 sudo('initctl reload-configuration')
+            elif service == 'app':
+                socket_path = _get_service_socket_path(service)
+                sudo('rm %s' % socket_path)
+
+                log_path = _get_service_log_path(service)
+                sudo('rm %s' % log_path)
 
 
 def shiva_the_destroyer():
