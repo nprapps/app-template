@@ -304,6 +304,13 @@ def _get_installed_conf_path(service, remote_path, extension):
     return '%s/%s.%s' % (remote_path, service, extension)
 
 
+def _get_installed_service_name(service):
+    """
+    Derive the init service name for an installed service.
+    """
+    return '%s.%s' % (app_config.PROJECT_FILENAME, service)
+
+
 def render_confs():
     """
     Renders server configurations.
@@ -353,6 +360,7 @@ def deploy_confs():
                 if service == 'nginx':
                     sudo('service nginx reload')
                 else:
+                    service_name = _get_installed_service_name(service)
                     sudo('initctl reload-configuration')
                     sudo('service %s restart' % service_name)
 
@@ -423,6 +431,7 @@ def nuke_confs():
                 sudo('rm -f %s' % installed_path)
                 sudo('service nginx reload')
             else:
+                service_name = _get_installed_service_name(service)
                 sudo('service %s stop' % service_name)
                 sudo('rm -f %s' % installed_path)
                 sudo('initctl reload-configuration')
