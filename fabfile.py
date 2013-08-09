@@ -360,7 +360,7 @@ def deploy_confs():
 
                 if service == 'nginx':
                     sudo('service nginx reload')
-                else:
+                elif service == 'uwsgi':
                     service_name = _get_installed_service_name(service)
                     sudo('initctl reload-configuration')
                     sudo('service %s restart' % service_name)
@@ -428,13 +428,13 @@ def nuke_confs():
         with settings(warn_only=True):
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
+            sudo('rm -f %s' % installed_path)
+            
             if service == 'nginx':
-                sudo('rm -f %s' % installed_path)
                 sudo('service nginx reload')
-            else:
+            elif service == 'uwsgi':
                 service_name = _get_installed_service_name(service)
                 sudo('service %s stop' % service_name)
-                sudo('rm -f %s' % installed_path)
                 sudo('initctl reload-configuration')
 
 
