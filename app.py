@@ -97,4 +97,14 @@ def urlencode_filter(s):
     return Markup(s)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port')
+    args = parser.parse_args()
+    server_port = 8000
+
+    if args.port:
+        server_port = int(args.port)
+
+    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
