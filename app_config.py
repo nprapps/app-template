@@ -73,7 +73,10 @@ SERVERS = []
 SERVER_BASE_URL = ''
 DEBUG = True
 
-LOG_PATH = '/var/log/%s.log' % PROJECT_SLUG
+TUMBLR_URL = None
+TUMBLR_BLOG_ID = None
+
+LOG_PATH = '/var/log/%s.log' % PROJECT_FILENAME
 
 """
 COPY EDITING
@@ -123,10 +126,10 @@ def get_secrets():
     A method for accessing our secrets.
     """
     secrets = [
-        '%s_TUMBLR_APP_KEY' % env_var_prefix,
-        '%s_TUMBLR_OAUTH_TOKEN' % env_var_prefix,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % env_var_prefix,
-        '%s_TUMBLR_APP_SECRET' % env_var_prefix
+        '%s_TUMBLR_APP_KEY' % PROJECT_FILENAME,
+        '%s_TUMBLR_OAUTH_TOKEN' % PROJECT_FILENAME,
+        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % PROJECT_FILENAME,
+        '%s_TUMBLR_APP_SECRET' % PROJECT_FILENAME
     ]
 
     secrets_dict = {}
@@ -148,10 +151,9 @@ def configure_targets(deployment_target):
     global SERVER_BASE_URL
     global DEBUG
     global DEPLOYMENT_TARGET
+
     global TUMBLR_URL
     global TUMBLR_BLOG_ID
-    global STATIC_URL
-    global STATIC_CSS
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
@@ -159,34 +161,27 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = False
-        
-		TUMBLR_URL = '%s.tumblr.com' % PROJECT_SLUG
-        TUMBLR_BLOG_ID = PROJECT_SLUG
-        STATIC_URL = 'http://%s/%s/' % (S3_BUCKETS[0], PROJECT_SLUG)
-        STATIC_CSS = '%scss/tumblr.less.css' % STATIC_URL
 
+        TUMBLR_URL = '%s.tumblr.com' % PROJECT_SLUG
+        TUMBLR_BLOG_ID = PROJECT_SLUG
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = True
-		
-		TUMBLR_URL = 'staging-%s.tumblr.com' % PROJECT_SLUG
-		TUMBLR_BLOG_ID = 'staging-%s' % PROJECT_SLUG
-		STATIC_URL = 'http://%s/%s/' % (S3(BUCKETS[0], PROJECT_SLUG)
-		STATIC_CSS = '%scss/tumblr.less.css' % STATIC_URL	
-	else:
+        
+        TUMBLR_URL = 'staging-%s.tumblr.com' % PROJECT_SLUG
+        TUMBLR_BLOG_ID = 'staging-%s' % PROJECT_SLUG
+    else:
         S3_BUCKETS = [] 
         S3_BASE_URL = 'http://127.0.0.1:8000'
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         DEBUG = True
 
-		TUMBLR_URL = None
-		TUMBLR_BLOG_ID = None
-		STATIC_URL = 'http://127.0.0.1:8000'
-		STATIC_CSS = '%s/css/tumblr.less.css' % STATIC_URL
+        TUMBLR_URL = None
+        TUMBLR_BLOG_ID = None
 
     DEPLOYMENT_TARGET = deployment_target
 

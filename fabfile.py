@@ -35,11 +35,10 @@ def staging():
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
-
 def development():
     env.settings = 'development'
-    env.s3_buckets = None
-    env.hosts = ['127.0.0.1:8000']
+    app_config.configure_targets(None)
+    env.hosts = app_config.SERVERS 
 
 """
 Branches
@@ -139,7 +138,7 @@ def render():
         if rule_string.endswith('/'):
             filename = 'www' + rule_string + 'index.html'
         elif rule_string.endswith('.html'):
-            filename = 'www' + rule_string
+            filename = 'www' + rule_strin
         else:
             print 'Skipping %s' % name
             continue
@@ -271,15 +270,15 @@ def create_log_file():
     """
     Creates the log file for recording Tumblr POSTs.
     """
-    sudo('touch /var/log/%s.log' % app_config.PROJECT_SLUG)
-    sudo('chown ubuntu /var/log/%s.log' % app_config.PROJECT_SLUG)
+    sudo('touch %s' % app_config.LOG_PATH)
+    sudo('chown ubuntu %s' % app_config.LOG_PATH)
 
 def install_scout_plugins():
     """
     Install plugins to Scout.
     """
     with settings(warn_only=True):
-        run('ln -s %(repo_path)s/scout/*.rb ~/.scout' % env)
+        run('ln -s %(SERVER_REPOSITORY_PATH)s/scout/*.rb ~/.scout' % app_config.__dict__)
 
 def generate_new_oauth_tokens():
     tumblr_utils.generate_new_oauth_tokens()
@@ -320,6 +319,35 @@ def render_theme():
     """
     require('settings', provided_by=[production, staging, development])
 
+    from flask import g
+
+    compiled_includes = []
+
+    path = 'tumblr-theme.html'
+    with app.app.test_request_context(path=path):
+
+        g.compile_includes = True
+        g.compiled_includes = compiled_includes
+
+        view = app.__dict__['_render_tumblr_theme']
+        content = view()
+
+        compiled_includes = g.compiled_includes
+
+    with open('tumblr-theme.html', 'w') as f:
+        f.write(content.encode('utf-8'))
+
+
+def copy_theme():
+    require('settings', provided_by=[production, staging, development])
+
+    render_theme()
+    local('pbcopy < tumblr-theme.html')
+
+
+"""
+Bits about the server config files.
+"""
 def _get_template_conf_path(service, extension):
     """
     Derive the path for a conf template file.
@@ -464,7 +492,7 @@ def deploy_json_data():
     Deploys JSON file to S3.
     """
     write_json_data()
-    tumblr_utils.deploy_json_data(env.s3_buckets)
+    tumblr_utils.deploy_json_data(app_config.S3_BUCKETS)
 
 """
 Cron jobs
