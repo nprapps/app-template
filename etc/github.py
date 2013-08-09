@@ -95,3 +95,22 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
         data = json.dumps(ticket)
 
         requests.post(url, data=data, auth=auth) 
+
+def create_milestones(auth, filename='etc/default_milestones.csv'):
+    """
+    Creates milestones in Github issues.
+    """
+    url = 'https://api.github.com/repos/%s/milestones' % get_repo_path()
+
+    with open(filename) as f:
+        milestones = list(csv.DictReader(f))
+
+    print 'Creating %i milestones' % len(milestones)
+
+    for milestone in milestones:
+        print 'Creating milestone "%s"' % milestone['title']
+
+        data = json.dumps(milestone)
+
+        requests.post(url, data=data, auth=auth) 
+

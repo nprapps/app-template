@@ -255,6 +255,7 @@ def bootstrap_issues():
     github.delete_existing_labels(auth)
     github.create_labels(auth)
     github.create_tickets(auth)
+    github.create_milestones(auth)
 
 """
 Deployment
