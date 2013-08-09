@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import copy
 from glob import glob
 import os
 
@@ -320,7 +321,9 @@ def render_confs():
     with settings(warn_only=True):
         local('mkdir confs/rendered')
 
-    context = copy(app_config.__dict__)
+    # Copy the app_config so that when we load the secrets they don't
+    # get exposed to other management commands
+    context = copy.copy(app_config.__dict__)
     context.update(app_config.get_secrets())
 
     for service, remote_path, extension in app_config.SERVER_SERVICES:
