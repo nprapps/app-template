@@ -26,10 +26,12 @@ bucket.
 def production():
     env.settings = 'production'
     app_config.configure_targets(env.settings)
+    env.hosts = app_config.SERVERS
 
 def staging():
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
+    env.hosts = app_config.SERVERS
 
 """
 Branches
