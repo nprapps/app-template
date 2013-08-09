@@ -220,7 +220,7 @@ def checkout_latest(remote='origin'):
     require('settings', provided_by=[production, staging])
     require('branch', provided_by=[stable, master, branch])
 
-    run('cd %s; git fetch %s' % app_config.SERVER_REPOSITORY_PATH, remote)
+    run('cd %s; git fetch %s' % (app_config.SERVER_REPOSITORY_PATH, remote))
     run('cd %s; git checkout %s; git pull %s %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, remote, env.branch))
 
 def install_requirements():
