@@ -13,31 +13,8 @@ from etc import github
 """
 Base configuration
 """
-env.project_slug = app_config.PROJECT_SLUG
-env.repository_name = app_config.REPOSITORY_NAME
-env.project_path = app_config.PROJECT_PATH
-
-env.deploy_to_servers = app_config.DEPLOY_TO_SERVERS
-env.deploy_crontab = app_config.DEPLOY_CRONTAB
-env.deploy_services = app_config.DEPLOY_SERVICES
-
-env.repo_url = 'git@github.com:nprapps/%(repository_name)s.git' % env
-env.alt_repo_url = None  # 'git@bitbucket.org:nprapps/%(repository_name)s.git' % env
-env.user = 'ubuntu'
-env.python = 'python2.7'
-env.path = '/home/%(user)s/apps/%(project_path)s' % env
-env.repo_path = '%(path)s/repository' % env
-env.virtualenv_path = '%(path)s/virtualenv' % env
+env.user = app_config.SERVER_USER
 env.forward_agent = True
-
-# Services are the server-side services we want to enable and configure.
-# A three-tuple following this format:
-# (service name, service deployment path, service config file extension)
-SERVICES = [
-    ('app', '%(repo_path)s/' % env, 'ini'),
-    ('uwsgi', '/etc/init/', 'conf'),
-    ('nginx', '/etc/nginx/locations-enabled/', 'conf'),
-]
 
 """
 Environments
@@ -48,13 +25,11 @@ bucket.
 """
 def production():
     env.settings = 'production'
-    env.s3_buckets = app_config.PRODUCTION_S3_BUCKETS
-    env.hosts = app_config.PRODUCTION_SERVERS
+    app_config.configure_targets(env.settings)
 
 def staging():
     env.settings = 'staging'
-    env.s3_buckets = app_config.STAGING_S3_BUCKETS
-    env.hosts = app_config.STAGING_SERVERS
+    app_config.configure_targets(env.settings)
 
 """
 Branches
@@ -139,9 +114,6 @@ def render():
     less()
     jst()
 
-    # Fake out deployment target
-    app_config.configure_targets(env.get('settings', None))
-
     app_config_js()
 
     compiled_includes = []
@@ -181,9 +153,6 @@ def render():
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
 
-    # Un-fake-out deployment target
-    app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
-
 def tests():
     """
     Run Python unit tests.
@@ -210,7 +179,7 @@ def setup():
     checkout_latest()
     install_requirements()
 
-    if env['deploy_services']:
+    if app_config.DEPLOY_SERVICES:
         deploy_confs()
 
 def setup_directories():
@@ -219,8 +188,8 @@ def setup_directories():
     """
     require('settings', provided_by=[production, staging])
 
-    run('mkdir -p %(path)s' % env)
-    run('mkdir -p /var/www/uploads/%(project_path)s' % env)
+    run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
+    run('mkdir -p /var/www/uploads/%(SERVER_PROJECT_PATH)s' % app_config.__dict__)
 
 def setup_virtualenv():
     """
@@ -228,8 +197,8 @@ def setup_virtualenv():
     """
     require('settings', provided_by=[production, staging])
 
-    run('virtualenv -p %(python)s --no-site-packages %(virtualenv_path)s' % env)
-    run('source %(virtualenv_path)s/bin/activate' % env)
+    run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
+    run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
 def clone_repo():
     """
@@ -237,10 +206,10 @@ def clone_repo():
     """
     require('settings', provided_by=[production, staging])
 
-    run('git clone %(repo_url)s %(repo_path)s' % env)
+    run('git clone %(REPOSITORY_URL)s %(SERVER_REPOSITORY_PATH)s' % app_config.__dict__)
 
-    if env.get('alt_repo_url', None):
-        run('git remote add bitbucket %(alt_repo_url)s' % env)
+    if app_config.REPOSITORY_ALT_URL:
+        run('git remote add bitbucket %(REPOSITORY_ALT_URL)s' % app_config.__dict__)
 
 def checkout_latest(remote='origin'):
     """
@@ -249,10 +218,8 @@ def checkout_latest(remote='origin'):
     require('settings', provided_by=[production, staging])
     require('branch', provided_by=[stable, master, branch])
 
-    env.remote = remote
-
-    run('cd %(repo_path)s; git fetch %(remote)s' % env)
-    run('cd %(repo_path)s; git checkout %(branch)s; git pull %(remote)s %(branch)s' % env)
+    run('cd %s; git fetch %s' % app_config.SERVER_REPOSITORY_PATH, remote)
+    run('cd %s; git checkout %s; git pull %s %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, remote, env.branch))
 
 def install_requirements():
     """
@@ -260,8 +227,8 @@ def install_requirements():
     """
     require('settings', provided_by=[production, staging])
 
-    run('%(virtualenv_path)s/bin/pip install -U -r %(repo_path)s/requirements.txt' % env)
-    run('cd %(repo_path)s; npm install less universal-jst' % env)
+    run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
+    run('cd %(SERVER_REPOSITORY_PATH)s; npm install less universal-jst' % app_config.__dict__)
 
 def install_crontab():
     """
@@ -269,7 +236,7 @@ def install_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('cp %(repo_path)s/crontab /etc/cron.d/%(project_path)s' % env)
+    sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_PATH)s' % app_config.__dict__)
 
 def uninstall_crontab():
     """
@@ -277,7 +244,7 @@ def uninstall_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('rm /etc/cron.d/%(project_path)s' % env)
+    sudo('rm /etc/cron.d/%(PROJECT_PATH)s' % app_config.__dict__)
 
 def bootstrap_issues():
     """
@@ -302,10 +269,9 @@ def _deploy_to_s3():
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync gzip/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
 
-    for bucket in env.s3_buckets:
-        env.s3_bucket = bucket
-        local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
-        local(s3cmd_gzip % ('s3://%(s3_bucket)s/%(project_slug)s/' % env))
+    for bucket in app_config.S3_BUCKETS:
+        local(s3cmd % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(s3cmd_gzip % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
 def _gzip_www():
     """
@@ -328,9 +294,9 @@ def render_confs():
     context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
     context['PROJECT_NAME'] = app_config.PROJECT_NAME
     context['PROJECT_PATH'] = app_config.PROJECT_PATH
-    context['DEPLOYMENT_TARGET'] = env.settings
+    context['DEPLOYMENT_TARGET'] = app_config.DEPLOYMENT_TARGET 
 
-    for service, remote_path, extension in SERVICES:
+    for service, remote_path, extension in app_config.SERVER_SERVICES:
         file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_PATH, service, extension)
 
         with open('confs/%s.%s' % (service, extension),  'r') as read_template:
@@ -353,7 +319,7 @@ def deploy_confs():
         run('touch /tmp/%s.sock' % app_config.PROJECT_PATH)
         sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_PATH)
 
-        for service, remote_path, extension in SERVICES:
+        for service, remote_path, extension in app_config.SERVER_SERVICES:
             service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
             file_name = '%s.%s' % (service_name, extension)
             local_path = 'confs/rendered/%s' % file_name
@@ -378,23 +344,23 @@ def deploy(remote='origin'):
     """
     require('settings', provided_by=[production, staging])
 
-    if env.get('deploy_to_servers', False):
+    if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
 
-    if (env.settings == 'production' and env.branch != 'stable'):
-        _confirm("You are trying to deploy the '%(branch)s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env)
+    if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
+        _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
     render()
     _gzip_www()
     _deploy_to_s3()
 
-    if env['deploy_to_servers']:
+    if app_config.DEPLOY_TO_SERVERS:
         checkout_latest(remote)
 
-        if env['deploy_crontab']:
+        if app_config.DEPLOY_CRONTAB:
             install_crontab()
 
-        if env['deploy_services']:
+        if app_config.DEPLOY_SERVICES:
             deploy_confs()
 
 """
@@ -430,7 +396,7 @@ def nuke_confs():
     """
     require('settings', provided_by=[production, staging])
 
-    for service, remote_path in SERVICES:
+    for service, remote_path in app_config.SERVER_SERVICES:
         with settings(warn_only=True):
             service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
             file_name = '%s.conf' % service_name
@@ -450,22 +416,21 @@ def shiva_the_destroyer():
     """
     require('settings', provided_by=[production, staging])
 
-    _confirm("You are about to destroy everything deployed to %(settings)s for this project.\nDo you know what you're doing?" % env)
+    _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
     with settings(warn_only=True):
         s3cmd = 's3cmd del --recursive %s'
 
-        for bucket in env.s3_buckets:
-            env.s3_bucket = bucket
-            local(s3cmd % ('s3://%(s3_bucket)s/%(project_slug)s' % env))
+        for bucket in app_config.S3_BUCKETS:
+            local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
 
-        if env['deploy_to_servers']:
-            run('rm -rf %(path)s' % env)
+        if app_config.DEPLOY_TO_SERVERS:
+            run('rm -rf %(PROJECT_PATH)s' % app_config.__dict__)
 
-            if env['deploy_crontab']:
+            if app_config.DEPLOY_CRONTAB:
                 uninstall_crontab()
 
-            if env['deploy_services']:
+            if app_config.DEPLOY_SERVICES:
                 nuke_confs()
 """
 App-template specific setup. Not relevant after the project is running.
@@ -474,17 +439,18 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
-    env.project_slug = os.getcwd().split('/')[-1]
-    env.project_name = project_name or env.project_slug
-    env.repository_name = repository_name or env.project_slug
-    env.project_path = env.project_slug.replace('-', '_')
+    config_files = ' '.join(['PROJECT_README.md', 'app_config.py'])
 
-    _confirm("Have you created a Github repository named \"%(repository_name)s\"?" % env)
+    config = {}
+    config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
+    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG'] 
+    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG'] 
+    config['$NEW_PROJECT_PATH'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
-    local('sed -i "" \'s|$NEW_PROJECT_SLUG|%(project_slug)s|g\' PROJECT_README.md app_config.py' % env)
-    local('sed -i "" \'s|$NEW_PROJECT_NAME|%(project_name)s|g\' PROJECT_README.md app_config.py' % env)
-    local('sed -i "" \'s|$NEW_REPOSITORY_NAME|%(repository_name)s|g\' PROJECT_README.md app_config.py' % env)
-    local('sed -i "" \'s|$NEW_PROJECT_PATH|%(project_path)s|g\' PROJECT_README.md app_config.py' % env)
+    _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
+
+    for k, v in config:
+        local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
 
     local('rm -rf .git')
     local('git init')
@@ -492,7 +458,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('rm *.pyc')
     local('git add * .gitignore')
     local('git commit -am "Initial import from app-template."')
-    local('git remote add origin https://github.com/nprapps/%(repository_name)s.git' % env)
+    local('git remote add origin https://github.com/nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
     local('git push -u origin master')
 
     local('npm install less universal-jst')
