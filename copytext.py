@@ -34,6 +34,9 @@ class Row(object):
         """
         Allow object-style property access by column name.
         """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         if not self._row:
             return 'COPY.%s.%i (row does not exist)' % (self._sheet.name, self._index)
 
@@ -77,6 +80,9 @@ class Sheet(object):
         """
         Allow object-style property access by row name ("key" column).
         """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         if not self._sheet and not self._columns:
             return 'COPY.%s.%s [sheet does not exist]' % (self.name, name)
 
@@ -114,6 +120,9 @@ class Copy(object):
         """
         Allow object-style property access by sheet name.
         """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         try:
             return self._copy[name]
         except KeyError:
@@ -138,3 +147,24 @@ class Copy(object):
 
             self._copy[sheet.name] = Sheet(sheet.name, rows, columns)
 
+    def json(self):
+        """
+        Serialize the copy as JSON.
+        """
+        import json
+
+        obj = {}    
+    
+        for name, sheet in self._copy.items():
+            if 'key' in sheet._columns:
+                obj[name] = {}
+
+                for row in sheet:
+                    obj[name][row['key']] = row._row['value']
+            else:
+                obj[name] = []
+                
+                for row in sheet:
+                    obj[name].append(row._row)
+            
+        return json.dumps(obj)

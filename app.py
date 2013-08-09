@@ -8,6 +8,7 @@ import envoy
 from flask import Flask, Markup, abort, render_template
 
 import app_config
+import copytext
 from render_utils import flatten_app_config, make_context
 
 app = Flask(app_config.PROJECT_NAME)
@@ -65,6 +66,13 @@ def _app_config_js():
     js = 'window.APP_CONFIG = ' + json.dumps(config)
 
     return js, 200, { 'Content-Type': 'application/javascript' }
+
+# Render copytext
+@app.route('/js/copy.js')
+def _copytext_js():
+    copy = 'window.COPY = ' + copytext.Copy().json()
+
+    return copy, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
 @app.route('/<path:path>')
