@@ -446,7 +446,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
 
     _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
 
-    for k, v in config:
+    for k, v in config.items():
         local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
 
     local('rm -rf .git')
