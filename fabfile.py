@@ -189,7 +189,7 @@ def setup_directories():
     require('settings', provided_by=[production, staging])
 
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
-    run('mkdir -p /var/www/uploads/%(SERVER_PROJECT_PATH)s' % app_config.__dict__)
+    run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
 def setup_virtualenv():
     """
@@ -236,7 +236,7 @@ def install_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_PATH)s' % app_config.__dict__)
+    sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
 def uninstall_crontab():
     """
@@ -244,7 +244,7 @@ def uninstall_crontab():
     """
     require('settings', provided_by=[production, staging])
 
-    sudo('rm /etc/cron.d/%(PROJECT_PATH)s' % app_config.__dict__)
+    sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
 def bootstrap_issues():
     """
@@ -290,14 +290,11 @@ def render_confs():
     with settings(warn_only=True):
         local('mkdir confs/rendered')
 
-    context = app_config.get_secrets()
-    context['PROJECT_SLUG'] = app_config.PROJECT_SLUG
-    context['PROJECT_NAME'] = app_config.PROJECT_NAME
-    context['PROJECT_PATH'] = app_config.PROJECT_PATH
-    context['DEPLOYMENT_TARGET'] = app_config.DEPLOYMENT_TARGET 
+    context = copy(app_config.__dict__)
+    context.update(app_config.get_secrets())
 
     for service, remote_path, extension in app_config.SERVER_SERVICES:
-        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_PATH, service, extension)
+        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_FILENAME, service, extension)
 
         with open('confs/%s.%s' % (service, extension),  'r') as read_template:
 
@@ -316,11 +313,11 @@ def deploy_confs():
     render_confs()
 
     with settings(warn_only=True):
-        run('touch /tmp/%s.sock' % app_config.PROJECT_PATH)
-        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_PATH)
+        run('touch /tmp/%s.sock' % app_config.PROJECT_FILENAME)
+        sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_FILENAME)
 
         for service, remote_path, extension in app_config.SERVER_SERVICES:
-            service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
+            service_name = '%s.%s' % (app_config.PROJECT_FILENAME, service)
             file_name = '%s.%s' % (service_name, extension)
             local_path = 'confs/rendered/%s' % file_name
             remote_path = '%s%s' % (remote_path, file_name)
@@ -398,7 +395,7 @@ def nuke_confs():
 
     for service, remote_path in app_config.SERVER_SERVICES:
         with settings(warn_only=True):
-            service_name = '%s.%s' % (app_config.PROJECT_PATH, service)
+            service_name = '%s.%s' % (app_config.PROJECT_FILENAME, service)
             file_name = '%s.conf' % service_name
 
             if service == 'nginx':
@@ -425,7 +422,7 @@ def shiva_the_destroyer():
             local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
 
         if app_config.DEPLOY_TO_SERVERS:
-            run('rm -rf %(PROJECT_PATH)s' % app_config.__dict__)
+            run('rm -rf %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
 
             if app_config.DEPLOY_CRONTAB:
                 uninstall_crontab()
@@ -445,7 +442,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
     config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG'] 
     config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG'] 
-    config['$NEW_PROJECT_PATH'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
+    config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
 

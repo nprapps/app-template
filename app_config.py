@@ -26,7 +26,7 @@ REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
 # The name to be used in paths on the server
-PROJECT_PATH = '$NEW_PROJECT_PATH'
+PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 """
 DEPLOYMENT
@@ -42,7 +42,7 @@ DEPLOY_TO_SERVERS = False
 
 SERVER_USER = 'ubuntu'
 SERVER_PYTHON = 'python2.7'
-SERVER_PROJECT_PATH = '/home/%s/apps/%s' % (SERVER_USER, PROJECT_PATH)
+SERVER_PROJECT_PATH = '/home/%s/apps/%s' % (SERVER_USER, PROJECT_FILENAME)
 SERVER_REPOSITORY_PATH = '%s/repository' % SERVER_PROJECT_PATH
 SERVER_VIRTUALENV_PATH = '%s/virtualenv' % SERVER_PROJECT_PATH
 
@@ -113,18 +113,15 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
-    env_var_prefix = PROJECT_PATH.replace('-', '')
-
     secrets = [
-        'AWS_ACCESS_KEY_ID',
-        'AWS_SECRET_ACCESS_KEY'
+        'EXAMPLE_SECRET'
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
         # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % env_var_prefix, '')] = os.environ.get(secret, None)
+        secrets_dict[secret.replace('%s_' % PROJECT_FILENAME, '')] = os.environ.get(secret, None)
 
     return secrets_dict
 
