@@ -283,6 +283,27 @@ def _gzip_www():
     local('rm -rf gzip/live-data')
 
 
+def _get_template_conf_path(service, extension):
+    """
+    Derive the path for a conf template file.
+    """
+    return 'confs/%s/%s' % (service, extension)
+
+
+def _get_rendered_conf_path(service, extension):
+    """
+    Derive the rendered path for a conf file.
+    """
+    return 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_FILENAME, service, extension)
+
+
+def _get_installed_conf_path(service, remote_path, extension):
+    """
+    Derive the installed path for a conf file.
+    """
+    return '%s/%s.%s' % (remote_path, service, extension)
+
+
 def render_confs():
     """
     Renders server configurations.
@@ -296,11 +317,12 @@ def render_confs():
     context.update(app_config.get_secrets())
 
     for service, remote_path, extension in app_config.SERVER_SERVICES:
-        file_path = 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_FILENAME, service, extension)
+        template_path = _get_template_conf_path(service, extension)
+        rendered_path = _get_rendered_conf_path(service, extension)
 
-        with open('confs/%s.%s' % (service, extension),  'r') as read_template:
+        with open(template_path,  'r') as read_template:
 
-            with open(file_path, 'wb') as write_template:
+            with open(rendered_path, 'wb') as write_template:
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
 
@@ -319,16 +341,14 @@ def deploy_confs():
         sudo('chmod 777 /tmp/%s.sock' % app_config.PROJECT_FILENAME)
 
         for service, remote_path, extension in app_config.SERVER_SERVICES:
-            service_name = '%s.%s' % (app_config.PROJECT_FILENAME, service)
-            file_name = '%s.%s' % (service_name, extension)
-            local_path = 'confs/rendered/%s' % file_name
-            remote_path = '%s%s' % (remote_path, file_name)
+            rendered_path = _get_rendered_conf_path(service, extension)
+            installed_path = _get_installed_conf_path(service, remote_path, extension)
 
-            a = local('md5 -q %s' % local_path, capture=True)
-            b = run('md5sum %s' % remote_path).split()[0]
+            a = local('md5 -q %s' % rendered_path, capture=True)
+            b = run('md5sum %s' % installed_path).split()[0]
 
             if a != b:
-                put(local_path, remote_path, use_sudo=True)
+                put(rendered_path, installed_path, use_sudo=True)
 
                 if service == 'nginx':
                     sudo('service nginx reload')
@@ -395,17 +415,16 @@ def nuke_confs():
     """
     require('settings', provided_by=[production, staging])
 
-    for service, remote_path in app_config.SERVER_SERVICES:
+    for service, remote_path, extension in app_config.SERVER_SERVICES:
         with settings(warn_only=True):
-            service_name = '%s.%s' % (app_config.PROJECT_FILENAME, service)
-            file_name = '%s.conf' % service_name
+            installed_path = _get_installed_conf_path(service, remote_path, extension)
 
             if service == 'nginx':
-                sudo('rm -f %s%s' % (remote_path, file_name))
+                sudo('rm -f %s' % installed_path)
                 sudo('service nginx reload')
             else:
                 sudo('service %s stop' % service_name)
-                sudo('rm -f %s%s' % (remote_path, file_name))
+                sudo('rm -f %s' % installed_path)
                 sudo('initctl reload-configuration')
 
 
