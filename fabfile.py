@@ -286,7 +286,7 @@ def _get_template_conf_path(service, extension):
     """
     Derive the path for a conf template file.
     """
-    return 'confs/%s/%s' % (service, extension)
+    return 'confs/%s.%s' % (service, extension)
 
 
 def _get_rendered_conf_path(service, extension):
