@@ -27,6 +27,11 @@ cd $NEW_PROJECT_NAME
 # Optional: checkout an initial project branch
 # git checkout [init-map|init-table|init-chat|init-tumblr]
 
+mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+pip install -r requirements.txt
+
+fab app_template_bootstrap
+```
 
 Bootstrap issues
 ----------------
@@ -34,6 +39,7 @@ Bootstrap issues
 The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
 
 Develop with the template
+-------------------------
 
 If you followed the [Copy the template](#copy-the-template) instructions above you will have replaced `README.md` (this file) with `PROJECT_README.md`. See that file for all the details of how build projects with the app-template.
 
@@ -54,3 +60,4 @@ git merge master --no-edit
 git checkout master
 git push --all
 ```
+
