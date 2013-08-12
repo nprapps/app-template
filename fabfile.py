@@ -313,8 +313,8 @@ def _deploy_to_s3(path='.gzip'):
     Deploy the gzipped stuff to S3.
     """
     # Clear files that should never be deployed
-    local('rm -rf %s/live-data' % out_path)
-    local('rm -rf %s/sitemap.xml' % out_path)
+    local('rm -rf %s/live-data' % path)
+    local('rm -rf %s/sitemap.xml' % path)
 
     s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync %s/ %s'
     s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync %s/ %s'
