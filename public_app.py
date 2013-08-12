@@ -2,9 +2,6 @@
 
 import datetime
 import logging
-import os
-import re
-import time
 
 from flask import Flask, redirect, render_template
 from jinja2.filters import escape, do_mark_safe
@@ -20,16 +17,16 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 os.environ['TZ'] = 'US/Eastern'
 time.tzset()
 
-logger = logging.getLogger('tumblr')
-file_handler = logging.FileHandler(app_config.LOG_PATH)
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
+file_handler.setLevel(logging.INFO)
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
 
 
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
+	app.logger.info('Test URL requested.')
+
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
