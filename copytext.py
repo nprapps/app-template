@@ -21,7 +21,22 @@ class Row(object):
         self._row = data
         self._index = index
 
+    def __getitem__(self, i):
+        """
+        Allow dict-style item access by index (column id), or by column name.
+        """
+        if isinstance(i, int):
+            return self._row[i]
+        else:
+            return self.__getattr__(i)
+
     def __getattr__(self, name):
+        """
+        Allow object-style property access by column name.
+        """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         if not self._row:
             return 'COPY.%s.%i (row does not exist)' % (self._sheet.name, self._index)
 
@@ -29,9 +44,6 @@ class Row(object):
             return 'COPY.%s.%i.%s [column does not exist]' % (self._sheet.name, self._index, name)
 
         return Markup(self._row[name])
-
-    def __getitem__(self, i):
-        return self._row[i]
 
     def __iter__(self):
         return iter(self._row)
@@ -53,12 +65,24 @@ class Sheet(object):
         self._columns = columns
 
     def __getitem__(self, i):
-        if i > len(self._sheet):
-            return Row(self, {}, i)
+        """
+        Allow dict-style item access by index (row id), or by row name ("key" column).
+        """
+        if isinstance(i, int):
+            if i > len(self._sheet):
+                return Row(self, {}, i)
 
-        return self._sheet[i]
+            return self._sheet[i]
+        else:
+            return self.__getattr__(i)
 
     def __getattr__(self, name):
+        """
+        Allow object-style property access by row name ("key" column).
+        """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         if not self._sheet and not self._columns:
             return 'COPY.%s.%s [sheet does not exist]' % (self.name, name)
 
@@ -86,7 +110,19 @@ class Copy(object):
     def __init__(self):
         self.load()
 
+    def __getitem__(self, name):
+        """
+        Allow dict-style item access by sheet name.
+        """
+        return self.__getattr__(name)
+
     def __getattr__(self, name):
+        """
+        Allow object-style property access by sheet name.
+        """
+        if name in self.__dict__:
+            return self.__dict__[name]
+
         try:
             return self._copy[name]
         except KeyError:
@@ -111,3 +147,24 @@ class Copy(object):
 
             self._copy[sheet.name] = Sheet(sheet.name, rows, columns)
 
+    def json(self):
+        """
+        Serialize the copy as JSON.
+        """
+        import json
+
+        obj = {}    
+    
+        for name, sheet in self._copy.items():
+            if 'key' in sheet._columns:
+                obj[name] = {}
+
+                for row in sheet:
+                    obj[name][row['key']] = row._row['value']
+            else:
+                obj[name] = []
+                
+                for row in sheet:
+                    obj[name].append(row._row)
+            
+        return json.dumps(obj)
