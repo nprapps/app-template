@@ -19,7 +19,6 @@ env.forward_agent = True
 
 env.hosts = []
 env.settings = None
-env.is_fabcasted = False
 
 """
 Environments
@@ -53,14 +52,13 @@ def fabcast(command):
     by staging() or production().
     """
     require('settings', provided_by=[production, staging])
-    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET is_fabcasted %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
-def is_fabcasted():
-    """
-    Simple command so we can tell when we are fabcasting.
-    """
-    require('settings', provided_by=[production, staging])
-    env.is_fabcasted = True
+    if not app_config.DEPLOY_TO_SERVERS:
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting..'
+
+        return
+
+    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
 """
 Branches
@@ -441,16 +439,7 @@ def deploy(remote='origin'):
     if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
         _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
-    render()
-    _gzip_www()
-    _deploy_to_s3()
-
     if app_config.DEPLOY_TO_SERVERS:
-        if env.is_fabcasted:
-            print 'Because you are fabcasting any changes to your crontab or server configuration will not be installed!'
-
-            return
-
         checkout_latest(remote)
 
         if app_config.DEPLOY_CRONTAB:
@@ -458,6 +447,10 @@ def deploy(remote='origin'):
 
         if app_config.DEPLOY_SERVICES:
             deploy_confs()
+
+    render()
+    _gzip_www()
+    _deploy_to_s3()
 
 """
 Cron jobs

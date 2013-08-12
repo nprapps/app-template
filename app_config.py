@@ -120,7 +120,7 @@ def get_secrets():
     secrets_dict = {}
 
     for secret in secrets:
-        name = '%s_%s' (PROJECT_FILENAME, secret)
+        name = '%s_%s' % (PROJECT_FILENAME, secret)
         secrets_dict[secret] = os.environ.get(name, None)
 
     return secrets_dict
