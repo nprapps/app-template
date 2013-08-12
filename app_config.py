@@ -126,8 +126,8 @@ def get_secrets():
     secrets_dict = {}
 
     for secret in secrets:
-        # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % PROJECT_FILENAME, '')] = os.environ.get(secret, None)
+        name = '%s_%s' % (PROJECT_FILENAME, secret)
+        secrets_dict[secret] = os.environ.get(name, None)
 
     return secrets_dict
 
@@ -158,16 +158,16 @@ def configure_targets(deployment_target):
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = True
-		
-		CHAT['ID'] = '74796'
+        
+        CHAT['ID'] = '74796'
     else:
         S3_BUCKETS = [] 
         S3_BASE_URL = 'http://127.0.0.1:8000'
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         DEBUG = True
-
-		CHAT['ID'] = '74796'
+        
+        CHAT['ID'] = '74796'
 
     DEPLOYMENT_TARGET = deployment_target
 

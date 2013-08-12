@@ -17,6 +17,9 @@ Base configuration
 env.user = app_config.SERVER_USER
 env.forward_agent = True
 
+env.hosts = []
+env.settings = None
+
 """
 Environments
 
@@ -25,14 +28,37 @@ An environment points to both a server and an S3
 bucket.
 """
 def production():
+    """
+    Run as though on production.
+    """
     env.settings = 'production'
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
 def staging():
+    """
+    Run as though on staging.
+    """
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
+
+"""
+Fabcasting! Run commands on the remote server.
+"""
+def fabcast(command):
+    """
+    Actually run specified commands on the server specified
+    by staging() or production().
+    """
+    require('settings', provided_by=[production, staging])
+
+    if not app_config.DEPLOY_TO_SERVERS:
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting..'
+
+        return
+
+    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
 """
 Branches
@@ -107,6 +133,18 @@ def app_config_js():
     with open('www/js/app_config.js', 'w') as f:
         f.write(js)
 
+def copy_js():
+    """
+    Render copy.js to file.
+    """
+    from app import _copy_js
+
+    response = _copy_js()
+    js = response[0]
+
+    with open('www/js/copy.js', 'w') as f:
+        f.write(js)
+
 def render():
     """
     Render HTML templates and compile assets.
@@ -118,6 +156,7 @@ def render():
     jst()
 
     app_config_js()
+    copy_js()
 
     compiled_includes = []
 
@@ -168,7 +207,7 @@ Setup
 Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements and set up logs.
 """
-def setup():
+def setup_server():
     """
     Setup servers for deployment.
 
@@ -176,6 +215,11 @@ def setup():
     """
     require('settings', provided_by=[production, staging])
     require('branch', provided_by=[stable, master, branch])
+
+    if not app_config.DEPLOY_TO_SERVERS:
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py before setting up the servers.'
+
+        return
 
     setup_directories()
     setup_virtualenv()
@@ -255,6 +299,7 @@ def bootstrap_issues():
     github.delete_existing_labels(auth)
     github.create_labels(auth)
     github.create_tickets(auth)
+    github.create_milestones(auth)
 
 """
 Deployment
@@ -281,13 +326,11 @@ def _gzip_www():
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
 
-
 def _get_template_conf_path(service, extension):
     """
     Derive the path for a conf template file.
     """
     return 'confs/%s.%s' % (service, extension)
-
 
 def _get_rendered_conf_path(service, extension):
     """
@@ -295,13 +338,11 @@ def _get_rendered_conf_path(service, extension):
     """
     return 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_FILENAME, service, extension)
 
-
 def _get_installed_conf_path(service, remote_path, extension):
     """
     Derive the installed path for a conf file.
     """
     return '%s/%s.%s.%s' % (remote_path, app_config.PROJECT_FILENAME, service, extension)
-
 
 def _get_installed_service_name(service):
     """
@@ -309,20 +350,17 @@ def _get_installed_service_name(service):
     """
     return '%s.%s' % (app_config.PROJECT_FILENAME, service)
 
-
 def _get_service_log_path(service):
     """
     Derive a log path for a service.
     """
     return '/var/log/%s.%s.log' % (app_config.PROJECT_FILENAME, service)
 
-
 def _get_service_socket_path(service):
     """
     Derive a socket path for a service.
     """
     return ('/tmp/%s.%s.sock' % (app_config.PROJECT_FILENAME, service))
-
 
 def render_confs():
     """
@@ -347,7 +385,6 @@ def render_confs():
             with open(rendered_path, 'wb') as write_template:
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
-
 
 def deploy_confs():
     """
@@ -390,7 +427,6 @@ def deploy_confs():
             else:
                 print '%s has not changed' % rendered_path
 
-
 def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -403,10 +439,6 @@ def deploy(remote='origin'):
     if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
         _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
-    render()
-    _gzip_www()
-    _deploy_to_s3()
-
     if app_config.DEPLOY_TO_SERVERS:
         checkout_latest(remote)
 
@@ -415,6 +447,10 @@ def deploy(remote='origin'):
 
         if app_config.DEPLOY_SERVICES:
             deploy_confs()
+
+    render()
+    _gzip_www()
+    _deploy_to_s3()
 
 """
 Cron jobs
@@ -440,7 +476,6 @@ def _confirm(message):
 
     if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
         exit()
-
 
 def nuke_confs():
     """
@@ -468,7 +503,6 @@ def nuke_confs():
                 log_path = _get_service_log_path(service)
                 sudo('rm %s' % log_path)
 
-
 def shiva_the_destroyer():
     """
     Deletes the app from s3
@@ -491,6 +525,7 @@ def shiva_the_destroyer():
 
             if app_config.DEPLOY_SERVICES:
                 nuke_confs()
+
 """
 App-template specific setup. Not relevant after the project is running.
 """
