@@ -44,7 +44,6 @@ def staging():
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
-
 """
 Fabcasting! Run commands on the remote server.
 """
@@ -57,10 +56,17 @@ def fabcast(command):
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET is_fabcasted %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
 def is_fabcasted():
+    """
+    Simple command so we can tell when we are fabcasting.
+    """
     require('settings', provided_by=[production, staging])
     env.is_fabcasted = True
 
 def forbid_fabcasting(f):
+    """
+    Decorator to forbid some commands (such as those
+    requiring run/sudo to be fabcasted.)
+    """
     def new():
         if env.is_fabcasted:
             print '%s can not be fabcasted' % f.__name__
@@ -69,7 +75,6 @@ def forbid_fabcasting(f):
 
         return f()
     return new
-
 
 """
 Branches
@@ -206,7 +211,7 @@ Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements and set up logs.
 """
 @forbid_fabcasting
-def setup():
+def setup_server():
     """
     Setup servers for deployment.
 
@@ -214,6 +219,9 @@ def setup():
     """
     require('settings', provided_by=[production, staging])
     require('branch', provided_by=[stable, master, branch])
+
+    if not app_config.DEPLOY_TO_SERVERS:
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py before setting up the servers.'
 
     setup_directories()
     setup_virtualenv()
