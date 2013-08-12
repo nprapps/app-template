@@ -90,17 +90,25 @@ header {
 
 
 // Cube ad
-.adwrapper { zoom: 1; padding: 0 0 12px 0; }
-.sponsor300 {
-    overflow: hidden;
-    width: 300px;
-    margin: 0 auto;
-    
-    p { margin: 0; font-size: 10px; color: #333; }
-    p.right { margin-top: 4px; font-style: italic; float: right; }
-    p.left { float: left; margin-top: 4px; }
-}
+.adwrapper { 
+    zoom: 1; 
+    padding: 0 0 12px 0;
 
+    .sponsor300 {
+        overflow: hidden;
+        width: 300px;
+        margin: 0 auto;
+    }
+    p { 
+        margin: 6px 0 0 0; 
+        font-size: 11px; 
+        color: #999;
+        
+        &.left { float: left; }
+        &.right { float: right; }
+        a { color: #6d8ac4; }
+    }
+}
 
 // Content
 section.the-goods { margin-top: 44px; }
