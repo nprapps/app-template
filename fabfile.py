@@ -205,7 +205,7 @@ def tests():
 Setup
 
 Changing setup commands requires a test deployment to a server.
-Setup will create directories, install requirements and set up logs.
+Setup will create directories, install requirements, etc.
 """
 def setup_server():
     """
@@ -353,18 +353,6 @@ def _get_installed_service_name(service):
     """
     return '%s.%s' % (app_config.PROJECT_FILENAME, service)
 
-def _get_service_log_path(service):
-    """
-    Derive a log path for a service.
-    """
-    return '/var/log/%s.%s.log' % (app_config.PROJECT_FILENAME, service)
-
-def _get_service_socket_path(service):
-    """
-    Derive a socket path for a service.
-    """
-    return ('/tmp/%s.%s.sock' % (app_config.PROJECT_FILENAME, service))
-
 def render_confs():
     """
     Renders server configurations.
@@ -417,15 +405,17 @@ def deploy_confs():
                     sudo('initctl reload-configuration')
                     sudo('service %s restart' % service_name)
                 elif service == 'app':
-                    socket_path = _get_service_socket_path(service)
-                    run('touch %s' % socket_path)
-                    sudo('chmod 644 %s' % socket_path)
-                    sudo('chown www-data:www-data %s' % socket_path)
+                    run('touch %s' % app_config.UWSGI_SOCKET_PATH)
+                    sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
+                    sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
 
-                    log_path = _get_service_log_path(service)
-                    sudo('touch %s' % log_path)
-                    sudo('chmod 644 %s' % log_path)
-                    sudo('chown www-data:www-data %s' % log_path)
+                    sudo('touch %s' % app_config.UWSGI_LOG_PATH)
+                    sudo('chmod 644 %s' % app_config.UWSGI_LOG_PATH)
+                    sudo('chown ubuntu:ubuntu %s' % app_config.UWSGI_LOG_PATH)
+
+                    sudo('touch %s' % app_config.APP_LOG_PATH)
+                    sudo('chmod 644 %s' % app_config.APP_LOG_PATH)
+                    sudo('chown ubuntu:ubuntu %s' % app_config.APP_LOG_PATH)
             else:
                 print '%s has not changed' % rendered_path
 
@@ -499,11 +489,9 @@ def nuke_confs():
                 sudo('service %s stop' % service_name)
                 sudo('initctl reload-configuration')
             elif service == 'app':
-                socket_path = _get_service_socket_path(service)
-                sudo('rm %s' % socket_path)
-
-                log_path = _get_service_log_path(service)
-                sudo('rm %s' % log_path)
+                sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
+                sudo('rm %s' % app_config.UWSGI_LOG_PATH)
+                sudo('rm %s' % app_config.APP_LOG_PATH)
 
 def shiva_the_destroyer():
     """

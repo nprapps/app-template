@@ -54,6 +54,10 @@ DEPLOY_CRONTAB = False
 # If True, DEPLOY_TO_SERVERS must also be True
 DEPLOY_SERVICES = False
 
+UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
+UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
+APP_LOG_PATH = '/var/log/%s.app.log' % PROJECT_FILENAME
+
 # Services are the server-side services we want to enable and configure.
 # A three-tuple following this format:
 # (service name, service deployment path, service config file extension)
