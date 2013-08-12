@@ -62,20 +62,6 @@ def is_fabcasted():
     require('settings', provided_by=[production, staging])
     env.is_fabcasted = True
 
-def forbid_fabcasting(f):
-    """
-    Decorator to forbid some commands (such as those
-    requiring run/sudo to be fabcasted.)
-    """
-    def new():
-        if env.is_fabcasted:
-            print '%s can not be fabcasted' % f.__name__
-
-            return
-
-        return f()
-    return new
-
 """
 Branches
 
@@ -149,6 +135,18 @@ def app_config_js():
     with open('www/js/app_config.js', 'w') as f:
         f.write(js)
 
+def copy_js():
+    """
+    Render copy.js to file.
+    """
+    from app import _copy_js
+
+    response = _copy_js()
+    js = response[0]
+
+    with open('www/js/copy.js', 'w') as f:
+        f.write(js)
+
 def render():
     """
     Render HTML templates and compile assets.
@@ -160,6 +158,7 @@ def render():
     jst()
 
     app_config_js()
+    copy_js()
 
     compiled_includes = []
 
@@ -210,7 +209,6 @@ Setup
 Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements and set up logs.
 """
-@forbid_fabcasting
 def setup_server():
     """
     Setup servers for deployment.
@@ -223,13 +221,14 @@ def setup_server():
     if not app_config.DEPLOY_TO_SERVERS:
         print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py before setting up the servers.'
 
+        return
+
     setup_directories()
     setup_virtualenv()
     clone_repo()
     checkout_latest()
     install_requirements()
 
-@forbid_fabcasting
 def setup_directories():
     """
     Create server directories.
@@ -239,7 +238,6 @@ def setup_directories():
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
     run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
-@forbid_fabcasting
 def setup_virtualenv():
     """
     Setup a server virtualenv.
@@ -249,7 +247,6 @@ def setup_virtualenv():
     run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
     run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
-@forbid_fabcasting
 def clone_repo():
     """
     Clone the source repository.
@@ -261,7 +258,6 @@ def clone_repo():
     if app_config.REPOSITORY_ALT_URL:
         run('git remote add bitbucket %(REPOSITORY_ALT_URL)s' % app_config.__dict__)
 
-@forbid_fabcasting
 def checkout_latest(remote='origin'):
     """
     Checkout the latest source.
@@ -272,7 +268,6 @@ def checkout_latest(remote='origin'):
     run('cd %s; git fetch %s' % (app_config.SERVER_REPOSITORY_PATH, remote))
     run('cd %s; git checkout %s; git pull %s %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, remote, env.branch))
 
-@forbid_fabcasting
 def install_requirements():
     """
     Install the latest requirements.
@@ -282,7 +277,6 @@ def install_requirements():
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
     run('cd %(SERVER_REPOSITORY_PATH)s; npm install less universal-jst -g --prefix node_modules' % app_config.__dict__)
 
-@forbid_fabcasting
 def install_crontab():
     """
     Install cron jobs script into cron.d.
@@ -291,7 +285,6 @@ def install_crontab():
 
     sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
-@forbid_fabcasting
 def uninstall_crontab():
     """
     Remove a previously install cron jobs script from cron.d
@@ -300,7 +293,6 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
-@forbid_fabcasting
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
@@ -396,7 +388,6 @@ def render_confs():
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
 
-@forbid_fabcasting
 def deploy_confs():
     """
     Deploys rendered server configurations to the specified server.
@@ -493,7 +484,6 @@ def _confirm(message):
     if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
         exit()
 
-@forbid_fabcasting
 def nuke_confs():
     """
     DESTROYS rendered server configurations from the specified server.
@@ -520,7 +510,6 @@ def nuke_confs():
                 log_path = _get_service_log_path(service)
                 sudo('rm %s' % log_path)
 
-@forbid_fabcasting
 def shiva_the_destroyer():
     """
     Deletes the app from s3
@@ -547,7 +536,6 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
-@forbid_fabcasting
 def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.

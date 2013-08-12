@@ -69,7 +69,7 @@ def _app_config_js():
 
 # Render copytext
 @app.route('/js/copy.js')
-def _copytext_js():
+def _copy_js():
     copy = 'window.COPY = ' + copytext.Copy().json()
 
     return copy, 200, { 'Content-Type': 'application/javascript' }
