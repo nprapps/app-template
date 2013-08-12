@@ -17,6 +17,7 @@ $NEW_PROJECT_NAME
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
+* [Run a remote fab command](#run-a-remote-fab-command)
 * [Tumblog setup](#tumblog-setup)
 * [Deploy Tumblr theme](#deploy-tumblr-theme)
 
@@ -236,6 +237,17 @@ You can also deploy the configuration files independently of the setup command b
 ```
 fab deploy_confs
 ```
+
+Run a  remote fab command
+-------------------------
+
+Sometimes it makes sense to run a fabric command on the server, for instance, when you need to render using a production database. You can do this with the `fabcast` fabric command. For example:
+
+```
+fab staging master fabcast:deploy
+```
+
+If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
 Tumblog setup
 -------------------
 
