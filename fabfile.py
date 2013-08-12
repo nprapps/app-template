@@ -308,23 +308,26 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3():
+def _deploy_to_s3(path='.gzip'):
     """
     Deploy the gzipped stuff to S3.
     """
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude live-data/* --exclude-from gzip_types.txt sync gzip/ %s'
-    s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude live-data/* --exclude "*" --include-from gzip_types.txt sync gzip/ %s'
+    # Clear files that should never be deployed
+    local('rm -rf %s/live-data' % path)
+    local('rm -rf %s/sitemap.xml' % path)
+
+    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync %s/ %s'
+    s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync %s/ %s'
 
     for bucket in app_config.S3_BUCKETS:
-        local(s3cmd % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(s3cmd_gzip % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(s3cmd % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(s3cmd_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
-def _gzip_www():
+def _gzip(in_path='www', out_path='.gzip'):
     """
     Gzips everything in www and puts it all in gzip
     """
-    local('python gzip_www.py')
-    local('rm -rf gzip/live-data')
+    local('python gzip_assets.py %s %s' % (in_path, out_path))
 
 def _get_template_conf_path(service, extension):
     """
@@ -449,7 +452,7 @@ def deploy(remote='origin'):
             deploy_confs()
 
     render()
-    _gzip_www()
+    _gzip('www', '.gzip')
     _deploy_to_s3()
 
 """
