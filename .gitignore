@@ -28,7 +28,7 @@ pip-log.txt
 .mr.developer.cfg
 
 .DS_store
-gzip
+.gzip
 
 node_modules
 www/*.html
