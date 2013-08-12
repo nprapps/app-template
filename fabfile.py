@@ -17,6 +17,10 @@ Base configuration
 env.user = app_config.SERVER_USER
 env.forward_agent = True
 
+env.hosts = []
+env.settings = None
+env.is_fabcasted = False
+
 """
 Environments
 
@@ -25,14 +29,47 @@ An environment points to both a server and an S3
 bucket.
 """
 def production():
+    """
+    Run as though on production.
+    """
     env.settings = 'production'
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
 def staging():
+    """
+    Run as though on staging.
+    """
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
+
+
+"""
+Fabcasting! Run commands on the remote server.
+"""
+def fabcast(command):
+    """
+    Actually run specified commands on the server specified
+    by staging() or production().
+    """
+    require('settings', provided_by=[production, staging])
+    run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET is_fabcasted %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
+
+def is_fabcasted():
+    require('settings', provided_by=[production, staging])
+    env.is_fabcasted = True
+
+def forbid_fabcasting():
+    def new():
+        if env.is_fabcasted:
+            print '%s can not be fabcasted' % f.__name__
+
+            return
+
+        return f()
+    return new
+
 
 """
 Branches
@@ -168,6 +205,7 @@ Setup
 Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements and set up logs.
 """
+@forbid_fabcasting
 def setup():
     """
     Setup servers for deployment.
@@ -183,6 +221,7 @@ def setup():
     checkout_latest()
     install_requirements()
 
+@forbid_fabcasting
 def setup_directories():
     """
     Create server directories.
@@ -192,6 +231,7 @@ def setup_directories():
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
     run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@forbid_fabcasting
 def setup_virtualenv():
     """
     Setup a server virtualenv.
@@ -201,6 +241,7 @@ def setup_virtualenv():
     run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
     run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
+@forbid_fabcasting
 def clone_repo():
     """
     Clone the source repository.
@@ -212,6 +253,7 @@ def clone_repo():
     if app_config.REPOSITORY_ALT_URL:
         run('git remote add bitbucket %(REPOSITORY_ALT_URL)s' % app_config.__dict__)
 
+@forbid_fabcasting
 def checkout_latest(remote='origin'):
     """
     Checkout the latest source.
@@ -222,6 +264,7 @@ def checkout_latest(remote='origin'):
     run('cd %s; git fetch %s' % (app_config.SERVER_REPOSITORY_PATH, remote))
     run('cd %s; git checkout %s; git pull %s %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, remote, env.branch))
 
+@forbid_fabcasting
 def install_requirements():
     """
     Install the latest requirements.
@@ -231,6 +274,7 @@ def install_requirements():
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
     run('cd %(SERVER_REPOSITORY_PATH)s; npm install less universal-jst -g --prefix node_modules' % app_config.__dict__)
 
+@forbid_fabcasting
 def install_crontab():
     """
     Install cron jobs script into cron.d.
@@ -239,6 +283,7 @@ def install_crontab():
 
     sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@forbid_fabcasting
 def uninstall_crontab():
     """
     Remove a previously install cron jobs script from cron.d
@@ -247,6 +292,7 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@forbid_fabcasting
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
@@ -282,13 +328,11 @@ def _gzip_www():
     local('python gzip_www.py')
     local('rm -rf gzip/live-data')
 
-
 def _get_template_conf_path(service, extension):
     """
     Derive the path for a conf template file.
     """
     return 'confs/%s.%s' % (service, extension)
-
 
 def _get_rendered_conf_path(service, extension):
     """
@@ -296,13 +340,11 @@ def _get_rendered_conf_path(service, extension):
     """
     return 'confs/rendered/%s.%s.%s' % (app_config.PROJECT_FILENAME, service, extension)
 
-
 def _get_installed_conf_path(service, remote_path, extension):
     """
     Derive the installed path for a conf file.
     """
     return '%s/%s.%s.%s' % (remote_path, app_config.PROJECT_FILENAME, service, extension)
-
 
 def _get_installed_service_name(service):
     """
@@ -310,20 +352,17 @@ def _get_installed_service_name(service):
     """
     return '%s.%s' % (app_config.PROJECT_FILENAME, service)
 
-
 def _get_service_log_path(service):
     """
     Derive a log path for a service.
     """
     return '/var/log/%s.%s.log' % (app_config.PROJECT_FILENAME, service)
 
-
 def _get_service_socket_path(service):
     """
     Derive a socket path for a service.
     """
     return ('/tmp/%s.%s.sock' % (app_config.PROJECT_FILENAME, service))
-
 
 def render_confs():
     """
@@ -349,7 +388,7 @@ def render_confs():
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
 
-
+@forbid_fabcasting
 def deploy_confs():
     """
     Deploys rendered server configurations to the specified server.
@@ -391,7 +430,6 @@ def deploy_confs():
             else:
                 print '%s has not changed' % rendered_path
 
-
 def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -409,6 +447,11 @@ def deploy(remote='origin'):
     _deploy_to_s3()
 
     if app_config.DEPLOY_TO_SERVERS:
+        if env.is_fabcasted:
+            print 'Because you are fabcasting any changes to your crontab or server configuration will not be installed!'
+
+            return
+
         checkout_latest(remote)
 
         if app_config.DEPLOY_CRONTAB:
@@ -442,7 +485,7 @@ def _confirm(message):
     if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
         exit()
 
-
+@forbid_fabcasting
 def nuke_confs():
     """
     DESTROYS rendered server configurations from the specified server.
@@ -469,7 +512,7 @@ def nuke_confs():
                 log_path = _get_service_log_path(service)
                 sudo('rm %s' % log_path)
 
-
+@forbid_fabcasting
 def shiva_the_destroyer():
     """
     Deletes the app from s3
@@ -492,9 +535,11 @@ def shiva_the_destroyer():
 
             if app_config.DEPLOY_SERVICES:
                 nuke_confs()
+
 """
 App-template specific setup. Not relevant after the project is running.
 """
+@forbid_fabcasting
 def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
