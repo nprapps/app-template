@@ -11,7 +11,7 @@ CSS_HEADER = '''
 /*
  * Looking for the full, uncompressed source? Try here:
  *
- * https://github.com/nprapps/%s
+ * https://github.com/geraldarthur/%s
  */
 ''' % app_config.REPOSITORY_NAME
 
@@ -19,7 +19,7 @@ JS_HEADER = '''
 /*
  * Looking for the full, uncompressed source? Try here:
  *
- * https://github.com/nprapps/%s
+ * https://github.com/geraldarthur/%s
  */
 ''' % app_config.REPOSITORY_NAME
 
@@ -99,9 +99,6 @@ class JavascriptIncluder(Includer):
         context = make_context()
         context['paths'] = src_paths
 
-        header = render_template('_js_header.js', **context) 
-        output.insert(0, header) 
-
         return '\n'.join(output)
 
 class CSSIncluder(Includer):
@@ -134,10 +131,6 @@ class CSSIncluder(Includer):
         context = make_context()
         context['paths'] = src_paths
 
-        header = render_template('_css_header.css', **context) 
-        output.insert(0, header) 
-
-
         return '\n'.join(output)
 
 def flatten_app_config():
@@ -166,4 +159,3 @@ def make_context():
     context['CSS'] = CSSIncluder()
 
     return context
-
