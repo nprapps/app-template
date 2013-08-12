@@ -1,18 +1,29 @@
 #!/usr/bin/env python
 
 import datetime
+import logging
 
 from flask import Flask
 
 import app_config
 
 app = Flask(app_config.PROJECT_NAME)
+app.config['PROPAGATE_EXCEPTIONS'] = True
+
+logger = logging.getLogger(app_config.PROJECT_FILENAME)
+file_handler = logging.FileHandler(app_config.SERVER_LOG_PATH)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
 
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
     """
     Test route for verifying the application is running.
     """
+    logger.info('Test URL requested.')
+
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 if __name__ == '__main__':
