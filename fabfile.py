@@ -413,7 +413,6 @@ def deploy_confs():
                 if service == 'nginx':
                     sudo('service nginx reload')
                 elif service == 'uwsgi':
-
                     service_name = _get_installed_service_name(service)
                     sudo('initctl reload-configuration')
                     sudo('service %s restart' % service_name)
