@@ -60,7 +60,7 @@ def is_fabcasted():
     require('settings', provided_by=[production, staging])
     env.is_fabcasted = True
 
-def forbid_fabcasting():
+def forbid_fabcasting(f):
     def new():
         if env.is_fabcasted:
             print '%s can not be fabcasted' % f.__name__
