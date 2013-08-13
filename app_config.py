@@ -87,13 +87,16 @@ SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
 TWITTER = {
     'TEXT': PROJECT_NAME,
-    'URL': SHARE_URL
+    'URL': SHARE_URL,
+    # Will be resized to 120x120, can't be larger than 1MB 
+    'IMAGE_URL': ''
 }
 
 FACEBOOK = {
     'TITLE': PROJECT_NAME,
     'URL': SHARE_URL,
     'DESCRIPTION': PROJECT_DESCRIPTION,
+    # Should be square. No documented restrictions on resolution or size
     'IMAGE_URL': '',
     'APP_ID': '138837436154588'
 }
