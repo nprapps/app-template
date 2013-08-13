@@ -100,9 +100,12 @@
         }); 
     </script>
 
+    {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@nprapps">
     <meta name="twitter:image" content="{{ TWITTER.IMAGE_URL }}" />
+
+    {# Facebook #}
     <meta property="og:title" content="{{ FACEBOOK.TITLE }}" />
     <meta property="og:url" content="{{ FACEBOOK.URL }}" />
     <meta property="og:type" content="article" />
@@ -110,6 +113,9 @@
     <meta property="og:image" content="{{ FACEBOOK.IMAGE_URL }}" />
     <meta property="og:site_name" content="NPR.org" />
     <meta property="fb:app_id" content="{{ FACEBOOK.APP_ID }}" />
+
+    {# Google News #}
+    <meta name="thumbnail" content="{{ GOOGLE.IMAGE_URL }}" />
 
     {% block extra_head %}
     {% endblock extra_head %}

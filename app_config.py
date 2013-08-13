@@ -96,9 +96,15 @@ FACEBOOK = {
     'TITLE': PROJECT_NAME,
     'URL': SHARE_URL,
     'DESCRIPTION': PROJECT_DESCRIPTION,
-    # Should be square. No documented restrictions on resolution or size
-    'IMAGE_URL': '',
+    # Should be square. No documented restrictions on size
+    'IMAGE_URL': TWITTER['IMAGE_URL'],
     'APP_ID': '138837436154588'
+}
+
+GOOGLE = {
+    # Thumbnail image for Google News / Search.
+    # No documented restrictions on resolution or size
+    'IMAGE_URL': TWITTER['IMAGE_URL']
 }
 
 NPR_DFP = {
