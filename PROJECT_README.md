@@ -190,18 +190,23 @@ fab staging master deploy
 
 Deploy to EC2
 -------------
-You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic Web application and executing cron jobs.
+
+You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic web application (`public_app.py`) and executing cron jobs (`crontab`).
+
+Servers capable of running the app can be setup using our [servers](https://github.com/nprapps/servers) project.
 
 For running a Web application:
-* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Also in ``fabfile.py`` set ``env.deploy_web_services`` to ``True``.
-* Run ``fab staging master setup`` to configure the server.
+
+* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
+* Also in ``app_config.py`` set ``DEPLOY_WEB_SERVICES`` to ``True``.
+* Run ``fab staging master setup_server`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 For running cron jobs:
-* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Also in ``fabfile.py``, set ``env.install_crontab`` to ``True``.
-* Run ``fab staging master setup`` to configure the server.
+
+* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
+* Also in ``app_config.py``, set ``INSTALL_CRONTAB`` to ``True``
+* Run ``fab staging master setup_server`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
@@ -217,14 +222,14 @@ Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` 
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
-To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
 
 Install web services
 ---------------------
 
-Web services are configured in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+Web services are configured in the `confs/` folder. 
 
-Running ``fab setup`` will deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` both to ``True`` at the top of ``fabfile.py``.
+Running ``fab setup_server`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
 To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
 
