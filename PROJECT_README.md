@@ -33,6 +33,8 @@ The following things are assumed to be true in this documentation.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
 
+For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
+
 What's in here?
 ---------------
 
