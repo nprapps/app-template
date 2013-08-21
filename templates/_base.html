@@ -5,7 +5,7 @@
     <title>{{ PROJECT_NAME }}</title>
 
     <meta name="description" content="{{ PROJECT_DESCRIPTION }}">
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="http://media.npr.org/favicon.ico" />
@@ -121,9 +121,10 @@
     {% endblock extra_head %}
 </head>
 <body>
-    {% block outer_content %}
+    <a class="sr-only" href="#content">Skip To Content</a>
 
-    <nav>
+    {% block outer_content %}
+    <nav role="navigation">
         <ul class="site-links">
             <li class="npr"><a href="http://npr.org"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></li>
             <li class="news"><a href="http://www.npr.org/sections/news/">News</a></li>
@@ -145,16 +146,18 @@
     {% block header_content %}
     {% endblock header_content %}
 
-    <section class="the-goods">
+    <section id="content">
         <div class="container">
             <div class="row">
-                <div id="main-content" class="span8">
+                <div id="main-content" class="col-md-8">
                     {% block content %}
                     <h1>{{ project_name }}</h1>
                     App content goes here.
+                    
+                    <i class="icon icon-play"></i>
                     {% endblock content %}
                 </div>
-                <div class="span4">
+                <div id="bigbox" class="col-md-4">
                     {# 300x250 ad #}
                     <div class="adwrapper">
                         <div class="sponsor300">
