@@ -77,8 +77,8 @@ Then install the project requirements:
 
 ```
 cd $NEW_PROJECT_NAME
-npm install less universal-jst
-mkvirtualenv $NEW_PROJECT_NAME
+npm install less universal-jst -g --prefix node_modules
+mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
 
