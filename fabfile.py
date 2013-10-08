@@ -300,6 +300,7 @@ def bootstrap_issues():
     github.create_labels(auth)
     github.create_tickets(auth)
     github.create_milestones(auth)
+    github.create_hipchat_hook(auth)
 
 """
 Deployment
