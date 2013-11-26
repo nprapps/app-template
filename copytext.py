@@ -8,7 +8,7 @@ class CopyException(Exception):
 
 class Error(object):
     """
-    TODO
+    An error object that can mimic the structure of the COPY data, whether the error happens at the Copy, Sheet or Row level. Will print the error whenever it gets repr'ed. 
     """
     _error = ''
 
