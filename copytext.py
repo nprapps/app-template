@@ -3,22 +3,43 @@
 from flask import Markup
 import xlrd
 
-COPY_XLS = 'data/copy.xls'
-
 class CopyException(Exception):
     pass
+
+class Error(object):
+    """
+    TODO
+    """
+    _error = ''
+
+    def __init__(self, error):
+        self._error = error
+
+    def __getitem__(self, i):
+        return self
+    
+    def __iter__(self):
+        return iter([self])
+
+    def __len__(self):
+        return 1
+
+    def __repr__(self):
+        return self._error
 
 class Row(object):
     """
     Wraps a row of copy for error handling.
     """
     _sheet = None
-    _row = {} 
+    _row = []
+    _columns = []
     _index = 0
 
-    def __init__(self, sheet, data, index):
+    def __init__(self, sheet, row, columns, index):
         self._sheet = sheet
-        self._row = data
+        self._row = row
+        self._columns = columns
         self._index = index
 
     def __getitem__(self, i):
@@ -26,30 +47,27 @@ class Row(object):
         Allow dict-style item access by index (column id), or by column name.
         """
         if isinstance(i, int):
-            return self._row[i]
-        else:
-            return self.__getattr__(i)
+            if i >= len(self._row):
+                return Error('COPY.%s.%i.%i [column index outside range]' % (self._sheet.name, self._index, i))
 
-    def __getattr__(self, name):
-        """
-        Allow object-style property access by column name.
-        """
-        if name in self.__dict__:
-            return self.__dict__[name]
+            return Markup(self._row[i])
 
-        if not self._row:
-            return 'COPY.%s.%i (row does not exist)' % (self._sheet.name, self._index)
+        if i not in self._columns:
+            return Error('COPY.%s.%i.%s [column does not exist in sheet]' % (self._sheet.name, self._index, i))
 
-        if name not in self._row:
-            return 'COPY.%s.%i.%s [column does not exist]' % (self._sheet.name, self._index, name)
-
-        return Markup(self._row[name])
+        return Markup(self._row[self._columns.index(i)])
 
     def __iter__(self):
         return iter(self._row)
 
     def __len__(self):
         return len(self._row)
+
+    def __repr__(self):
+        if 'value' in self._columns:
+            return Markup(self._row[self._columns.index('value')])
+
+        return Error('COPY.%s.%s [no value column in sheet]' % (self._sheet.name, self._row[self._columns.index('key')])) 
 
 class Sheet(object):
     """
@@ -61,7 +79,7 @@ class Sheet(object):
 
     def __init__(self, name, data, columns):
         self.name = name
-        self._sheet = [Row(self, row, i) for i, row in enumerate(data)]
+        self._sheet = [Row(self, [row[c] for c in columns], columns, i) for i, row in enumerate(data)]
         self._columns = columns
 
     def __getitem__(self, i):
@@ -69,31 +87,19 @@ class Sheet(object):
         Allow dict-style item access by index (row id), or by row name ("key" column).
         """
         if isinstance(i, int):
-            if i > len(self._sheet):
-                return Row(self, {}, i)
+            if i >= len(self._sheet):
+                return Error('COPY.%s.%i [row index outside range]' % (self.name, i))
 
             return self._sheet[i]
-        else:
-            return self.__getattr__(i)
-
-    def __getattr__(self, name):
-        """
-        Allow object-style property access by row name ("key" column).
-        """
-        if name in self.__dict__:
-            return self.__dict__[name]
-
-        if not self._sheet and not self._columns:
-            return 'COPY.%s.%s [sheet does not exist]' % (self.name, name)
 
         if 'key' not in self._columns:
-            return 'COPY.%s.%s [no key column]' % (self.name, name)
+            return Error('COPY.%s.%s [no key column in sheet]' % (self.name, i))
 
         for row in self._sheet:
-            if row['key'] == name:
-                return Markup(row['value'])
+            if row['key'] == i:
+                return row 
 
-        return 'COPY.%s.%s [key does not exist]' % (self.name, name)
+        return Error('COPY.%s.%s [key does not exist in sheet]' % (self.name, i))
 
     def __iter__(self):
         return iter(self._sheet)
@@ -105,43 +111,36 @@ class Copy(object):
     """
     Wraps copy text, for multiple worksheets, for error handling.
     """
+    _filename = ''
     _copy = {}
 
-    def __init__(self):
+    def __init__(self, filename='data/copy.xls'):
+        self._filename = filename
         self.load()
 
     def __getitem__(self, name):
         """
         Allow dict-style item access by sheet name.
         """
-        return self.__getattr__(name)
+        if name not in self._copy:
+            return Error('COPY.%s [sheet does not exist]' % name)
 
-    def __getattr__(self, name):
-        """
-        Allow object-style property access by sheet name.
-        """
-        if name in self.__dict__:
-            return self.__dict__[name]
-
-        try:
-            return self._copy[name]
-        except KeyError:
-            return Sheet(name, {}, [])
+        return self._copy[name]
 
     def load(self):
         """
         Parses the downloaded .xls file and writes it as JSON.
         """
         try:
-            book = xlrd.open_workbook(COPY_XLS)
+            book = xlrd.open_workbook(self._filename)
         except IOError:
-            raise CopyException('"%s" does not exist. Have you run "fab update_copy"?' % COPY_XLS)
+            raise CopyException('"%s" does not exist. Have you run "fab update_copy"?' % self._filename)
 
         for sheet in book.sheets():
             columns = sheet.row_values(0)
             rows = []
 
-            for n in range(1, sheet.nrows):
+            for n in range(0, sheet.nrows):
                 # Sheet takes array of rows
                 rows.append(dict(zip(columns, sheet.row_values(n))))
 
