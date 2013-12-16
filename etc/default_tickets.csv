@@ -1,7 +1,7 @@
 title,body,labels
 Update ad tags,Remove tower ad unit from code if not using,Launch TODO
 Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
-Update Twitter Card tags,,Launch TODO
+Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
 Get npr.org redirect (short URL),,Launch TODO
 Create Seamus shell page and request redirect,,Launch TODO
