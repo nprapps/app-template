@@ -45,8 +45,6 @@ class CopyTestCase(unittest.TestCase):
         self.assertIsInstance(example_list[0], list)
         self.assertEqual(example_list[0], ['term', 'definition'])
 
-        print data
-
 class SheetTestCase(unittest.TestCase):
     """
     Test the Sheet object.
