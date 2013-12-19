@@ -7,11 +7,6 @@ function setup_ads() {
         googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [[300,250]], 'ad-desktop').addService(googletag.pubads());
     }
 
-    // Mobile ad slot
-    if (DFP.shouldRenderForDevice('88')) {
-        googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [88,31], 'ad-88').addService(googletag.pubads());
-    }
-
     // Story targeting
     googletag.pubads().setTargeting('storyId', APP_CONFIG.NPR_DFP.STORY_ID);
     googletag.pubads().setTargeting('testserver', APP_CONFIG.NPR_DFP.TESTSERVER);
