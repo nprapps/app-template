@@ -26,7 +26,6 @@
     {{ JS.push('js/lib/jquery-migrate.js') }}
     {{ JS.push('js/lib/html5.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/responsive-ad.js') }}
     {{ JS.push('js/ads.js') }}
     {% block extra_head_js %}{% endblock extra_head_js %}
     {{ JS.render('js/app-header.min.js') }}
@@ -94,7 +93,7 @@
                         <div id="ad-desktop" class="sponsor300">
                             <script type="text/javascript">
                             <!--
-                            if (DFP.shouldRenderForDevice('desktop')) {
+                            if (ADS.shouldRenderForDevice('desktop')) {
                                 googletag.cmd.push(function() {
                                     googletag.display('ad-desktop');
                                 });
@@ -139,7 +138,7 @@
     <div id="adhesion">
         <script type="text/javascript">
         <!--
-        if (DFP.shouldRenderForDevice('mobile')) {
+        if (ADS.shouldRenderForDevice('mobile')) {
             var ord = window.ord || Math.floor(Math.random() * 1e16);
 
             // use the smaller size for phone, the larger size for tablet
