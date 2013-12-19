@@ -47,7 +47,7 @@ def staging():
 def development():
     env.settings = 'development'
     app_config.configure_targets(None)
-    env.hosts = app_config.SERVERS 
+    env.hosts = app_config.SERVERS
 
 """
 Fabcasting! Run commands on the remote server.
@@ -329,6 +329,7 @@ def install_scout_plugins():
 def generate_new_oauth_tokens():
     tumblr_utils.generate_new_oauth_tokens()
 
+
 """
 Deployment
 
@@ -562,7 +563,7 @@ def nuke_confs():
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
             sudo('rm -f %s' % installed_path)
-            
+
             if service == 'nginx':
                 sudo('service nginx reload')
             elif service == 'uwsgi':
@@ -608,8 +609,8 @@ def app_template_bootstrap(project_name=None, repository_name=None):
 
     config = {}
     config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
-    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG'] 
-    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG'] 
+    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG']
+    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
