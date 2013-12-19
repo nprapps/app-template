@@ -23,37 +23,27 @@ ADS.isOnPhone = function() {
  * Logic to determine if we should render a certain ad.
  */
 ADS.shouldRenderForDevice = function(deviceEnv) {
-    if (!deviceEnv) {
-        return false;
-    } else {
-        var shouldRender = false;
-        var winWidth = $(window).width();
-        var winOrientation = window.orientation;
+    var shouldRender = false;
+    var winWidth = $(window).width();
 
-        switch (deviceEnv) {
-            case 'desktop':
-                var ieEightCheck = ($.browser.msie === true && ($.browser.version === '7.0' || $.browser.version === '8.0'));
-                if (ieEightCheck) {
-                    shouldRender = true;
-                } else if (!ADS.isOnTablet() && winWidth > 1024) {
-                    shouldRender = true;
-                }
-                
-                break;
-            case 'mobile':
-                if ((ADS.isOnPhone() || ADS.isOnTablet()) && winWidth >= 300 && winWidth <= 1024) {
-                    // block ads from ever showing on small-screen mobile devices
-                    if (winWidth >= 480 || winOrientation == 0 || winOrientation == 180) {
-                        shouldRender = true;
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-		//console.log(deviceEnv + ' shouldRender: ' + shouldRender);
-        return shouldRender;
+    switch (deviceEnv) {
+        case 'desktop':
+            if (!ADS.isOnTablet() && winWidth > 1024) {
+                shouldRender = true;
+            }
+            
+            break;
+        case 'mobile':
+            if ((ADS.isOnPhone() || ADS.isOnTablet())) {
+                shouldRender = true;
+            }
+
+            break;
     }
+
+    //console.log('shouldRenderForDevice(' + deviceEnv + '): ' + shouldRender);
+
+    return shouldRender;
 }
 
 
@@ -63,7 +53,18 @@ ADS.shouldRenderForDevice = function(deviceEnv) {
 ADS.setup_ads = function() {
     // Desktop ad slot
     if (ADS.shouldRenderForDevice('desktop')) {
-        googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [[300,250]], 'ad-desktop').addService(googletag.pubads());
+        googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [300,250], 'ad-desktop').addService(googletag.pubads());
+    }
+
+    // Adhesion ad slot
+    if (ADS.shouldRenderForDevice('mobile')) {
+        var size = [640, 100];
+
+        if (Modernizr.mq('only screen and (min-width: 768px)')) {
+            size = [2048, 180];
+        }
+
+        googletag.defineSlot('/6735/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET, size, 'adhesion').addService(googletag.pubads());
     }
 
     // Story targeting
@@ -110,9 +111,7 @@ ADS.setup_googletag = function() {
     node.parentNode.insertBefore(gads, node);
 };
 
-/* 
- * Execute configuration when Google is ready.
- */
+// Configure when ready
 googletag.cmd.push(function() {
     try {
         ADS.setup_ads();
@@ -121,4 +120,19 @@ googletag.cmd.push(function() {
     }
 });
 
+// Render desktop ad if needed
+if (ADS.shouldRenderForDevice('desktop')) {
+    googletag.cmd.push(function() {
+        googletag.display('ad-desktop');
+    });
+}
+
+// Render mobile ad if needed
+if (ADS.shouldRenderForDevice('mobile')) {
+    googletag.cmd.push(function() {
+        googletag.display('adhesion');
+    });
+}
+
+// Load Google
 ADS.setup_googletag();

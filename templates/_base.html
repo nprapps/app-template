@@ -91,15 +91,6 @@
                     {# 300x250 ad #}
                     <div class="adwrapper">
                         <div id="ad-desktop" class="sponsor300">
-                            <script type="text/javascript">
-                            <!--
-                            if (ADS.shouldRenderForDevice('desktop')) {
-                                googletag.cmd.push(function() {
-                                    googletag.display('ad-desktop');
-                                });
-                            }
-                            // -->
-                            </script>
                         </div>
                         <p class="left">NPR thanks our sponsors</p>
                         <p class="right"><a href="http://www.npr.org/about/place/corpsupport/">Become an NPR sponsor</a></p>
@@ -136,26 +127,6 @@
 
     {# Adhesion ad #}
     <div id="adhesion">
-        <script type="text/javascript">
-        <!--
-        if (ADS.shouldRenderForDevice('mobile')) {
-            var ord = window.ord || Math.floor(Math.random() * 1e16);
-
-            // use the smaller size for phone, the larger size for tablet
-            var sizes = '640x100';
-
-            if (Modernizr.mq('only screen and (min-width: 768px)')) {
-                sizes = '2048x180';
-            }
-
-            var targets = ';';
-            targets += 'storyId={{ NPR_DFP.STORY_ID }};';
-            targets += 'testserver={{ NPR_DFP.TESTSERVER }};';
-
-            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/{{ NPR_DFP.TARGET }}' + targets + 'sz=' + sizes + ';ord=' + ord + '?"><\/script>');
-        }
-        // -->
-        </script>
     </div>
 
     {% endblock outer_content %}
