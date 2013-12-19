@@ -3,6 +3,7 @@
 import csv
 import getpass
 import json
+import os
 import re
 
 import requests
@@ -114,3 +115,33 @@ def create_milestones(auth, filename='etc/default_milestones.csv'):
 
         requests.post(url, data=data, auth=auth) 
 
+def create_hipchat_hook(auth):
+    """
+    Sets up hipchat to notify our room when changes are made.
+    """
+    url = 'https://api.github.com/repos/%s/hooks' % get_repo_path()
+
+    print 'Creating Hipchat hook'
+
+    auth_token = os.environ.get('HIPCHAT_AUTH_TOKEN', None)
+    room = os.environ.get('HIPCHAT_ROOM_ID', None)
+
+    if (not auth_token or not room):
+        print 'Skipping! (Not configured.)'
+        return
+
+    data = json.dumps({
+        'name': 'hipchat',
+        'active': True,
+        'config': {
+            'auth_token': auth_token,
+            'restrict_to_branch': '',
+            'room': room,
+            'notify': 1,
+            'quiet_fork': 0,
+            'quiet_watch': 0,
+            'quiet_comments': 0
+        }
+    })
+
+    requests.post(url, data=data, auth=auth)

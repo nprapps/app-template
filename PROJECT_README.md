@@ -1,3 +1,7 @@
+Copyright 2013 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
+
+(Want to use this code? Send an email to nprapps@npr.org!)
+
 $NEW_PROJECT_NAME
 ========================
 
@@ -73,8 +77,8 @@ Then install the project requirements:
 
 ```
 cd $NEW_PROJECT_NAME
-npm install less universal-jst
-mkvirtualenv $NEW_PROJECT_NAME
+npm install less universal-jst -g --prefix node_modules
+mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
 
