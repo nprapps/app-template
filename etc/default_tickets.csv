@@ -1,5 +1,5 @@
 title,body,labels
-Update ad tags,Remove tower ad unit from code if not using,Launch TODO
+Update ad tags (DFP),Remove tower ad unit from code if not using; change `ENVIRONMENT` to `NPR`; change `TESTSERVER` to `false`,Launch TODO
 Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
 Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
