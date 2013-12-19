@@ -160,11 +160,13 @@
                 <div id="bigbox" class="col-md-4">
                     {# 300x250 ad #}
                     <div class="adwrapper">
-                        <div class="sponsor300">
+                        <div id="ad-desktop" class="sponsor300">
                             <script type="text/javascript">
                             <!--
                             if (DFP.shouldRenderForDevice('desktop')) {
-                                googletag.cmd.push(function() { googletag.display('ad-desktop'); });
+                                googletag.cmd.push(function() {
+                                    googletag.display('ad-desktop');
+                                });
                             }
                             // -->
                             </script>
