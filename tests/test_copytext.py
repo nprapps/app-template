@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import unittest
 
 import copytext
@@ -25,9 +26,26 @@ class CopyTestCase(unittest.TestCase):
         self.assertEquals(error._error, 'COPY.foo [sheet does not exist]')
 
     def test_json(self):
-        self.copy.json()
+        s = self.copy.json()
+        data = json.loads(s)
+    
+        self.assertTrue('attribution' in data)
+        self.assertTrue('content' in data)
+        self.assertTrue('example_list' in data)
 
-        # TODO
+        attribution = data['attribution']
+
+        self.assertIsInstance(attribution, dict)
+        self.assertTrue('byline' in attribution)
+        self.assertEqual(attribution['byline'], 'Name Here')
+
+        example_list = data['example_list']
+
+        self.assertIsInstance(example_list, list)
+        self.assertIsInstance(example_list[0], list)
+        self.assertEqual(example_list[0], ['term', 'definition'])
+
+        print data
 
 class SheetTestCase(unittest.TestCase):
     """

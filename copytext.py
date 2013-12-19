@@ -159,7 +159,7 @@ class Copy(object):
                 obj[name] = {}
 
                 for row in sheet:
-                    obj[name][row['key']] = row._row['value']
+                    obj[name][row['key']] = row['value']
             else:
                 obj[name] = []
                 
