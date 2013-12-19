@@ -154,8 +154,9 @@ def configure_targets(deployment_target):
     global SERVERS
     global SERVER_BASE_URL
     global DEBUG
-    global CHAT
+
     global DEPLOYMENT_TARGET
+    global CHAT
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS

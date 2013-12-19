@@ -2,6 +2,7 @@ $(function() {
     // Constants for the live chat/widget
     // Caching some DOM objects
     var $live = $('#live-chat');
+
     var context = $.extend(APP_CONFIG, {
         'template_path': 'jst/example.html',
         'config': JSON.stringify(APP_CONFIG, null, 4),
