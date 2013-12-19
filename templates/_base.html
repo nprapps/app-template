@@ -103,19 +103,19 @@
     {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@nprapps">
-    <meta name="twitter:image" content="{{ TWITTER.IMAGE_URL }}" />
+    <meta name="twitter:image" content="{{ TWITTER_IMAGE_URL }}" />
 
     {# Facebook #}
-    <meta property="og:title" content="{{ FACEBOOK.TITLE }}" />
-    <meta property="og:url" content="{{ FACEBOOK.URL }}" />
+    <meta property="og:title" content="{{ COPY.sharing.facebook_title }}" />
+    <meta property="og:url" content="{{ SHARE_URL }}" />
     <meta property="og:type" content="article" />
-    <meta property="og:description" content="{{ FACEBOOK.DESCRIPTION }}" />
-    <meta property="og:image" content="{{ FACEBOOK.IMAGE_URL }}" />
+    <meta property="og:description" content="{{ COPY.sharing.facebook_text }}" />
+    <meta property="og:image" content="{{ FACEBOOK_IMAGE_URL }}" />
     <meta property="og:site_name" content="NPR.org" />
-    <meta property="fb:app_id" content="{{ FACEBOOK.APP_ID }}" />
+    <meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}" />
 
     {# Google News #}
-    <meta name="thumbnail" content="{{ GOOGLE.IMAGE_URL }}" />
+    <meta name="thumbnail" content="{{ GOOGLE_IMAGE_URL }}" />
 
     {% block extra_head %}
     {% endblock extra_head %}
@@ -133,8 +133,8 @@
             <li class="listen"><a href="http://www.npr.org/listen/">Listen</a></li>
         </ul>
         <ul class="social-links">
-            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ TWITTER.TEXT|urlencode }}&amp;url={{ TWITTER.URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
-            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK.APP_ID }}&amp;link={{ FACEBOOK.URL|urlencode }}&amp;name={{ FACEBOOK.TITLE|urlencode }}&amp;picture={{ FACEBOOK.IMAGE_URL|urlencode }}&amp;redirect_uri={{ FACEBOOK.URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
+            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.sharing.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK_APP_ID }}&amp;link={{ SHARE_URL|urlencode }}&amp;name={{ COPY.sharing.facebook_title|urlencode }}&amp;picture={{ FACEBOOK_IMAGE_URL|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
         </ul>
         <ul class="site-links-2">
             <li class="stations"><a href="http://www.npr.org/templates/stations/stations/">Stations</a></li>
