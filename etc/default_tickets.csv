@@ -1,7 +1,7 @@
 title,body,labels
-Update ad tags,,Launch TODO
-Update Facebook Open Graph tags,,Launch TODO
-Update Twitter Card tags,,Launch TODO
+Update ad tags,Remove tower ad unit from code if not using,Launch TODO
+Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
+Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
 Get npr.org redirect (short URL),,Launch TODO
 Create Seamus shell page and request redirect,,Launch TODO
@@ -24,8 +24,11 @@ Let Tumblr know we're launching,,Launch TODO
 DevOps: Enable scout monitor for /<project_slug>/test/,,Launch TODODevOps: Enable scout monitor for /<project_slug>/test/,,Launch TODO
 Write the team blog post,,Launch TODO
 Update master sitemaps index and redeploy,,Launch TODO
-Email Emerson in marketing,,Launch TODO
+Email Emerson in marketing re: press releasees,,Launch TODO
 Schedule iteration reviews,,Project Management
 Schedule sprint planning meetings,,Project Management
 Schedule sprint retrospectives,,Project Management
 Setup Hipchat service hook on github,,
+Let the copy desk know an app is coming,,
+Make sure the copy desk is happy,,Launch TODO
+Let the homepage team know an app is coming,,
