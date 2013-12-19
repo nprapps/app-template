@@ -1,3 +1,9 @@
+NPR = {};
+NPR.PageInfo = {};
+NPR.PageInfo.getUrlParameter = function (param) {
+    return false;
+};
+
 function AddNamespace(namespacePath) {
 	var rootObject = window;
 	var namespaceParts = namespacePath.split('.');
