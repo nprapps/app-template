@@ -97,8 +97,8 @@ FACEBOOK_APP_ID = '138837436154588'
 GOOGLE_IMAGE_URL = TWITTER_IMAGE_URL
 
 NPR_DFP = {
-    'STORY_ID': '203618536',
-    'TARGET': 'News_NPR_News_Investigations',
+    'STORY_ID': '1002',
+    'TARGET': 'homepage',
     'ENVIRONMENT': 'NPRTEST',
     'TESTSERVER': 'true'
 }
