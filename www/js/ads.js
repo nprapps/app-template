@@ -4,22 +4,22 @@
 function setup_ads() {
     // Desktop ad slot
     if (DFP.shouldRenderForDevice('desktop')) {
-        googletag.defineSlot("/6735/n6735.{{ NPR_DFP.ENVIRONMENT }}/{{ NPR_DFP.TARGET }}", [[300,250]], 'ad-desktop').addService(googletag.pubads());
+        googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [[300,250]], 'ad-desktop').addService(googletag.pubads());
     }
 
     // Mobile ad slot
     if (DFP.shouldRenderForDevice('88')) {
-        googletag.defineSlot("/6735/n6735.{{ NPR_DFP.ENVIRONMENT }}/{{ NPR_DFP.TARGET }}", [88,31], 'ad-88').addService(googletag.pubads());
+        googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [88,31], 'ad-88').addService(googletag.pubads());
     }
 
     // Story targeting
-    googletag.pubads().setTargeting('storyId', '{{ NPR_DFP.STORY_ID }}');
-    googletag.pubads().setTargeting('testserver', '{{ NPR_DFP.TESTSERVER }}');
+    googletag.pubads().setTargeting('storyId', APP_CONFIG.NPR_DFP.STORY_ID);
+    googletag.pubads().setTargeting('testserver', APP_CONFIG.NPR_DFP.TESTSERVER);
 
     // Device
     var ua = navigator.userAgent.toLowerCase();
 
-    if (ua.indexOf("android") > -1) {
+    if (ua.indexOf('android') > -1) {
         googletag.pubads().setTargeting('device', 'android');
     } else if (ua.match(/(iPad|iPhone|iPod)/i)) {
         googletag.pubads().setTargeting('device', 'ios');
