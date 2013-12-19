@@ -43,10 +43,6 @@ if ('ontouchstart' in document.documentElement) {
 	if (winWidth <= 767) {
 		$('html').addClass('NPRphone');
 	}
-    // No box ad when we have adhesion, so #header gets 12 columns
-    if (winWidth <= 1024){
-        $('#header').removeClass('span8').addClass('span12');
-    }
 }
 if (NPR.PageInfo.getUrlParameter('device') == 'tablet') {
 	$('html').addClass('NPRtablet');
@@ -77,6 +73,11 @@ $(document).ready(function () {
 			});
 		}, 500);
 	}
+
+    // No box ad when we have adhesion, so #main-content gets 12 columns
+    if (window.innerWidth <= 1024){
+        $('#main-content').removeClass('col-md-8').addClass('col-md-12');
+    }
 });
 
 var DFP = {};
@@ -229,3 +230,16 @@ DFP.setCookieVal = function() {
     var expires = "; expires="+date.toGMTString();
     document.cookie = "sponsorcap=true"+expires+"; path=/";
 }
+
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+    var gads = document.createElement('script');
+    gads.async = true;
+    gads.type = 'text/javascript';
+    var useSSL = 'https:' == document.location.protocol;
+    gads.src = (useSSL ? 'https:' : 'http:') +
+        '//www.googletagservices.com/tag/js/gpt.js';
+    var node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(gads, node);
+})();

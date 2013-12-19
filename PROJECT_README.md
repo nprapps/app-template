@@ -1,3 +1,7 @@
+Copyright 2013 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
+
+(Want to use this code? Send an email to nprapps@npr.org!)
+
 $NEW_PROJECT_NAME
 ========================
 
@@ -17,6 +21,7 @@ $NEW_PROJECT_NAME
 * [Deploy to EC2](#deploy-to-ec2)
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
+* [Run a remote fab command](#run-a-remote-fab-command)
 
 What is this?
 -------------
@@ -31,6 +36,8 @@ The following things are assumed to be true in this documentation.
 * You are running OSX.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
+
+For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
 What's in here?
 ---------------
@@ -70,8 +77,8 @@ Then install the project requirements:
 
 ```
 cd $NEW_PROJECT_NAME
-npm install less universal-jst
-mkvirtualenv $NEW_PROJECT_NAME
+npm install less universal-jst -g --prefix node_modules
+mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 pip install -r requirements.txt
 ```
 
@@ -187,18 +194,23 @@ fab staging master deploy
 
 Deploy to EC2
 -------------
-You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic Web application and executing cron jobs.
+
+You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic web application (`public_app.py`) and executing cron jobs (`crontab`).
+
+Servers capable of running the app can be setup using our [servers](https://github.com/nprapps/servers) project.
 
 For running a Web application:
-* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Also in ``fabfile.py`` set ``env.deploy_web_services`` to ``True``.
-* Run ``fab staging master setup`` to configure the server.
+
+* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
+* Also in ``app_config.py`` set ``DEPLOY_WEB_SERVICES`` to ``True``.
+* Run ``fab staging master setup_server`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 For running cron jobs:
-* In ``fabfile.py`` set ``env.deploy_to_servers`` to ``True``.
-* Also in ``fabfile.py``, set ``env.install_crontab`` to ``True``.
-* Run ``fab staging master setup`` to configure the server.
+
+* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
+* Also in ``app_config.py``, set ``INSTALL_CRONTAB`` to ``True``
+* Run ``fab staging master setup_server`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
@@ -214,14 +226,14 @@ Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` 
 
 **Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
-To install your crontab set `env.install_crontab` to `True` at the top of `fabfile.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
 
 Install web services
 ---------------------
 
-Web services are configured in the `confs/` folder. Currently, there are two: `nginx.conf` and `uwsgi.conf`.
+Web services are configured in the `confs/` folder. 
 
-Running ``fab setup`` will deploy your confs if you have set ``env.deploy_to_servers`` and ``env.deploy_web_services`` both to ``True`` at the top of ``fabfile.py``.
+Running ``fab setup_server`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
 To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
 
@@ -234,3 +246,14 @@ You can also deploy the configuration files independently of the setup command b
 ```
 fab deploy_confs
 ```
+
+Run a  remote fab command
+-------------------------
+
+Sometimes it makes sense to run a fabric command on the server, for instance, when you need to render using a production database. You can do this with the `fabcast` fabric command. For example:
+
+```
+fab staging master fabcast:deploy
+```
+
+If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.

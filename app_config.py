@@ -16,24 +16,35 @@ NAMES
 # Project name used for display
 PROJECT_NAME = '$NEW_PROJECT_NAME'
 
-# Project name used for paths on the filesystem and in urls
-# Use dashes, not underscores
+# Project name in urls
+# Use dashes, not underscores!
 PROJECT_SLUG = '$NEW_PROJECT_SLUG'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
+REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
+REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
+
+# The name to be used in paths on the server
+PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 """
 DEPLOYMENT
 """
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
-PRODUCTION_SERVERS = ['cron.nprapps.org']
-
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
+
+PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
 
 # Should code be deployed to the web/cron servers?
 DEPLOY_TO_SERVERS = False
+
+SERVER_USER = 'ubuntu'
+SERVER_PYTHON = 'python2.7'
+SERVER_PROJECT_PATH = '/home/%s/apps/%s' % (SERVER_USER, PROJECT_FILENAME)
+SERVER_REPOSITORY_PATH = '%s/repository' % SERVER_PROJECT_PATH
+SERVER_VIRTUALENV_PATH = '%s/virtualenv' % SERVER_PROJECT_PATH
 
 # Should the crontab file be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
@@ -43,9 +54,24 @@ DEPLOY_CRONTAB = False
 # If True, DEPLOY_TO_SERVERS must also be True
 DEPLOY_SERVICES = False
 
+UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
+UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
+APP_LOG_PATH = '/var/log/%s.app.log' % PROJECT_FILENAME
+
+# Services are the server-side services we want to enable and configure.
+# A three-tuple following this format:
+# (service name, service deployment path, service config file extension)
+SERVER_SERVICES = [
+    ('app', SERVER_REPOSITORY_PATH, 'ini'),
+    ('uwsgi', '/etc/init', 'conf'),
+    ('nginx', '/etc/nginx/locations-enabled', 'conf'),
+]
+
 # These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
+S3_BASE_URL = ''
 SERVERS = []
+SERVER_BASE_URL = ''
 DEBUG = True
 
 """
@@ -59,23 +85,33 @@ SHARING
 PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-
 TWITTER = {
     'TEXT': PROJECT_NAME,
-    'URL': SHARE_URL
+    'URL': SHARE_URL,
+    # Will be resized to 120x120, can't be larger than 1MB
+    'IMAGE_URL': ''
 }
 
 FACEBOOK = {
     'TITLE': PROJECT_NAME,
     'URL': SHARE_URL,
     'DESCRIPTION': PROJECT_DESCRIPTION,
-    'IMAGE_URL': '',
+    # Should be square. No documented restrictions on size
+    'IMAGE_URL': TWITTER['IMAGE_URL'],
     'APP_ID': '138837436154588'
 }
 
+GOOGLE = {
+    # Thumbnail image for Google News / Search.
+    # No documented restrictions on resolution or size
+    'IMAGE_URL': TWITTER['IMAGE_URL']
+}
+
 NPR_DFP = {
-    'STORY_ID': '171421875',
-    'TARGET': '\/news_politics;storyid=171421875'
+    'STORY_ID': '203618536',
+    'TARGET': 'News_NPR_News_Investigations',
+    'ENVIRONMENT': 'NPRTEST',
+    'TESTSERVER': 'true'
 }
 
 """
@@ -96,20 +132,15 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
-    env_var_prefix = PROJECT_SLUG.replace('-', '')
-
     secrets = [
-        '%s_TUMBLR_APP_KEY' % env_var_prefix,
-        '%s_TUMBLR_OAUTH_TOKEN' % env_var_prefix,
-        '%s_TUMBLR_OAUTH_TOKEN_SECRET' % env_var_prefix,
-        '%s_TUMBLR_APP_SECRET' % env_var_prefix
+        'EXAMPLE_SECRET'
     ]
 
     secrets_dict = {}
 
     for secret in secrets:
-        # Saves the secret with the old name.
-        secrets_dict[secret.replace('%s_' % env_var_prefix, '')] = os.environ.get(secret, None)
+        name = '%s_%s' % (PROJECT_FILENAME, secret)
+        secrets_dict[secret] = os.environ.get(name, None)
 
     return secrets_dict
 
@@ -119,22 +150,38 @@ def configure_targets(deployment_target):
     overriden for rendering before deployment.
     """
     global S3_BUCKETS
+    global S3_BASE_URL
     global SERVERS
+    global SERVER_BASE_URL
     global DEBUG
     global CHAT
+    global DEPLOYMENT_TARGET
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
+        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DEBUG = False
-
         CHAT['ID'] = '78919'
-    else:
-        S3_BUCKETS = STAGING_S3_BUCKETS
-        SERVERS = STAGING_SERVERS
-        DEBUG = True
 
+    elif deployment_target == 'staging':
+        S3_BUCKETS = STAGING_S3_BUCKETS
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
+        SERVERS = STAGING_SERVERS
+        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        DEBUG = True
+        CHAT['ID'] = '78919'
+
+    else:
+        S3_BUCKETS = []
+        S3_BASE_URL = 'http://127.0.0.1:8000'
+        SERVERS = []
+        SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        DEBUG = True
         CHAT['ID'] = '74796'
+
+    DEPLOYMENT_TARGET = deployment_target
 
 """
 Run automated configuration

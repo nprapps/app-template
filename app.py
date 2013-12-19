@@ -8,6 +8,7 @@ import envoy
 from flask import Flask, Markup, abort, render_template
 
 import app_config
+import copytext
 from render_utils import flatten_app_config, make_context
 
 app = Flask(app_config.PROJECT_NAME)
@@ -31,6 +32,10 @@ def test_widget():
     """
     return render_template('test_widget.html', **make_context())
 
+@app.route('/test/test.html')
+def test_dir():
+    return render_template('index.html', **make_context())
+
 # Render LESS files on-demand
 @app.route('/less/<string:filename>')
 def _less(filename):
@@ -40,14 +45,14 @@ def _less(filename):
     except IOError:
         abort(404)
 
-    r = envoy.run('node_modules/.bin/lessc -', data=less)
+    r = envoy.run('node_modules/bin/lessc -', data=less)
 
     return r.std_out, 200, { 'Content-Type': 'text/css' }
 
 # Render JST templates on-demand
 @app.route('/js/templates.js')
 def _templates_js():
-    r = envoy.run('node_modules/.bin/jst --template underscore jst')
+    r = envoy.run('node_modules/bin/jst --template underscore jst')
 
     return r.std_out, 200, { 'Content-Type': 'application/javascript' }
 
@@ -58,6 +63,13 @@ def _app_config_js():
     js = 'window.APP_CONFIG = ' + json.dumps(config)
 
     return js, 200, { 'Content-Type': 'application/javascript' }
+
+# Render copytext
+@app.route('/js/copy.js')
+def _copy_js():
+    copy = 'window.COPY = ' + copytext.Copy().json()
+
+    return copy, 200, { 'Content-Type': 'application/javascript' }
 
 # Server arbitrary static files on-demand
 @app.route('/<path:path>')
@@ -82,4 +94,14 @@ def urlencode_filter(s):
     return Markup(s)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=app_config.DEBUG)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port')
+    args = parser.parse_args()
+    server_port = 8000
+
+    if args.port:
+        server_port = int(args.port)
+
+    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
