@@ -317,7 +317,6 @@ def bootstrap():
     import app_config
 
     local('npm install less universal-jst -g --prefix node_modules')
-    local('mkvirtualenv --no-site-packages %(PROJECT_NAME)s' % app_config.__dict__)
     local('pip install -r requirements.txt')
     local('ln -s ~/Dropbox/nprapps/assets/%(PROJECT_NAME)s/ www/assets' % app_config.__dict__)
 
