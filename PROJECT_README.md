@@ -10,11 +10,11 @@ $NEW_PROJECT_NAME
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Project secrets](#project-secrets)
-* [Adding a template/view](#adding-a-templateview)
-* [Run the project locally](#run-the-project-locally)
-* [Editing workflow](#editing-workflow)
-* [Run Javascript tests](#run-javascript-tests)
+* [Add a page to the site](#add-a-page-to-the-site)
+* [Run the project](#run-the-project)
+* [COPY editing](#copy-editing)
 * [Run Python tests](#run-python-tests)
+* [Run Javascript tests](#run-javascript-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
@@ -88,17 +88,17 @@ Project secrets
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
 
-Adding a template/view
-----------------------
+Adding a page to the site 
+-------------------------
 
-A site can have any number of rendered templates (i.e. pages). Each will need a corresponding view. To create a new one:
+A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
 
 * Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
 * Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
 * By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
-Run the project locally
------------------------
+Run the project
+---------------
 
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
@@ -109,19 +109,21 @@ python app.py
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-Editing workflow
--------------------
+COPY editing
+------------
 
-The app uses Google Docs for a simple key/value store that provides an editing workflow.
+This app uses a Google Spreadsheet for a simple key/value store that provides an editing workflow.
 
-View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
+View the [sample copy spreadsheet](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0).
+
+This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
+
+A few things to note:
 
 * If there is a column called ``key``, there is expected to be a column called ``value`` and rows will be accessed in templates as key/value pairs
 * Rows may also be accessed in templates by row index using iterators (see below)
 * You may have any number of worksheets
 * This document must be "published to the web" using Google Docs' interface
-
-This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
 
 The app template is outfitted with a few ``fab`` utility functions that make pulling changes and updating your local data easy.
 
@@ -154,15 +156,15 @@ You may also access rows using iterators. In this case, the column headers of th
 {% endfor %}
 ```
 
-Run Javascript tests
---------------------
-
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
-
 Run Python tests
 ----------------
 
 Python unit tests are stored in the ``tests`` directory. Run them with ``fab tests``.
+
+Run Javascript tests
+--------------------
+
+With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
 
 Compile static assets
 ---------------------
