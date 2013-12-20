@@ -100,7 +100,7 @@ NPR_DFP = {
     'STORY_ID': '1002',
     'TARGET': 'homepage',
     'ENVIRONMENT': 'NPRTEST',
-    'TESTSERVER': 'true'
+    'TESTSERVER': 'false'
 }
 
 """

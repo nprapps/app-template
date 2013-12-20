@@ -57,15 +57,17 @@ ADS.setup_ads = function() {
     }
 
     // Adhesion ad slot
-    if (ADS.shouldRenderForDevice('mobile')) {
+    // NB: Using ad slots for adhesion doesn't work for reasons that are unclear
+    // The NPR.org homepage doesn't do it this way either
+    /*if (ADS.shouldRenderForDevice('mobile')) {
         var size = [640, 100];
 
-        if (Modernizr.mq('only screen and (min-width: 768px)')) {
+        //if (Modernizr.mq('only screen and (min-width: 768px)')) {
             size = [2048, 180];
-        }
+        //}
 
         googletag.defineSlot('/6735/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET, size, 'adhesion').addService(googletag.pubads());
-    }
+    }*/
 
     // Story targeting
     googletag.pubads().setTargeting('storyId', APP_CONFIG.NPR_DFP.STORY_ID);
@@ -128,11 +130,24 @@ if (ADS.shouldRenderForDevice('desktop')) {
 }
 
 // Render mobile ad if needed
-if (ADS.shouldRenderForDevice('mobile')) {
+/*if (ADS.shouldRenderForDevice('mobile')) {
+    // NB: Using ad slots for adhesion doesn't work for reasons that are unclear
+    // The NPR.org homepage doesn't do it this way either
     googletag.cmd.push(function() {
         googletag.display('adhesion');
     });
-}
+
+    var ord = Math.floor(Math.random() * 1e16);
+                
+    // use the smaller size for phone, the larger size for tablet
+    var size = '640x100';
+
+    if (Modernizr.mq('only screen and (min-width: 768px)')) {
+        size = '2048x180';
+    }
+    
+    $('#adhesion').append('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + ';testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
+}*/
 
 // Load Google
 ADS.setup_googletag();

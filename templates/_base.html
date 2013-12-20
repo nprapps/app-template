@@ -113,10 +113,6 @@
         </div>
     </footer>
 
-    {# Adhesion ad #}
-    <div id="adhesion">
-    </div>
-
     {% endblock outer_content %}
 
     {{ JS.push('js/lib/jquery.js') }}
@@ -136,6 +132,24 @@
 
     {% block extra_foot %}
     {% endblock extra_foot %}
+
+    {# Adhesion ad #}
+    <div id="adhesion">
+        <script type="text/javascript">
+         if (ADS.shouldRenderForDevice('mobile')) {
+            var ord = Math.floor(Math.random() * 1e16);
+
+            // use the smaller size for phone, the larger size for tablet
+            var size = '640x100';
+
+            if (Modernizr.mq('only screen and (min-width: 768px)')) {
+                size = '2048x180';
+            }
+
+            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/{{ NPR_DFP.TARGET }};storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + 'testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
+        }
+        </script>
+    </div>
 
     <!-- GOOGLE ANALYTICS -->
     <script type="text/javascript">
