@@ -8,7 +8,7 @@ $NEW_PROJECT_NAME
 * [What is this?](#what-is-this)
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
-* [Install requirements](#install-requirements)
+* [Bootstrap the project](#bootstrap-the-project)
 * [Project secrets](#project-secrets)
 * [Adding a template/view](#adding-a-templateview)
 * [Run the project locally](#run-the-project-locally)
@@ -53,6 +53,7 @@ The project contains the following folders and important files:
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
+* ``www/assets`` -- A symlink to a Dropbox folder containing binary assets (images, audio).
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
@@ -64,8 +65,8 @@ The project contains the following folders and important files:
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
 
-Install requirements
---------------------
+Bootstrap the project
+---------------------
 
 Node.js is required for the static asset pipeline. If you don't already have it, get it like this:
 
@@ -111,7 +112,7 @@ Visit [localhost:8000](http://localhost:8000) in your browser.
 Editing workflow
 -------------------
 
-The app is rigged up to Google Docs for a simple key/value store that provides an editing workflow.
+The app uses Google Docs for a simple key/value store that provides an editing workflow.
 
 View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
 
