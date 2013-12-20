@@ -298,6 +298,13 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+def import_issues(path):
+    """
+    Import a list of a issues from any CSV formatted like default_tickets.csv.
+    """
+    auth = github.get_auth()
+    github.create_tickets(auth, path)
+
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
