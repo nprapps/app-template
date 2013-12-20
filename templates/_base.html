@@ -18,17 +18,6 @@
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
-    <!-- JS -->
-    {{ JS.push('js/app_config.js') }}
-    {{ JS.push('js/copy.js') }}
-    {{ JS.push('js/console.js') }}
-    {{ JS.push('js/lib/jquery.js') }}
-    {{ JS.push('js/lib/html5.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/ads.js') }}
-    {% block extra_head_js %}{% endblock extra_head_js %}
-    {{ JS.render('js/app-header.min.js') }}
-
     {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@nprapps">
@@ -130,12 +119,19 @@
 
     {% endblock outer_content %}
 
+    {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
-    {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
-    {% block extra_foot_js %}{% endblock extra_foot_js %}
+    {{ JS.push('js/lib/html5.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/console.js') }}
+    {{ JS.push('js/ads.js') }}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}
 
     {% block extra_foot %}

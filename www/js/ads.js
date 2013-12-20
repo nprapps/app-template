@@ -41,7 +41,7 @@ ADS.shouldRenderForDevice = function(deviceEnv) {
             break;
     }
 
-    console.log('shouldRenderForDevice(' + deviceEnv + '): ' + shouldRender);
+    //console.log('shouldRenderForDevice(' + deviceEnv + '): ' + shouldRender);
 
     return shouldRender;
 }
