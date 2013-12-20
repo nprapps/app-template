@@ -9,7 +9,8 @@ $NEW_PROJECT_NAME
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
-* [Project secrets](#project-secrets)
+* [Hide project secrets](#hide-project-secrets)
+* [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
 * [COPY editing](#copy-editing)
@@ -83,10 +84,17 @@ mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 fab bootstrap
 ```
 
-Project secrets
----------------
+Hide project secrets
+--------------------
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
+
+Save media assets
+-----------------
+
+Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``.
+
+These assets will be deployed, but will not be committed to the repository. This is both make cloning the repository faster and also to make it easier to open source new projects.
 
 Adding a page to the site 
 -------------------------
