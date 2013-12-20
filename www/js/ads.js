@@ -46,7 +46,6 @@ ADS.shouldRenderForDevice = function(deviceEnv) {
     return shouldRender;
 }
 
-
 /*
  * Configure our ad slots and targeting.
  */
