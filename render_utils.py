@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+import glob
+import os
+import time
+
 from cssmin import cssmin
 from flask import Markup, g, render_template, request
 from slimit import minify
@@ -52,6 +56,17 @@ class Includer(object):
     def render(self, path):
         if getattr(g, 'compile_includes', False):
             out_filename = 'www/%s' % path
+
+            # Add a timestamp to the rendered filename to prevent caching
+            timestamp = int(time.time())
+            front, back = out_filename.rsplit('.', 1)
+            out_filename = '%s.%i.%s' % (front, timestamp, back)
+
+            # Delete old rendered versions, just to be tidy
+            old_versions = glob.glob('%s.*.%s' % (front, back))
+            
+            for f in old_versions:
+                os.remove(f)
 
             if out_filename not in g.compiled_includes:
                 print 'Rendering %s' % out_filename
