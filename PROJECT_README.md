@@ -36,6 +36,7 @@ The following things are assumed to be true in this documentation.
 * You are running OSX.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
+* You have Dropbox installed and mounted at `~/Dropbox` (the default location) and you have the `nprapps` folder synchronized.
 
 For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
@@ -73,13 +74,10 @@ brew install node
 curl https://npmjs.org/install.sh | sh
 ```
 
-Then install the project requirements:
+Then bootstrap the project:
 
 ```
 cd $NEW_PROJECT_NAME
-npm install less universal-jst -g --prefix node_modules
-mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
-pip install -r requirements.txt
 fab bootstrap
 ```
 

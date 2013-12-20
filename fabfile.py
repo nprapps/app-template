@@ -121,6 +121,12 @@ def update_copy():
     """
     download_copy()
 
+def update_data():
+    """
+    Stub function for updating app-specific data.
+    """
+    pass
+
 def app_config_js():
     """
     Render app_config.js to file.
@@ -152,6 +158,7 @@ def render():
     from flask import g
 
     update_copy()
+    update_data()
     less()
     jst()
 
@@ -304,9 +311,18 @@ def bootstrap_issues():
 
 def bootstrap():
     """
-    Bootstrap the local data for this project.
+    Bootstrap this project. Should only need to be run once.
     """
+    # Reimport app_config in case this is part of the app_template bootstrap
+    import app_config
+
+    local('npm install less universal-jst -g --prefix node_modules')
+    local('mkvirtualenv --no-site-packages %(PROJECT_NAME)s' % app_config.__dict__)
+    local('pip install -r requirements.txt')
+    local('ln -s ~/Dropbox/nprapps/assets/%(PROJECT_NAME)s/ www/assets' % app_config.__dict__)
+
     update_copy()
+    update_data()
 
 """
 Deployment
@@ -551,7 +567,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
     local('git push -u origin master')
+    
+    local('mkdir ~/Dropbox/nprapps/assets/%s' % config['$NEW_PROJECT_NAME'])
 
-    local('npm install less universal-jst -g --prefix node_modules')
-
-    update_copy()
+    bootstrap()
