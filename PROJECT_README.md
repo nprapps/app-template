@@ -92,7 +92,7 @@ Project secrets should **never** be stored in ``app_config.py`` or anywhere else
 Save media assets
 -----------------
 
-Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``.
+Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``. This folder is symlinked to ``www/assets`` during the bootstrap process.
 
 These assets will be deployed, but will not be committed to the repository. This is both make cloning the repository faster and also to make it easier to open source new projects.
 
