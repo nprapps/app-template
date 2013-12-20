@@ -18,7 +18,7 @@ This codebase is licensed under the [MIT open source license](http://opensource.
 
 Please note: logos, fonts and other media referenced via url from this template are **not** covered by this license. Do not republish NPR media assets without written permission. Open source libraries in this repository are redistributed for convenience and are each governed by their own license.
 
-**Please note:** Though open source, This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+Also note: Though open source, This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
 
 Assumptions
 -----------
