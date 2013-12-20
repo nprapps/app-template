@@ -1,7 +1,6 @@
 var ADS = {};
 var googletag = { cmd: [] };
 
-
 /*
  * Configure our ad slots and targeting.
  */
