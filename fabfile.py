@@ -302,6 +302,12 @@ def bootstrap_issues():
     github.create_milestones(auth)
     github.create_hipchat_hook(auth)
 
+def bootstrap():
+    """
+    Bootstrap the local data for this project.
+    """
+    update_copy()
+
 """
 Deployment
 
