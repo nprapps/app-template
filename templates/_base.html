@@ -13,109 +13,45 @@
     <!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
-    <!-- AD CODE -->
-    <script>
-        NPR = {};
-        NPR.PageInfo = {};
-        NPR.PageInfo.getUrlParameter = function (param) {
-            return false;
-        };
-    </script>
-
-    <!-- JS -->
-    {{ JS.push('js/app_config.js') }}
-    {{ JS.push('js/copy.js') }}
-    {{ JS.push('js/console.js') }}
-    {{ JS.push('js/lib/jquery-1.10.2.js') }}
-    {{ JS.push('js/lib/html5.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/responsive-ad.js') }}
-    {% block extra_head_js %}{% endblock extra_head_js %}
-    {{ JS.render('js/app-header.min.js') }}
-
-    <script>
-        googletag.cmd.push(function() {
-            try {
-
-                if (DFP.shouldRenderForDevice('desktop')) {
-                    googletag.defineSlot("/6735/n6735.{{ NPR_DFP.ENVIRONMENT }}/{{ NPR_DFP.TARGET }}", [[300,250],[300,600]], 'ad-desktop').addService(googletag.pubads());
-                }
-                if (DFP.shouldRenderForDevice('88')) {
-                    googletag.defineSlot("/6735/n6735.{{ NPR_DFP.ENVIRONMENT }}/{{ NPR_DFP.TARGET }}", [88,31], 'ad-88').addService(googletag.pubads());
-                }
-
-                googletag.pubads().setTargeting('storyId', '{{ NPR_DFP.STORY_ID }}');
-                googletag.pubads().setTargeting('testserver', '{{ NPR_DFP.TESTSERVER }}');
-
-                // device detection to send to ad server
-                var deviceString = '';
-                var ua = navigator.userAgent.toLowerCase();
-                if (ua.indexOf("android") > -1) {
-                    googletag.pubads().setTargeting('device', 'android');
-                }
-                else if (ua.match(/(iPad|iPhone|iPod)/i)) {
-                    googletag.pubads().setTargeting('device', 'ios');
-                }
-
-
-
-                if (typeof DFP.queryParameters.sc === 'string' && DFP.queryParameters.sc.length > 0) {
-                    scValue = DFP.queryParameters.sc;
-                }
-                else if (typeof document.referrer === 'string' && document.referrer.search('facebook.com') > -1) {
-                    scValue = 'fb';
-                }
-                else if (typeof DFP.queryParameters.ft === 'string') {
-                    scValue = DFP.queryParameters.ft;
-                }
-                googletag.pubads().setTargeting('sc', scValue);
-
-
-                var utm_source = typeof DFP.queryParameters.utm_source === 'string' && DFP.queryParameters.utm_source.length > 0?DFP.queryParameters.utm_source:'';
-                var utm_medium = typeof DFP.queryParameters.utm_medium === 'string' && DFP.queryParameters.utm_medium.length > 0?DFP.queryParameters.utm_medium:'';
-                googletag.pubads().setTargeting('utm_source', utm_source);
-                googletag.pubads().setTargeting('utm_medium', utm_medium);
-
-                var orient = '';
-                if (NPR.Devices.isOnPhone() || NPR.Devices.isOnTablet()) {
-                    if (window.orientation == 0 || window.orientation == 180) {
-                        orient = 'portrait';
-                    } else if (window.orientation == 90 || window.orientation == -90) {
-                        orient = 'landscape';
-                    }
-                }
-                googletag.pubads().setTargeting('orient', orient);
-
-                googletag.pubads().enableSingleRequest();
-                googletag.pubads().collapseEmptyDivs();
-                googletag.enableServices();
-            } catch(e) {
-                NPR.messaging.exception(e, 'Define Google Publisher Tags', NPR.messaging.constants.SPONSORSHIP_ERROR);
-            }
-        });
-    </script>
-
     {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@nprapps">
-    <meta name="twitter:image" content="{{ TWITTER.IMAGE_URL }}" />
+    <meta name="twitter:image" content="{{ TWITTER_IMAGE_URL }}" />
 
     {# Facebook #}
-    <meta property="og:title" content="{{ FACEBOOK.TITLE }}" />
-    <meta property="og:url" content="{{ FACEBOOK.URL }}" />
+    <meta property="og:title" content="{{ COPY.sharing.facebook_title }}" />
+    <meta property="og:url" content="{{ SHARE_URL }}" />
     <meta property="og:type" content="article" />
-    <meta property="og:description" content="{{ FACEBOOK.DESCRIPTION }}" />
-    <meta property="og:image" content="{{ FACEBOOK.IMAGE_URL }}" />
+    <meta property="og:description" content="{{ COPY.sharing.facebook_text }}" />
+    <meta property="og:image" content="{{ FACEBOOK_IMAGE_URL }}" />
     <meta property="og:site_name" content="NPR.org" />
-    <meta property="fb:app_id" content="{{ FACEBOOK.APP_ID }}" />
+    <meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}" />
 
     {# Google News #}
-    <meta name="thumbnail" content="{{ GOOGLE.IMAGE_URL }}" />
+    <meta name="thumbnail" content="{{ GOOGLE_IMAGE_URL }}" />
 
     {% block extra_head %}
     {% endblock extra_head %}
@@ -133,8 +69,8 @@
             <li class="listen"><a href="http://www.npr.org/listen/">Listen</a></li>
         </ul>
         <ul class="social-links">
-            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ TWITTER.TEXT|urlencode }}&amp;url={{ TWITTER.URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
-            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK.APP_ID }}&amp;link={{ FACEBOOK.URL|urlencode }}&amp;name={{ FACEBOOK.TITLE|urlencode }}&amp;picture={{ FACEBOOK.IMAGE_URL|urlencode }}&amp;redirect_uri={{ FACEBOOK.URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
+            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.sharing.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK_APP_ID }}&amp;link={{ SHARE_URL|urlencode }}&amp;name={{ COPY.sharing.facebook_title|urlencode }}&amp;picture={{ FACEBOOK_IMAGE_URL|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
         </ul>
         <ul class="site-links-2">
             <li class="stations"><a href="http://www.npr.org/templates/stations/stations/">Stations</a></li>
@@ -162,14 +98,7 @@
                 <div id="bigbox" class="col-md-4">
                     {# 300x250 ad #}
                     <div class="adwrapper">
-                        <div class="sponsor300">
-                            <script type="text/javascript">
-                            <!--
-                            if (DFP.shouldRenderForDevice('desktop')) {
-                                googletag.cmd.push(function() { googletag.display('ad-desktop'); });
-                            }
-                            // -->
-                            </script>
+                        <div id="ad-desktop" class="sponsor300">
                         </div>
                         <p class="left">NPR thanks our sponsors</p>
                         <p class="right"><a href="http://www.npr.org/about/place/corpsupport/">Become an NPR sponsor</a></p>
@@ -204,42 +133,42 @@
         </div>
     </footer>
 
-    {# Adhesion ad #}
-    <div id="adhesion">
-        <script type="text/javascript">
-        <!--
-        if (DFP.shouldRenderForDevice('mobile')) {
-            var ord = window.ord || Math.floor(Math.random() * 1e16);
-
-            // use the smaller size for phone, the larger size for tablet
-            var sizes = '640x100';
-            if (Modernizr.mq('only screen and (min-width: 768px)')) {
-                sizes = '2048x180';
-            }
-
-            var targets = ';';
-            targets += 'storyId={{ NPR_DFP.STORY_ID }};';
-            targets += 'testserver={{ NPR_DFP.TESTSERVER }};';
-
-            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/{{ NPR_DFP.TARGET }}' + targets + 'sz=' + sizes + ';ord=' + ord + '?"><\/script>');
-        }
-        // -->
-        </script>
-    </div>
-
     {% endblock map_content %}
     {% endblock outer_content %}
 
-    {{ JS.push('js/lib/underscore.js') }}
-    {{ JS.push('js/lib/moment.js') }}
-    {{ JS.push('js/lib/bootstrap.js') }}
-    {% block extra_foot_js %}{% endblock extra_foot_js %}
-    {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/app.js') }}
-    {{ JS.render('js/app-footer.min.js') }}
-
     {% block extra_foot %}
     {% endblock extra_foot %}
+
+    {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/lib/underscore.js') }}
+    {{ JS.push('js/lib/bootstrap.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/copy.js') }}
+    {{ JS.push('js/console.js') }}
+    {{ JS.push('js/ads.js') }}
+    {{ JS.push('js/templates.js') }}
+    {{ JS.push('js/app.js') }}
+    {% block extra_foot_js %}{% endblock extra_foot_js %}
+    {{ JS.render('js/app-footer.min.js') }}
+
+    {# Adhesion ad #}
+    <div id="adhesion">
+        <script type="text/javascript">
+        if (Modernizr.touch && Modernizr.mq('(max-width: 1024px)')) {
+            var ord = Math.floor(Math.random() * 1e16);
+
+            var size = '640x100';
+
+            if (Modernizr.mq('only screen and (min-width: 768px)')) {
+                size = '2048x180';
+            }
+
+            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + ';testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
+        }
+        </script>
+    </div>
 
     <!-- GOOGLE ANALYTICS -->
     <script type="text/javascript">
