@@ -325,7 +325,7 @@ def bootstrap():
 
     local('npm install less universal-jst -g --prefix node_modules')
     local('pip install -r requirements.txt')
-    local('ln -s ~/Dropbox/nprapps/assets/%(PROJECT_NAME)s/ www/assets' % app_config.__dict__)
+    local('ln -s ~/Dropbox/nprapps/assets/%(PROJECT_SLUG)s/ www/assets' % app_config.__dict__)
 
     update_copy()
     update_data()
