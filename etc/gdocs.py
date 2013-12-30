@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 
 import csv
+from exceptions import KeyError
 import os
 
 import requests
 
 class GoogleDoc(object):
-
+    """
+    A class for accessing a Google document as an object.
+    Includes the bits necessary for accessing the document and auth and such.
+    """
     key = None
-    guid = None
+    gid = None
 
     spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=csv&gid=%s"
 
@@ -20,15 +24,22 @@ class GoogleDoc(object):
     session = "1"
 
     def __init__(self, **kwargs):
+        """
+        Because sometimes, just sometimes, you need to update the class when you instantiate it.
+        In this case, we need, minimally, a document key and a gid -- sheet number.
+        """
         if kwargs:
             if kwargs.items():
                 for key, value in kwargs.items():
                     setattr(self, key, value)
 
     def get_auth(self):
+        """
+        Gets an authorization token and adds it to the class.
+        """
         data = {}
         if not self.email or not self.password:
-            print "You're missing some variables\nYou need to export APPS_GOOGLE_EMAIL and APPS_GOOGLE_PASS."
+            raise KeyError("Error! You're missing some variables. You need to export APPS_GOOGLE_EMAIL and APPS_GOOGLE_PASS.")
 
         else:
             data['Email'] = self.email
@@ -41,30 +52,49 @@ class GoogleDoc(object):
 
             self.auth = r.content.split('\n')[2].split('Auth=')[1]
 
-            print self.auth
-
     def get_document(self):
+        """
+        Uses the authentication token to fetch a google doc.
+        """
+
+        # Handle basically all the things that can go wrong.
         if not self.auth:
-            print "Oops, not authenticated."
+            raise KeyError("Error! You didn't get an auth token. Something very bad happened. File a bug?")
+
+        elif not self.key:
+            raise KeyError("Error! You forgot to pass a key to the class.")
+
+        elif not self.gid:
+            raise KeyError("Error! You forgot to pass a gid (sheet number) to the class.")
 
         else:
             headers = {}
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
 
-            r = requests.get(self.spreadsheet_url % (self.key, self.guid), headers=headers)
+            r = requests.get(self.spreadsheet_url % (self.key, self.gid), headers=headers)
 
-            with open('data/data.csv', 'wb') as writefile:
+            with open('data/gdoc_%s.csv' % self.key, 'wb') as writefile:
                 writefile.write(r.content)
 
     def parse_document(self):
-        with open('data/data.csv', 'rb') as readfile:
+        """
+        A stub method for reading the document after it's been downloaded.
+        """
+        with open('data/gdoc_%s.csv' % self.key, 'rb') as readfile:
             csv_file = list(csv.DictReader(readfile))
 
         print csv_file
 
 
 if __name__ == "__main__":
-    g = GoogleDoc()
+    """
+    Here's an example of how to use the class.
+    Don't forget to pass a key and a gid!
+    """
+    g = GoogleDoc(
+        key="0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc",
+        gid="4"
+    )
     g.get_auth()
     g.get_document()
     g.parse_document()
