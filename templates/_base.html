@@ -13,6 +13,24 @@
     <!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
@@ -115,6 +133,9 @@
 
     {% endblock outer_content %}
 
+    {% block extra_foot %}
+    {% endblock extra_foot %}
+
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
@@ -129,15 +150,10 @@
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}
 
-    {% block extra_foot %}
-    {% endblock extra_foot %}
-
     {# Adhesion ad #}
     <div id="adhesion">
         <script type="text/javascript">
-        // NB: Using ad slots for adhesion doesn't work for reasons that are unclear
-        // See ads.js
-        if (ADS.shouldRenderForDevice('mobile')) {
+        if (Modernizr.touch && Modernizr.mq('(max-width: 1024px)')) {
             var ord = Math.floor(Math.random() * 1e16);
 
             var size = '640x100';
@@ -146,11 +162,10 @@
                 size = '2048x180';
             }
 
-            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + 'testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
+            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + ';testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
         }
         </script>
     </div>
-
 
     <!-- GOOGLE ANALYTICS -->
     <script type="text/javascript">

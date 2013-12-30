@@ -298,6 +298,13 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+def import_issues(path):
+    """
+    Import a list of a issues from any CSV formatted like default_tickets.csv.
+    """
+    auth = github.get_auth()
+    github.create_tickets(auth, path)
+
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
@@ -562,6 +569,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git init')
     local('mv PROJECT_README.md README.md')
     local('rm *.pyc')
+    local('rm LICENSE')
     local('git add .')
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])

@@ -2,71 +2,13 @@ var ADS = {};
 var googletag = { cmd: [] };
 
 /*
- * Are we on a tablet?
- */
-ADS.isOnTablet = function() {
-    var width = window.innerWidth;
-
-    return (width >= 768 && width <= 1024);
-}
-
-/*
- * Are we on a phone?
- */
-ADS.isOnPhone = function() {
-    var width = window.innerWidth;
-
-    return width <= 767;
-}
-
-/*
- * Logic to determine if we should render a certain ad.
- */
-ADS.shouldRenderForDevice = function(deviceEnv) {
-    var shouldRender = false;
-    var winWidth = $(window).width();
-
-    switch (deviceEnv) {
-        case 'desktop':
-            if (!ADS.isOnTablet() && winWidth > 1024) {
-                shouldRender = true;
-            }
-            
-            break;
-        case 'mobile':
-            if ((ADS.isOnPhone() || ADS.isOnTablet())) {
-                shouldRender = true;
-            }
-
-            break;
-    }
-
-    //console.log('shouldRenderForDevice(' + deviceEnv + '): ' + shouldRender);
-
-    return shouldRender;
-}
-
-/*
  * Configure our ad slots and targeting.
  */
 ADS.setup_ads = function() {
     // Desktop ad slot
-    if (ADS.shouldRenderForDevice('desktop')) {
+    if (!Modernizr.touch && Modernizr.mq('(min-width: 1025px)')) {
         googletag.defineSlot('/6735/n6735.' + APP_CONFIG.NPR_DFP.ENVIRONMENT + '/' + APP_CONFIG.NPR_DFP.TARGET, [300,250], 'ad-desktop').addService(googletag.pubads());
     }
-
-    // Adhesion ad slot
-    // NB: Using ad slots for adhesion doesn't work for reasons that are unclear
-    // The NPR.org homepage doesn't do it this way either
-    /*if (ADS.shouldRenderForDevice('mobile')) {
-        var size = [640, 100];
-
-        //if (Modernizr.mq('only screen and (min-width: 768px)')) {
-            size = [2048, 180];
-        //}
-
-        googletag.defineSlot('/6735/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET, size, 'adhesion').addService(googletag.pubads());
-    }*/
 
     // Story targeting
     googletag.pubads().setTargeting('storyId', APP_CONFIG.NPR_DFP.STORY_ID);
@@ -84,10 +26,10 @@ ADS.setup_ads = function() {
     // Orientation
     var orient = '';
 
-    if (ADS.isOnPhone() || ADS.isOnTablet()) {
-        if (window.orientation == 0 || window.orientation == 180) {
+    if (Modernizr.touch && Modernizr.mq('(max-width: 1024px)')) {
+        if (Modernizr.mq('(orientation: portrait)')) {
             orient = 'portrait';
-        } else if (window.orientation == 90 || window.orientation == -90) {
+        } else if (Modernizr.mq('(orientation: landscape)')) {
             orient = 'landscape';
         }
     }
@@ -97,7 +39,7 @@ ADS.setup_ads = function() {
     googletag.pubads().enableSingleRequest();
     googletag.pubads().collapseEmptyDivs();
     googletag.enableServices();
-}
+};
 
 /*
  * Load Google JS.
@@ -122,7 +64,7 @@ googletag.cmd.push(function() {
 });
 
 // Render desktop ad if needed
-if (ADS.shouldRenderForDevice('desktop')) {
+if (!Modernizr.touch && Modernizr.mq('(min-width: 1025px)')) {
     googletag.cmd.push(function() {
         googletag.display('ad-desktop');
     });

@@ -32,9 +32,9 @@ pip-log.txt
 
 node_modules
 www/*.html
-www/css/*.min.css
+www/css/*.min.*.css
 www/css/*.less.css
-www/js/*.min.js
+www/js/*.min.*.js
 www/js/templates.js
 www/js/app_config.js
 www/js/copy.js
