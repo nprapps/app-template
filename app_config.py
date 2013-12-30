@@ -93,33 +93,22 @@ SHARING
 PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-TWITTER = {
-    'TEXT': PROJECT_NAME,
-    'URL': SHARE_URL,
-    # Will be resized to 120x120, can't be larger than 1MB 
-    'IMAGE_URL': ''
-}
+# Will be resized to 120x120, can't be larger than 1MB 
+TWITTER_IMAGE_URL = ''
+    
+# Should be square. No documented restrictions on size
+FACEBOOK_IMAGE_URL = TWITTER_IMAGE_URL
+FACEBOOK_APP_ID = '138837436154588'
 
-FACEBOOK = {
-    'TITLE': PROJECT_NAME,
-    'URL': SHARE_URL,
-    'DESCRIPTION': PROJECT_DESCRIPTION,
-    # Should be square. No documented restrictions on size
-    'IMAGE_URL': TWITTER['IMAGE_URL'],
-    'APP_ID': '138837436154588'
-}
-
-GOOGLE = {
-    # Thumbnail image for Google News / Search.
-    # No documented restrictions on resolution or size
-    'IMAGE_URL': TWITTER['IMAGE_URL']
-}
+# Thumbnail image for Google News / Search.
+# No documented restrictions on resolution or size
+GOOGLE_IMAGE_URL = TWITTER_IMAGE_URL
 
 NPR_DFP = {
-    'STORY_ID': '203618536',
-    'TARGET': 'News_NPR_News_Investigations',
+    'STORY_ID': '1002',
+    'TARGET': 'homepage',
     'ENVIRONMENT': 'NPRTEST',
-    'TESTSERVER': 'true'
+    'TESTSERVER': 'false'
 }
 
 """

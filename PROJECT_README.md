@@ -8,13 +8,14 @@ $NEW_PROJECT_NAME
 * [What is this?](#what-is-this)
 * [Assumptions](#assumptions)
 * [What's in here?](#whats-in-here)
-* [Install requirements](#install-requirements)
-* [Project secrets](#project-secrets)
-* [Adding a template/view](#adding-a-templateview)
-* [Run the project locally](#run-the-project-locally)
-* [Editing workflow](#editing-workflow)
-* [Run Javascript tests](#run-javascript-tests)
+* [Bootstrap the project](#bootstrap-the-project)
+* [Hide project secrets](#hide-project-secrets)
+* [Save media assets](#save-media-assets)
+* [Add a page to the site](#add-a-page-to-the-site)
+* [Run the project](#run-the-project)
+* [COPY editing](#copy-editing)
 * [Run Python tests](#run-python-tests)
+* [Run Javascript tests](#run-javascript-tests)
 * [Compile static assets](#compile-static-assets)
 * [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
@@ -38,6 +39,7 @@ The following things are assumed to be true in this documentation.
 * You are running OSX.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
+* You have Dropbox installed and mounted at `~/Dropbox` (the default location) and you have the `nprapps` folder synchronized.
 
 For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
@@ -54,6 +56,7 @@ The project contains the following folders and important files:
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
+* ``www/assets`` -- A symlink to a Dropbox folder containing binary assets (images, audio).
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
@@ -65,8 +68,8 @@ The project contains the following folders and important files:
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
 
-Install requirements
---------------------
+Bootstrap the project
+---------------------
 
 Node.js is required for the static asset pipeline. If you don't already have it, get it like this:
 
@@ -75,31 +78,37 @@ brew install node
 curl https://npmjs.org/install.sh | sh
 ```
 
-Then install the project requirements:
+Then bootstrap the project:
 
 ```
 cd $NEW_PROJECT_NAME
-npm install less universal-jst -g --prefix node_modules
 mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
-pip install -r requirements.txt
+fab bootstrap
 ```
 
-Project secrets
----------------
+Hide project secrets
+--------------------
 
 Project secrets should **never** be stored in ``app_config.py`` or anywhere else in the repository. They will be leaked to the client if you do. Instead, always store passwords, keys, etc. in environment variables and document that they are needed here in the README.
 
-Adding a template/view
-----------------------
+Save media assets
+-----------------
 
-A site can have any number of rendered templates (i.e. pages). Each will need a corresponding view. To create a new one:
+Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``. This folder is symlinked to ``www/assets`` during the bootstrap process.
+
+These assets will be deployed, but will not be committed to the repository. This is both make cloning the repository faster and also to make it easier to open source new projects.
+
+Adding a page to the site 
+-------------------------
+
+A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
 
 * Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
 * Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
 * By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
 
-Run the project locally
------------------------
+Run the project
+---------------
 
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
@@ -110,19 +119,21 @@ python app.py
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-Editing workflow
--------------------
+COPY editing
+------------
 
-The app is rigged up to Google Docs for a simple key/value store that provides an editing workflow.
+This app uses a Google Spreadsheet for a simple key/value store that provides an editing workflow.
 
-View the sample copy spreadsheet [here](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0). A few things to note:
+View the [sample copy spreadsheet](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0).
+
+This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
+
+A few things to note:
 
 * If there is a column called ``key``, there is expected to be a column called ``value`` and rows will be accessed in templates as key/value pairs
 * Rows may also be accessed in templates by row index using iterators (see below)
 * You may have any number of worksheets
 * This document must be "published to the web" using Google Docs' interface
-
-This document is specified in ``app_config`` with the variable ``COPY_GOOGLE_DOC_KEY``. To use your own spreadsheet, change this value to reflect your document's key (found in the Google Docs URL after ``&key=``).
 
 The app template is outfitted with a few ``fab`` utility functions that make pulling changes and updating your local data easy.
 
@@ -155,15 +166,15 @@ You may also access rows using iterators. In this case, the column headers of th
 {% endfor %}
 ```
 
-Run Javascript tests
---------------------
-
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
-
 Run Python tests
 ----------------
 
 Python unit tests are stored in the ``tests`` directory. Run them with ``fab tests``.
+
+Run Javascript tests
+--------------------
+
+With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
 
 Compile static assets
 ---------------------

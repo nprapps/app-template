@@ -1,5 +1,5 @@
 title,body,labels
-Update ad tags,Remove tower ad unit from code if not using,Launch TODO
+Update ad tags (DFP),Change `ENVIRONMENT` to `NPR`; change `TESTSERVER` to `false`,Launch TODO
 Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
 Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
@@ -32,3 +32,5 @@ Setup Hipchat service hook on github,,
 Let the copy desk know an app is coming,,
 Make sure the copy desk is happy,,Launch TODO
 Let the homepage team know an app is coming,,
+Distribute launch timeline,Let stakeholders, social media, etc know what the launch schedule is,Launch TODO
+Run the app through Google Page Speed,http://developers.google.com/speed/pagespeed/insights/,
