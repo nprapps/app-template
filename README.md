@@ -1,11 +1,8 @@
-Copyright 2013 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
-
-(Want to use this code? Send an email to nprapps@npr.org!)
-
 nprapps' Project Template
 =========================
 
 * [About this template](#about-this-template)
+* [Assumptions](#assumptions)
 * [Copy the template](#copy-the-template)
 * [Configure the project](#configure-the-project)
 * [Bootstrap issues](#bootstrap-issues)
@@ -17,7 +14,23 @@ About this template
 
 This template provides a a project skeleton suitable for NPR projects that are designed to be served as flat files. Facilities are provided for rendering html from data, compiling LESS into CSS, deploying to S3, installing cron jobs on servers, copy-editing via Google Spreadsheets and a whole bunch of other stuff.
 
-**Please note:** This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+This codebase is licensed under the [MIT open source license](http://opensource.org/licenses/MIT). See the ``LICENSE`` file for the complete license.
+
+Please note: logos, fonts and other media referenced via url from this template are **not** covered by this license. Do not republish NPR media assets without written permission. Open source libraries in this repository are redistributed for convenience and are each governed by their own license.
+
+Also note: Though open source, This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
+
+Assumptions
+-----------
+
+The following things are assumed to be true in this documentation.
+
+* You are running OSX.
+* You are using Python 2.7. (Probably the version that came OSX.)
+* You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
+* You have Dropbox installed and mounted at `~/Dropbox` (the default location) and you have the `nprapps` folder synchronized.
+
+For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
 Copy the template
 -----------------
@@ -37,20 +50,17 @@ pip install -r requirements.txt
 fab app_template_bootstrap
 ```
 
+This will setup the new repo and will replace `README.md` (this file) with `PROJECT_README.md`. See that file for usage documentation.
+
 Bootstrap issues
 ----------------
 
 The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
 
-Develop with the template
--------------------------
-
-If you followed the [Copy the template](#copy-the-template) instructions above you will have replaced `README.md` (this file) with `PROJECT_README.md`. See that file for all the details of how build projects with the app-template.
-
 Merging init branches
 ---------------------
 
-To merge changes on ``master`` into each of the ``init-`` branches, use the following process:
+Several branches are provided for common tasks. To merge changes on ``master`` into each of the ``init-`` branches, use the following process:
 
 ```
 git fetch

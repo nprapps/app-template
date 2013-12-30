@@ -98,6 +98,10 @@ def urlencode_filter(s):
     if type(s) == 'Markup':
         s = s.unescape()
 
+    # Evaulate COPY elements
+    if type(s) is not unicode:
+        s = unicode(s)
+
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
 
