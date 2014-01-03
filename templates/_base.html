@@ -36,6 +36,10 @@
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
+    <!-- JS -->
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.render('js/app-header.min.js') }}
+
     {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@nprapps">
@@ -139,7 +143,6 @@
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/copy.js') }}
