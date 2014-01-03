@@ -324,7 +324,7 @@ def bootstrap():
     import app_config
 
     local('npm install less universal-jst -g --prefix node_modules')
-    local('ln -s ~/Dropbox/nprapps/assets/%(REPOSITORY_NAME)s/ www/assets' % app_config.__dict__)
+    local('ln -s ~/Dropbox/nprapps/assets/%(REPOSITORY_NAME)s www/assets' % app_config.__dict__)
 
     update_copy()
     update_data()
