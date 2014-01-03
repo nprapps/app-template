@@ -538,10 +538,10 @@ def shiva_the_destroyer():
     _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
     with settings(warn_only=True):
-        s3cmd = 's3cmd del --recursive %s'
+        sync = 'aws s3 rm %s --recursive --region "us-east-1"'
 
         for bucket in app_config.S3_BUCKETS:
-            local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
+            local(sync % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
         if app_config.DEPLOY_TO_SERVERS:
             run('rm -rf %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
