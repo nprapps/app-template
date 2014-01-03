@@ -81,6 +81,7 @@ Then bootstrap the project:
 ```
 cd $NEW_PROJECT_NAME
 mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+pip install -r requirements.txt
 fab bootstrap
 ```
 
