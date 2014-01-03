@@ -336,7 +336,7 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3(path='.gzip'):
+def deploy_to_s3(path='.gzip'):
     """
     Deploy the gzipped stuff to S3.
     """
@@ -344,12 +344,20 @@ def _deploy_to_s3(path='.gzip'):
     local('rm -rf %s/live-data' % path)
     local('rm -rf %s/sitemap.xml' % path)
 
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync %s/ %s'
-    s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync %s/ %s'
+    exclude_flags = ''
+    include_flags = ''
+
+    with open('gzip_types.txt') as f:
+        for line in f:
+            exclude_flags += '--exclude "%s" ' % line.strip()
+            include_flags += '--include "%s" ' % line.strip()
+
+    sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "us-east-1"'
+    sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "us-east-1"'
 
     for bucket in app_config.S3_BUCKETS:
-        local(s3cmd % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(s3cmd_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
 def _gzip(in_path='www', out_path='.gzip'):
     """
@@ -530,10 +538,10 @@ def shiva_the_destroyer():
     _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
     with settings(warn_only=True):
-        s3cmd = 's3cmd del --recursive %s'
+        sync = 'aws s3 rm %s --recursive --region "us-east-1"'
 
         for bucket in app_config.S3_BUCKETS:
-            local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
+            local(sync % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
         if app_config.DEPLOY_TO_SERVERS:
             run('rm -rf %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
