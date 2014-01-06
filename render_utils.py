@@ -3,6 +3,7 @@
 import glob
 import os
 import time
+import urllib
 
 from cssmin import cssmin
 from flask import Markup, g, render_template, request
@@ -180,4 +181,20 @@ def make_context():
     context['CSS'] = CSSIncluder()
 
     return context
+
+def urlencode_filter(s):
+    """
+    Filter to urlencode strings.
+    """
+    if type(s) == 'Markup':
+        s = s.unescape()
+
+    # Evaulate COPY elements
+    if type(s) is not unicode:
+        s = unicode(s)
+
+    s = s.encode('utf8')
+    s = urllib.quote_plus(s)
+
+    return Markup(s)
 

@@ -6,8 +6,10 @@ import logging
 from flask import Flask
 
 import app_config
+#import static
 
 app = Flask(app_config.PROJECT_NAME)
+#app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
