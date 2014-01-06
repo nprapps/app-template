@@ -3,6 +3,7 @@
 import glob
 import os
 import time
+import urllib
 
 from cssmin import cssmin
 from flask import Markup, g, render_template, request
@@ -55,12 +56,11 @@ class Includer(object):
 
     def render(self, path):
         if getattr(g, 'compile_includes', False):
-            out_filename = 'www/%s' % path
-
             # Add a timestamp to the rendered filename to prevent caching
             timestamp = int(time.time())
-            front, back = out_filename.rsplit('.', 1)
-            out_filename = '%s.%i.%s' % (front, timestamp, back)
+            front, back = path.rsplit('.', 1)
+            path = '%s.%i.%s' % (front, timestamp, back)
+            out_path = 'www/%s' % path
 
             # Delete old rendered versions, just to be tidy
             old_versions = glob.glob('%s.*.%s' % (front, back))
@@ -68,14 +68,14 @@ class Includer(object):
             for f in old_versions:
                 os.remove(f)
 
-            if out_filename not in g.compiled_includes:
-                print 'Rendering %s' % out_filename
+            if out_path not in g.compiled_includes:
+                print 'Rendering %s' % out_path
 
-                with open(out_filename, 'w') as f:
+                with open(out_path, 'w') as f:
                     f.write(self._compress().encode('utf-8'))
 
             # See "fab render"
-            g.compiled_includes.append(out_filename)
+            g.compiled_includes.append(out_path)
 
             markup = Markup(self.tag_string % self._relativize_path(path))
         else:
@@ -181,4 +181,20 @@ def make_context():
     context['CSS'] = CSSIncluder()
 
     return context
+
+def urlencode_filter(s):
+    """
+    Filter to urlencode strings.
+    """
+    if type(s) == 'Markup':
+        s = s.unescape()
+
+    # Evaulate COPY elements
+    if type(s) is not unicode:
+        s = unicode(s)
+
+    s = s.encode('utf8')
+    s = urllib.quote_plus(s)
+
+    return Markup(s)
 

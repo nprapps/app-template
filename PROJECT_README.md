@@ -65,6 +65,7 @@ The project contains the following folders and important files:
 * ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
+* ``static.py`` -- Static Flask views used in both ``app.py`` and ``public_app.py``.
 
 Bootstrap the project
 ---------------------
@@ -81,6 +82,7 @@ Then bootstrap the project:
 ```
 cd $NEW_PROJECT_NAME
 mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+pip install -r requirements.txt
 fab bootstrap
 ```
 
