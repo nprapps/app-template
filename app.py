@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 from flask import Flask, render_template
 
 import app_config
@@ -37,9 +38,8 @@ def test_widget():
 def test_dir():
     return render_template('index.html', **make_context())
 
+# Boilerplate
 if __name__ == '__main__':
-    import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port')
     args = parser.parse_args()
