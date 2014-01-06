@@ -1,4 +1,4 @@
-nprapps' Project Template
+nprviz's Project Template
 =========================
 
 * [About this template](#about-this-template)

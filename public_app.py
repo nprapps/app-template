@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+import argparse
 import datetime
 import logging
+import os
+import re
+import time
 
 from flask import Flask, redirect, render_template
 from jinja2.filters import escape, do_mark_safe
@@ -10,8 +14,10 @@ from tumblpy import TumblpyError
 from werkzeug import secure_filename
 
 import app_config
+#import static
 
 app = Flask(app_config.PROJECT_NAME)
+#app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 os.environ['TZ'] = 'US/Eastern'
@@ -22,10 +28,10 @@ file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
-
+# Example application views
 @app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
 def _test_app():
-	app.logger.info('Test URL requested.')
+    app.logger.info('Test URL requested.')
 
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -94,16 +100,25 @@ def _post_to_tumblr():
     try:
         tumblr_post = t.post('post', blog_url=app_config.TUMBLR_URL, params=params)
         tumblr_url = u"http://%s/%s" % (app_config.TUMBLR_URL, tumblr_post['id'])
-        logger.info('200 %s reader(%s %s) (times in EST)' % (tumblr_url, name, email))
+        app.logger.info('200 %s reader(%s %s) (times in EST)' % (tumblr_url, name, email))
 
         return redirect(tumblr_url, code=301)
 
     except TumblpyError, e:
-        logger.error('%s %s http://%s%s reader(%s %s) (times in EST)' % (
+        app.logger.error('%s %s http://%s%s reader(%s %s) (times in EST)' % (
             e.error_code, e.msg, app_config.SERVERS[0], file_path, name, email))
         return 'TUMBLR ERROR'
 
     return redirect('%s#posts' % tumblr_url, code=301)
 
+# Boilerplate
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=app_config.DEBUG)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port')
+    args = parser.parse_args()
+    server_port = 8000
+
+    if args.port:
+        server_port = int(args.port)
+
+    app.run(host='0.0.0.0', port=server_port, debug=app_config.DEBUG)
