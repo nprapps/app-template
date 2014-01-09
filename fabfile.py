@@ -359,6 +359,12 @@ def deploy_to_s3(path='.gzip'):
         local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
         local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
+def sync_assets(path='www/assets'):
+    """
+    Synchronize assets folder with s3
+    """
+    local('aws s3 sync %s/ s3://%s/%s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1" --delete' % (path, app_config.ASSETS_S3_BUCKET, app_config.PROJECT_SLUG))
+
 def _gzip(in_path='www', out_path='.gzip'):
     """
     Gzips everything in www and puts it all in gzip
@@ -517,7 +523,7 @@ def nuke_confs():
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
             sudo('rm -f %s' % installed_path)
-            
+
             if service == 'nginx':
                 sudo('service nginx reload')
             elif service == 'uwsgi':
@@ -563,8 +569,8 @@ def app_template_bootstrap(project_name=None, repository_name=None):
 
     config = {}
     config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
-    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG'] 
-    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG'] 
+    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG']
+    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
@@ -581,7 +587,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
     local('git push -u origin master')
-    
+
     local('mkdir ~/Dropbox/nprapps/assets/%s' % config['$NEW_PROJECT_NAME'])
 
     bootstrap()
