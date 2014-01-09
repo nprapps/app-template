@@ -131,7 +131,7 @@ def app_config_js():
     """
     Render app_config.js to file.
     """
-    from app import _app_config_js
+    from static import _app_config_js
 
     response = _app_config_js()
     js = response[0]
@@ -143,7 +143,7 @@ def copy_js():
     """
     Render copy.js to file.
     """
-    from app import _copy_js
+    from static import _copy_js
 
     response = _copy_js()
     js = response[0]
@@ -324,8 +324,8 @@ def bootstrap():
     import app_config
 
     local('npm install less universal-jst -g --prefix node_modules')
-    local('ln -s ~/Dropbox/nprapps/assets/%(REPOSITORY_NAME)s www/assets' % app_config.__dict__)
 
+    sync_assets()
     update_copy()
     update_data()
 
@@ -336,7 +336,7 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def deploy_to_s3(path='.gzip'):
+def _deploy_to_s3(path='.gzip'):
     """
     Deploy the gzipped stuff to S3.
     """
@@ -352,12 +352,16 @@ def deploy_to_s3(path='.gzip'):
             exclude_flags += '--exclude "%s" ' % line.strip()
             include_flags += '--include "%s" ' % line.strip()
 
+    exclude_flags += '--exclude "www/assets" '
+
     sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "us-east-1"'
     sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "us-east-1"'
+    sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "us-east-1"'
 
     for bucket in app_config.S3_BUCKETS:
         local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
         local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
 
 def sync_assets(path='www/assets'):
     """

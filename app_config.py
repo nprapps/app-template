@@ -18,7 +18,7 @@ PROJECT_NAME = '$NEW_PROJECT_NAME'
 
 # Project name in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = '$NEW_PROJECT_SLUG'
+PROJECT_SLUG = 'NEW_PROJECT_SLUG'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
