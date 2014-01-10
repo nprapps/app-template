@@ -364,17 +364,17 @@ def _deploy_to_s3(path='.gzip'):
         local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
         local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
 
-def asset_down(path='www/assets'):
+def assets_down(path='www/assets'):
     """
     Synchronize assets folder with s3
     """
     local('aws s3 sync s3://%s/%s/ %s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1"' % (app_config.ASSETS_S3_BUCKET, app_config.PROJECT_SLUG, path))
 
-def asset_up(path='www/assets'):
+def assets_up(path='www/assets'):
     """
     Synchronize assets folder with s3
     """
-    _confirm("You are about to replace your assets folder with the copy of the folder on the server. This will destroy any work you have done to these files that is not already on the server. Are you sure?")
+    _confirm("You are about to replace the copy of the folder on the server with your own copy. Are you sure?")
 
     local('aws s3 sync %s/ s3://%s/%s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1" --delete' % (
             path,
@@ -382,7 +382,7 @@ def asset_up(path='www/assets'):
             app_config.PROJECT_SLUG
         ))
 
-def asset_rm(path):
+def assets_rm(path):
     """
     remove an asset from s3 and locally
     """
