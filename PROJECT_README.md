@@ -37,7 +37,7 @@ The following things are assumed to be true in this documentation.
 * You are running OSX.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
-* You have Dropbox installed and mounted at `~/Dropbox` (the default location) and you have the `nprapps` folder synchronized.
+* You have NPR's AWS credentials stored as environment variables locally.
 
 For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
@@ -54,7 +54,7 @@ The project contains the following folders and important files:
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
-* ``www/assets`` -- A symlink to a Dropbox folder containing binary assets (images, audio).
+* ``www/assets`` -- A symlink to an S3 bucket containing binary assets (images, audio).
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
@@ -94,11 +94,11 @@ Project secrets should **never** be stored in ``app_config.py`` or anywhere else
 Save media assets
 -----------------
 
-Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``. This folder is symlinked to ``www/assets`` during the bootstrap process.
+Any copyrighted or large binary assets (images, audio, video) should be added to the ```www/assets``` folder, which is ignored in the ```.gitignore``` file. Both ```fab boostrap``` and ```fab render``` sync everything in the folder with an S3 bucket at ```assets.apps.npr.org```.
 
-These assets will be deployed, but will not be committed to the repository. This is both make cloning the repository faster and also to make it easier to open source new projects.
+These assets will be deployed, but will not be committed to the repository. This both makes cloning the repository faster and also makes it easier to open source new projects.
 
-Adding a page to the site 
+Adding a page to the site
 -------------------------
 
 A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
@@ -244,7 +244,7 @@ To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron
 Install web services
 ---------------------
 
-Web services are configured in the `confs/` folder. 
+Web services are configured in the `confs/` folder.
 
 Running ``fab setup_server`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
