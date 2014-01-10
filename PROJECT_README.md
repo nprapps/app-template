@@ -98,6 +98,8 @@ Any copyrighted or large binary assets (images, audio, video) should be added to
 
 These assets will be deployed, but will not be committed to the repository. This both makes cloning the repository faster and also makes it easier to open source new projects.
 
+If you are going to make any changes to local assets, run ```fab sync_assets``` before you make your changes to ensure you have the latest version.
+
 Adding a page to the site
 -------------------------
 
