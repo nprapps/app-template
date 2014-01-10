@@ -94,11 +94,13 @@ Project secrets should **never** be stored in ``app_config.py`` or anywhere else
 Save media assets
 -----------------
 
-Any copyrighted or large binary assets (images, audio, video) should be added to the ```www/assets``` folder, which is ignored in the ```.gitignore``` file. Both ```fab boostrap``` and ```fab render``` sync everything in the folder with an S3 bucket at ```assets.apps.npr.org```.
+Large media assets (images, videos, audio) are synced with an Amazon S3 bucket called ```assets.apps.npr.org``` in a folder with the name of the project. This allows everyone who works on the project to access these assets without storing them in the repo, giving us faster clone times and the ability to open source our work.
 
-These assets will be deployed, but will not be committed to the repository. This both makes cloning the repository faster and also makes it easier to open source new projects.
+Syncing these assets requires running a few different commands at the right times:
 
-If you are going to make any changes to local assets, run ```fab sync_assets``` before you make your changes to ensure you have the latest version.
+* When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_up```
+* When you need new assets or newly changed assets in your local environment that are on the server already, run ```fab assets_down``` (this will happen in ```fab bootstrap``` automatically).
+* When you want to remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"file_name_here.jpg"```
 
 Adding a page to the site
 -------------------------
