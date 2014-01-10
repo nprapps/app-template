@@ -326,7 +326,7 @@ def bootstrap():
 
     local('npm install less universal-jst -g --prefix node_modules')
 
-    sync_assets()
+    assets_down()
     update_copy()
     update_data()
 
