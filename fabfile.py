@@ -10,6 +10,7 @@ from jinja2 import Template
 import app
 import app_config
 from etc import github
+from etc.gdocs import GoogleDoc
 
 """
 Base configuration
@@ -111,9 +112,12 @@ def download_copy():
     """
     Downloads a Google Doc as an .xls file.
     """
-    base_url = 'https://docs.google.com/spreadsheet/pub?key=%s&output=xls'
-    doc_url = base_url % app_config.COPY_GOOGLE_DOC_KEY
-    local('curl -o data/copy.xls "%s"' % doc_url)
+    doc = {}
+    doc['key'] = app_config.COPY_GOOGLE_DOC_KEY
+
+    g = GoogleDoc(**doc)
+    g.get_auth()
+    g.get_document()
 
 def update_copy():
     """
@@ -503,7 +507,7 @@ def nuke_confs():
             installed_path = _get_installed_conf_path(service, remote_path, extension)
 
             sudo('rm -f %s' % installed_path)
-            
+
             if service == 'nginx':
                 sudo('service nginx reload')
             elif service == 'uwsgi':
@@ -549,8 +553,8 @@ def app_template_bootstrap(project_name=None, repository_name=None):
 
     config = {}
     config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
-    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG'] 
-    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG'] 
+    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG']
+    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
     _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
@@ -566,7 +570,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
     local('git push -u origin master')
-    
+
     local('mkdir ~/Dropbox/nprapps/assets/%s' % config['$NEW_PROJECT_NAME'])
 
     bootstrap()

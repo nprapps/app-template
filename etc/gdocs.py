@@ -12,7 +12,7 @@ class GoogleDoc(object):
     Includes the bits necessary for accessing the document and auth and such.
     """
     key = None
-    gid = None
+    gid = "0"
 
     spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=csv&gid=%s"
 
@@ -22,6 +22,9 @@ class GoogleDoc(object):
     scope = "https://spreadsheets.google.com/feeds/"
     service = "wise"
     session = "1"
+
+    file_format = "xls"
+    file_name = "copy"
 
     def __init__(self, **kwargs):
         """
@@ -73,7 +76,7 @@ class GoogleDoc(object):
 
             r = requests.get(self.spreadsheet_url % (self.key, self.gid), headers=headers)
 
-            with open('data/gdoc_%s.csv' % self.key, 'wb') as writefile:
+            with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
                 writefile.write(r.content)
 
     def parse_document(self):
@@ -91,10 +94,12 @@ if __name__ == "__main__":
     Here's an example of how to use the class.
     Don't forget to pass a key and a gid!
     """
-    g = GoogleDoc(
-        key="0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc",
-        gid="4"
-    )
+    doc = {}
+    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
+    doc['gid'] = '4'
+    doc['file_format'] = 'csv'
+
+    g = GoogleDoc(**doc)
     g.get_auth()
     g.get_document()
     g.parse_document()
