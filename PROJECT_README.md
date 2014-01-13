@@ -98,7 +98,7 @@ Large media assets (images, videos, audio) are synced with an Amazon S3 bucket c
 
 Syncing these assets requires running a few different commands at the right times:
 
-* When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_up```
+* When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_up```. **NOTE**: The newest push will *always* overwrite the current copy on the server.
 * When you need new assets or newly changed assets in your local environment that are on the server already, run ```fab assets_down``` (this will happen in ```fab bootstrap``` automatically).
 * When you want to remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"file_name_here.jpg"```
 
