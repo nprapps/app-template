@@ -33,6 +33,7 @@ DEPLOYMENT
 """
 PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
 STAGING_S3_BUCKETS = ['stage-apps.npr.org']
+ASSETS_S3_BUCKET = 'assets.apps.npr.org'
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
@@ -85,9 +86,9 @@ SHARING
 PROJECT_DESCRIPTION = 'An opinionated project template for (mostly) server-less apps.'
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-# Will be resized to 120x120, can't be larger than 1MB 
+# Will be resized to 120x120, can't be larger than 1MB
 TWITTER_IMAGE_URL = ''
-    
+
 # 16:9 ("wide") image. FB uses 16:9 in the newsfeed and crops to square in timelines.
 # No documented restrictions on size
 FACEBOOK_IMAGE_URL = ''
@@ -107,7 +108,10 @@ NPR_DFP = {
 """
 SERVICES
 """
-GOOGLE_ANALYTICS_ID = 'UA-5828686-4'
+GOOGLE_ANALYTICS = {
+    'ACCOUNT_ID': 'UA-5828686-4',
+    'DOMAIN': PRODUCTION_S3_BUCKETS[0]
+}
 
 CHAT = {
     'ID': '74796',
