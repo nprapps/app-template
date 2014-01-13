@@ -29,7 +29,7 @@ class GoogleDoc(object):
     def __init__(self, **kwargs):
         """
         Because sometimes, just sometimes, you need to update the class when you instantiate it.
-        In this case, we need, minimally, a document key and a gid -- sheet number.
+        In this case, we need, minimally, a document key.
         """
         if kwargs:
             if kwargs.items():
@@ -67,9 +67,6 @@ class GoogleDoc(object):
         elif not self.key:
             raise KeyError("Error! You forgot to pass a key to the class.")
 
-        elif not self.gid:
-            raise KeyError("Error! You forgot to pass a gid (sheet number) to the class.")
-
         else:
             headers = {}
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
@@ -98,6 +95,7 @@ if __name__ == "__main__":
     doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
     doc['gid'] = '4'
     doc['file_format'] = 'csv'
+    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
 
     g = GoogleDoc(**doc)
     g.get_auth()

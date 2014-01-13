@@ -14,6 +14,7 @@ $NEW_PROJECT_NAME
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
 * [COPY editing](#copy-editing)
+* [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
 * [Compile static assets](#compile-static-assets)
@@ -169,6 +170,34 @@ You may also access rows using iterators. In this case, the column headers of th
 {{ row.column_two_header }}
 {% endfor %}
 ```
+
+Arbitrary Google Docs
+----------------------
+Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
+
+Here's an example of what you might do:
+```
+import csv
+
+from etc.gdoc import GoogleDoc
+
+doc = {}
+doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
+doc['gid'] = '4'
+doc['file_format'] = 'csv'
+doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
+
+g = GoogleDoc(**doc)
+g.get_auth()
+g.get_document()
+
+with open('data/%s' % doc['file_name'], 'wb') as readfile:
+    csv_file = list(csv.DictReader(readfile))
+
+for line_number, row in enumerate(csv_file):
+    print line_number, row
+```
+
 
 Run Python tests
 ----------------
