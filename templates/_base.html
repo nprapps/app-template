@@ -13,10 +13,32 @@
     <!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
+    <!-- Fonts -->
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script>
+        WebFont.load({
+             custom: {
+                 families: [
+                     'Gotham SSm:n4,n7',
+                     'Gotham:n4,n7'
+                 ],
+                 urls: [
+                     'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+                     'http://s.npr.org/templates/css/fonts/Gotham.css'
+                 ]
+             },
+             timeout: 10000
+         });
+    </script>
+
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
+
+    <!-- JS -->
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.render('js/app-header.min.js') }}
 
     {# Twitter #}
     <meta name="twitter:card" content="summary">
@@ -103,7 +125,7 @@
             </ul>
         </div>
         <div class="secondary">
-            <p>&copy;2013 NPR</p>
+            <p>&copy;2014 NPR</p>
             <ul>
                 <li id="footerContact"><a href="http://help.npr.org/npr/includes/customer/npr/custforms/contactus.aspx">Contact</a></li>
                 <li><a href="http://www.npr.org/about/termsofuse.html">Terms of Use</a></li>
@@ -115,10 +137,12 @@
 
     {% endblock outer_content %}
 
+    {% block extra_foot %}
+    {% endblock extra_foot %}
+
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/copy.js') }}
@@ -129,15 +153,10 @@
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}
 
-    {% block extra_foot %}
-    {% endblock extra_foot %}
-
     {# Adhesion ad #}
     <div id="adhesion">
         <script type="text/javascript">
-        // NB: Using ad slots for adhesion doesn't work for reasons that are unclear
-        // See ads.js
-        if (ADS.shouldRenderForDevice('mobile')) {
+        if (Modernizr.touch && Modernizr.mq('(max-width: 1024px)')) {
             var ord = Math.floor(Math.random() * 1e16);
 
             var size = '640x100';
@@ -146,17 +165,62 @@
                 size = '2048x180';
             }
 
-            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + 'testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
+            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + ';testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
         }
         </script>
     </div>
 
-
     <!-- GOOGLE ANALYTICS -->
     <script type="text/javascript">
         var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS_ID }}']);
+        _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS.ACCOUNT_ID }}']);
+        _gaq.push(['_setDomainName', '{{ GOOGLE_ANALYTICS.DOMAIN }}']);
+        //_gaq.push(['_setCustomVar', 1, 'BC', '', 3]);
+        //_gaq.push(['_setCustomVar', 2, 'Topics', '', 3]);
+        //_gaq.push(['_setCustomVar', 3, 'Program ID', '', 3]);
+        //_gaq.push(['_setCustomVar', 3, 'Localization', '', 1]);
+        _gaq.push(['_setCustomVar', 4, 'OrgID', '1', 3]);
+        _gaq.push(['_setCustomVar', 5, 'Page Types', '1', 3]);
+
+        var orientation = 'portrait';
+        
+        if (window.orientation == 90 || window.orientation == -90) {
+            orientation = 'landscape';
+        }
+        
+        _gaq.push(['_setCustomVar', 6, 'Orientation', orientation, 3]);
+        
+        var viewportSize = $(window).width();
+        var viewportGrouping = '1760 and higher';
+
+        if (viewportSize < 481) {
+            viewportGrouping = '0 - 480';
+        } else if (viewportSize < 768) {
+            viewportGrouping = '481 - 767';
+        } else if (viewportSize < 1000) {
+            viewportGrouping = '768 - 999';
+        } else if (viewportSize < 1201) {
+            viewportGrouping = '1000 - 1200';
+        } else if (viewportSize < 1760) {
+            viewportGrouping = '1201 - 1759';
+        }
+        
+        _gaq.push(['_setCustomVar', 7, 'Viewport Size', viewportGrouping, 3]);
+
+        if (typeof window.devicePixelRatio !== 'undefined' && window.devicePixelRatio >= 1.5) {
+            _gaq.push(['_setCustomVar', 10, 'High Density Displays', 'High', 2]);
+        } else {
+            _gaq.push(['_setCustomVar', 10, 'High Density Displays', 'Low', 2]);
+        }
+        
+        if ('ontouchstart' in document.documentElement) {
+            _gaq.push(['_setCustomVar', 11, 'Touch screens', 'Touch', 2]);
+        } else {
+            _gaq.push(['_setCustomVar', 11, 'Touch screens', 'Traditional', 2]);
+        }
+        
         _gaq.push(['_trackPageview']);
+
         (function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';

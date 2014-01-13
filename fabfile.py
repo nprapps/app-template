@@ -135,7 +135,7 @@ def app_config_js():
     """
     Render app_config.js to file.
     """
-    from app import _app_config_js
+    from static import _app_config_js
 
     response = _app_config_js()
     js = response[0]
@@ -147,7 +147,7 @@ def copy_js():
     """
     Render copy.js to file.
     """
-    from app import _copy_js
+    from static import _copy_js
 
     response = _copy_js()
     js = response[0]
@@ -162,6 +162,7 @@ def render():
     from flask import g
 
     update_copy()
+    sync_assets()
     update_data()
     less()
     jst()
@@ -302,6 +303,13 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+def import_issues(path):
+    """
+    Import a list of a issues from any CSV formatted like default_tickets.csv.
+    """
+    auth = github.get_auth()
+    github.create_tickets(auth, path)
+
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
@@ -321,9 +329,8 @@ def bootstrap():
     import app_config
 
     local('npm install less universal-jst -g --prefix node_modules')
-    local('pip install -r requirements.txt')
-    local('ln -s ~/Dropbox/nprapps/assets/%(PROJECT_NAME)s/ www/assets' % app_config.__dict__)
 
+    assets_down()
     update_copy()
     update_data()
 
@@ -342,12 +349,64 @@ def _deploy_to_s3(path='.gzip'):
     local('rm -rf %s/live-data' % path)
     local('rm -rf %s/sitemap.xml' % path)
 
-    s3cmd = 's3cmd -P --add-header=Cache-Control:max-age=5 --guess-mime-type --recursive --exclude-from gzip_types.txt sync %s/ %s'
-    s3cmd_gzip = 's3cmd -P --add-header=Cache-Control:max-age=5 --add-header=Content-encoding:gzip --guess-mime-type --recursive --exclude "*" --include-from gzip_types.txt sync %s/ %s'
+    exclude_flags = ''
+    include_flags = ''
+
+    with open('gzip_types.txt') as f:
+        for line in f:
+            exclude_flags += '--exclude "%s" ' % line.strip()
+            include_flags += '--include "%s" ' % line.strip()
+
+    exclude_flags += '--exclude "www/assets" '
+
+    sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "us-east-1"'
+    sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "us-east-1"'
+    sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "us-east-1"'
 
     for bucket in app_config.S3_BUCKETS:
-        local(s3cmd % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(s3cmd_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
+
+def assets_down(path='www/assets'):
+    """
+    Download assets folder from s3 to www/assets
+    """
+    local('aws s3 sync s3://%s/%s/ %s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1"' % (app_config.ASSETS_S3_BUCKET, app_config.PROJECT_SLUG, path))
+
+def assets_up(path='www/assets'):
+    """
+    Upload www/assets folder to s3
+    """
+    _confirm("You are about to replace the copy of the folder on the server with your own copy. Are you sure?")
+
+    local('aws s3 sync %s/ s3://%s/%s/ --acl "public-read" --cache-control "max-age=5" --region "us-east-1" --delete' % (
+            path,
+            app_config.ASSETS_S3_BUCKET,
+            app_config.PROJECT_SLUG
+        ))
+
+def assets_rm(path):
+    """
+    remove an asset from s3 and locally
+    """
+    file_list = glob(path)
+
+    if len(file_list) > 0:
+
+        _confirm("You are about to destroy %s files. Are you sure?" % len(file_list))
+
+        with settings(warn_only=True):
+
+            for file_path in file_list:
+
+                local('aws s3 rm s3://%s/%s/%s --region "us-east-1"' % (
+                    app_config.ASSETS_S3_BUCKET,
+                    app_config.PROJECT_SLUG,
+                    file_path.replace('www/assets/', '')
+                ))
+
+                local('rm -rf %s' % path)
 
 def _gzip(in_path='www', out_path='.gzip'):
     """
@@ -528,10 +587,10 @@ def shiva_the_destroyer():
     _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
     with settings(warn_only=True):
-        s3cmd = 's3cmd del --recursive %s'
+        sync = 'aws s3 rm %s --recursive --region "us-east-1"'
 
         for bucket in app_config.S3_BUCKETS:
-            local(s3cmd % ('s3://%s/%s' % (bucket, app_config.PROJECT_SLUG)))
+            local(sync % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
 
         if app_config.DEPLOY_TO_SERVERS:
             run('rm -rf %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
@@ -566,6 +625,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git init')
     local('mv PROJECT_README.md README.md')
     local('rm *.pyc')
+    local('rm LICENSE')
     local('git add .')
     local('git commit -am "Initial import from app-template."')
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
