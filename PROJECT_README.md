@@ -175,29 +175,53 @@ Arbitrary Google Docs
 ----------------------
 Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
 
+This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
+
+First, export a valid Google username (email address) and password to your environment.
+
+```
+export APPS_GOOGLE_EMAIL=foo@gmail.com
+export APPS_GOOGLE_PASS=MyPaSsW0rd1!
+```
+
+Then, you can load up the `GoogleDoc` class in `etc/gdocs.py` to handle the task of authenticating and downloading your Google Doc.
+
 Here's an example of what you might do:
+
 ```
 import csv
 
 from etc.gdoc import GoogleDoc
 
-doc = {}
-doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
-doc['gid'] = '4'
-doc['file_format'] = 'csv'
-doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
+def read_my_google_doc():
+    doc = {}
+    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
+    doc['gid'] = '4'
+    doc['file_format'] = 'csv'
+    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
 
-g = GoogleDoc(**doc)
-g.get_auth()
-g.get_document()
+    g = GoogleDoc(**doc)
+    g.get_auth()
+    g.get_document()
 
-with open('data/%s' % doc['file_name'], 'wb') as readfile:
-    csv_file = list(csv.DictReader(readfile))
+    with open('data/%s' % doc['file_name'], 'wb') as readfile:
+        csv_file = list(csv.DictReader(readfile))
 
-for line_number, row in enumerate(csv_file):
-    print line_number, row
+    for line_number, row in enumerate(csv_file):
+        print line_number, row
+
+read_my_google_doc()
 ```
 
+Google documents will be downloaded to `data/gdoc.csv` by default.
+
+You can pass the class many keyword arguments if you'd like; here's what you can change:
+* gid AKA the sheet number
+* key AKA the Google Docs document ID
+* file_format (xls, csv, json)
+* file_name (to download to)
+
+See `etc/gdocs.py` for more documentation.
 
 Run Python tests
 ----------------

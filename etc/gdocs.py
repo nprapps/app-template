@@ -10,21 +10,36 @@ class GoogleDoc(object):
     """
     A class for accessing a Google document as an object.
     Includes the bits necessary for accessing the document and auth and such.
+    For example:
+
+        doc = {
+            "key": "123456abcdef",
+            "gid": "4",
+            "file_format": "csv",
+            "file_name": "my_google_doc"
+        }
+        g = GoogleDoc(**doc)
+        g.get_auth()
+        g.get_document()
+
+    Will download your google doc to data/my_google_doc.csv in the CSV format.
     """
+
+    # You can update these values with kwargs.
+    # In fact, you better pass a key or else it won't work!
     key = None
     gid = "0"
+    file_format = "xls"
+    file_name = "copy"
 
+    # You can change these with kwargs but it's not recommended.
     spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=csv&gid=%s"
-
     auth = None
     email = os.environ.get('APPS_GOOGLE_EMAIL', None)
     password = os.environ.get('APPS_GOOGLE_PASS', None)
     scope = "https://spreadsheets.google.com/feeds/"
     service = "wise"
     session = "1"
-
-    file_format = "xls"
-    file_name = "copy"
 
     def __init__(self, **kwargs):
         """
