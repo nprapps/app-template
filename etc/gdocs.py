@@ -76,8 +76,12 @@ class GoogleDoc(object):
 
             r = requests.get(self.spreadsheet_url % (self.key, self.gid), headers=headers)
 
-            with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
-                writefile.write(r.content)
+            if r.status_code != 200:
+                raise KeyError("Error! Your Google Doc does not exist.")
+
+            else:
+                with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
+                    writefile.write(r.content)
 
     def parse_document(self):
         """
