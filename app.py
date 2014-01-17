@@ -8,7 +8,6 @@ from render_utils import make_context, urlencode_filter
 import static
 
 app = Flask(app_config.PROJECT_NAME)
-app.register_blueprint(static.static)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
@@ -37,6 +36,8 @@ def test_widget():
 @app.route('/test/test.html')
 def test_dir():
     return render_template('index.html', **make_context())
+    
+app.register_blueprint(static.static)
 
 # Boilerplate
 if __name__ == '__main__':
