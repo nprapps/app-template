@@ -14,6 +14,7 @@ $NEW_PROJECT_NAME
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
 * [COPY editing](#copy-editing)
+* [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
 * [Compile static assets](#compile-static-assets)
@@ -37,7 +38,7 @@ The following things are assumed to be true in this documentation.
 * You are running OSX.
 * You are using Python 2.7. (Probably the version that came OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
-* You have Dropbox installed and mounted at `~/Dropbox` (the default location) and you have the `nprapps` folder synchronized.
+* You have NPR's AWS credentials stored as environment variables locally.
 
 For more details on the technology stack used with the app-template, see our [development environment blog post](http://blog.apps.npr.org/2013/06/06/how-to-setup-a-developers-environment.html).
 
@@ -54,7 +55,7 @@ The project contains the following folders and important files:
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``tests`` -- Python unit tests.
 * ``www`` -- Static and compiled assets to be deployed. (a.k.a. "the output")
-* ``www/assets`` -- A symlink to a Dropbox folder containing binary assets (images, audio).
+* ``www/assets`` -- A symlink to an S3 bucket containing binary assets (images, audio).
 * ``www/live-data`` -- "Live" data deployed to S3 via cron jobs or other mechanisms. (Not deployed with the rest of the project.)
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
@@ -94,11 +95,15 @@ Project secrets should **never** be stored in ``app_config.py`` or anywhere else
 Save media assets
 -----------------
 
-Any copyrighted or large binary assets (images, audio, video), should not be added to the Github repository, but rather to the folder in Dropbox corresponding to this project: ``~/Dropbox/nprapps/assets/$NEW_PROJECT_NAME``. This folder is symlinked to ``www/assets`` during the bootstrap process.
+Large media assets (images, videos, audio) are synced with an Amazon S3 bucket called ```assets.apps.npr.org``` in a folder with the name of the project. This allows everyone who works on the project to access these assets without storing them in the repo, giving us faster clone times and the ability to open source our work.
 
-These assets will be deployed, but will not be committed to the repository. This is both make cloning the repository faster and also to make it easier to open source new projects.
+Syncing these assets requires running a few different commands at the right times:
 
-Adding a page to the site 
+* When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_up```. **NOTE**: The newest push will *always* overwrite the current copy on the server.
+* When you need new assets or newly changed assets in your local environment that are on the server already, run ```fab assets_down``` (this will happen in ```fab bootstrap``` automatically).
+* When you want to remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"file_name_here.jpg"```
+
+Adding a page to the site
 -------------------------
 
 A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
@@ -165,6 +170,58 @@ You may also access rows using iterators. In this case, the column headers of th
 {{ row.column_two_header }}
 {% endfor %}
 ```
+
+Arbitrary Google Docs
+----------------------
+Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
+
+This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
+
+First, export a valid Google username (email address) and password to your environment.
+
+```
+export APPS_GOOGLE_EMAIL=foo@gmail.com
+export APPS_GOOGLE_PASS=MyPaSsW0rd1!
+```
+
+Then, you can load up the `GoogleDoc` class in `etc/gdocs.py` to handle the task of authenticating and downloading your Google Doc.
+
+Here's an example of what you might do:
+
+```
+import csv
+
+from etc.gdoc import GoogleDoc
+
+def read_my_google_doc():
+    doc = {}
+    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
+    doc['gid'] = '4'
+    doc['file_format'] = 'csv'
+    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
+
+    g = GoogleDoc(**doc)
+    g.get_auth()
+    g.get_document()
+
+    with open('data/%s' % doc['file_name'], 'wb') as readfile:
+        csv_file = list(csv.DictReader(readfile))
+
+    for line_number, row in enumerate(csv_file):
+        print line_number, row
+
+read_my_google_doc()
+```
+
+Google documents will be downloaded to `data/gdoc.csv` by default.
+
+You can pass the class many keyword arguments if you'd like; here's what you can change:
+* gid AKA the sheet number
+* key AKA the Google Docs document ID
+* file_format (xls, csv, json)
+* file_name (to download to)
+
+See `etc/gdocs.py` for more documentation.
 
 Run Python tests
 ----------------
@@ -244,7 +301,7 @@ To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron
 Install web services
 ---------------------
 
-Web services are configured in the `confs/` folder. 
+Web services are configured in the `confs/` folder.
 
 Running ``fab setup_server`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
