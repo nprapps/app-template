@@ -4,14 +4,18 @@ import copy
 from glob import glob
 import os
 
-from fabric.api import *
+from fabric.api import local, put, require, run, settings, sudo, task 
+from fabric.state import env
 from jinja2 import Template
 
 import app
 import app_config
-import boto
 from etc import github
 from etc.gdocs import GoogleDoc
+
+# Other fabfiles
+import assets
+import utils
 
 """
 Base configuration
@@ -29,6 +33,7 @@ Changing environment requires a full-stack test.
 An environment points to both a server and an S3
 bucket.
 """
+@task
 def production():
     """
     Run as though on production.
@@ -37,6 +42,7 @@ def production():
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
+@task
 def staging():
     """
     Run as though on staging.
@@ -45,9 +51,7 @@ def staging():
     app_config.configure_targets(env.settings)
     env.hosts = app_config.SERVERS
 
-"""
-Fabcasting! Run commands on the remote server.
-"""
+@task
 def fabcast(command):
     """
     Actually run specified commands on the server specified
@@ -67,18 +71,21 @@ Branches
 
 Changing branches requires deploying that branch to a host.
 """
+@task
 def stable():
     """
     Work on stable branch.
     """
     env.branch = 'stable'
 
+@task
 def master():
     """
     Work on development branch.
     """
     env.branch = 'master'
 
+@task
 def branch(branch_name):
     """
     Work on any specified branch.
@@ -92,6 +99,7 @@ Changing the template functions should produce output
 with fab render without any exceptions. Any file used
 by the site templates should be rendered by fab render.
 """
+@task
 def less():
     """
     Render LESS files to CSS.
@@ -103,12 +111,14 @@ def less():
 
         local('node_modules/bin/lessc %s %s' % (path, out_path))
 
+@task
 def jst():
     """
     Render Underscore templates to a JST package.
     """
     local('node_modules/bin/jst --template underscore jst www/js/templates.js')
 
+@task
 def download_copy():
     """
     Downloads a Google Doc as an .xls file.
@@ -120,18 +130,21 @@ def download_copy():
     g.get_auth()
     g.get_document()
 
+@task
 def update_copy():
     """
     Fetches the latest Google Doc and updates local JSON.
     """
     download_copy()
 
+@task
 def update_data():
     """
     Stub function for updating app-specific data.
     """
     pass
 
+@task
 def app_config_js():
     """
     Render app_config.js to file.
@@ -144,6 +157,7 @@ def app_config_js():
     with open('www/js/app_config.js', 'w') as f:
         f.write(js)
 
+@task
 def copy_js():
     """
     Render copy.js to file.
@@ -156,6 +170,7 @@ def copy_js():
     with open('www/js/copy.js', 'w') as f:
         f.write(js)
 
+@task
 def render():
     """
     Render HTML templates and compile assets.
@@ -163,7 +178,7 @@ def render():
     from flask import g
 
     update_copy()
-    assets_sync()
+    assets.sync()
     update_data()
     less()
     jst()
@@ -208,6 +223,7 @@ def render():
         with open(filename, 'w') as f:
             f.write(content.encode('utf-8'))
 
+@task
 def tests():
     """
     Run Python unit tests.
@@ -220,6 +236,7 @@ Setup
 Changing setup commands requires a test deployment to a server.
 Setup will create directories, install requirements, etc.
 """
+@task
 def setup_server():
     """
     Setup servers for deployment.
@@ -240,6 +257,7 @@ def setup_server():
     checkout_latest()
     install_requirements()
 
+@task
 def setup_directories():
     """
     Create server directories.
@@ -249,6 +267,7 @@ def setup_directories():
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
     run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@task
 def setup_virtualenv():
     """
     Setup a server virtualenv.
@@ -258,6 +277,7 @@ def setup_virtualenv():
     run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
     run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
+@task
 def clone_repo():
     """
     Clone the source repository.
@@ -269,6 +289,7 @@ def clone_repo():
     if app_config.REPOSITORY_ALT_URL:
         run('git remote add bitbucket %(REPOSITORY_ALT_URL)s' % app_config.__dict__)
 
+@task
 def checkout_latest(remote='origin'):
     """
     Checkout the latest source.
@@ -279,6 +300,7 @@ def checkout_latest(remote='origin'):
     run('cd %s; git fetch %s' % (app_config.SERVER_REPOSITORY_PATH, remote))
     run('cd %s; git checkout %s; git pull %s %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, remote, env.branch))
 
+@task
 def install_requirements():
     """
     Install the latest requirements.
@@ -288,6 +310,7 @@ def install_requirements():
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
     run('cd %(SERVER_REPOSITORY_PATH)s; npm install less universal-jst -g --prefix node_modules' % app_config.__dict__)
 
+@task
 def install_crontab():
     """
     Install cron jobs script into cron.d.
@@ -296,6 +319,7 @@ def install_crontab():
 
     sudo('cp %(SERVER_REPOSITORY_PATH)s/crontab /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@task
 def uninstall_crontab():
     """
     Remove a previously install cron jobs script from cron.d
@@ -304,6 +328,7 @@ def uninstall_crontab():
 
     sudo('rm /etc/cron.d/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
+@task
 def import_issues(path):
     """
     Import a list of a issues from any CSV formatted like default_tickets.csv.
@@ -311,6 +336,7 @@ def import_issues(path):
     auth = github.get_auth()
     github.create_tickets(auth, path)
 
+@task
 def bootstrap_issues():
     """
     Bootstraps Github issues with default configuration.
@@ -322,6 +348,7 @@ def bootstrap_issues():
     github.create_milestones(auth)
     github.create_hipchat_hook(auth)
 
+@task
 def bootstrap():
     """
     Bootstrap this project. Should only need to be run once.
@@ -331,7 +358,7 @@ def bootstrap():
 
     local('npm install less universal-jst -g --prefix node_modules')
 
-    assets_sync()
+    assets.sync()
     update_copy()
     update_data()
 
@@ -399,6 +426,7 @@ def _get_installed_service_name(service):
     """
     return '%s.%s' % (app_config.PROJECT_FILENAME, service)
 
+@task
 def render_confs():
     """
     Renders server configurations.
@@ -423,6 +451,7 @@ def render_confs():
                 payload = Template(read_template.read())
                 write_template.write(payload.render(**context))
 
+@task
 def deploy_confs():
     """
     Deploys rendered server configurations to the specified server.
@@ -465,6 +494,7 @@ def deploy_confs():
             else:
                 print '%s has not changed' % rendered_path
 
+@task
 def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -475,7 +505,7 @@ def deploy(remote='origin'):
         require('branch', provided_by=[stable, master, branch])
 
     if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
-        _confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
+        utils.confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
 
     if app_config.DEPLOY_TO_SERVERS:
         fabcast('update_copy')
@@ -497,6 +527,7 @@ def deploy(remote='origin'):
 """
 Cron jobs
 """
+@task
 def cron_test():
     """
     Example cron task. Note we use "local" instead of "run"
@@ -507,197 +538,13 @@ def cron_test():
     local('echo $DEPLOYMENT_TARGET > /tmp/cron_test.txt')
 
 """
-Assets
-"""
-def assets_sync():
-    """
-    Intelligently synchronize assets between S3 and local folder.
-    """
-    local_paths = []
-
-    for local_path, subdirs, filenames in os.walk('www/assets'):
-        for name in filenames:
-            local_paths.append(os.path.join(local_path, name))
-
-    bucket = _assets_get_bucket()
-    keys = bucket.list(app_config.PROJECT_SLUG)
-
-    which = None
-    always = False
-
-    for key in keys:
-        download = False
-        upload = False
-
-        local_path = key.name.replace(app_config.PROJECT_SLUG, 'www/assets', 1)
-
-        print local_path
-
-        if local_path in local_paths:
-            # A file can only exist once, this speeds up future checks
-            # and provides a list of non-existing files when complete
-            local_paths.remove(local_path)
-
-            # We need an actual key, not a "list key"
-            # http://stackoverflow.com/a/18981298/24608
-            key = bucket.get_key(key.name)
-
-            with open(local_path, 'rb') as f:
-                local_md5 = key.compute_md5(f)[0]
-
-            # Hashes are different
-            if key.get_metadata('md5') != local_md5:
-                if not always:
-                    # Ask user which file to take
-                    which, always = _assets_confirm(local_path)
-
-                if not which:
-                    print 'Cancelling!'
-
-                    return
-
-                if which == 'remote':
-                    download = True
-                elif which == 'local':
-                    upload = True
-        else:
-            download = True
-            
-        if download:
-            _assets_download(key, local_path)
-
-        if upload:
-            _assets_upload(local_path, key)
-
-    action = None
-    always = False
-
-    # Iterate over files that didn't exist on S3
-    for local_path in local_paths:
-        key_name = local_path.replace('www/assets', app_config.PROJECT_SLUG, 1)
-        key = bucket.get_key(key_name, validate=False)
-
-        print local_path
-
-        if not always:
-            action, always = _assets_upload_confirm()
-
-        if not action:
-            print 'Cancelling!'
-
-            return
-
-        if action == 'upload':
-            _assets_upload(local_path, key)
-        elif action == 'delete':
-            _assets_delete(local_path, key)
-
-def _assets_get_bucket():
-    """
-    Get a reference to the assets bucket.
-    """
-    s3 = boto.connect_s3()
-    
-    return s3.get_bucket(app_config.ASSETS_S3_BUCKET)
-
-def _assets_confirm(local_path):
-    """
-    Check with user about whether to keep local or remote file.
-    """
-    print '--> This file has been changed locally and on S3.'
-    answer = prompt('Take remote [r] Take local [l] Take all remote [ra] Take all local [la] cancel', default='c')
-
-    if answer == 'r':
-        return ('remote', False)
-    elif answer == 'l':
-        return ('local', False)
-    elif answer == 'ra':
-        return ('remote', True)
-    elif answer == 'la':
-        return ('local', True)
-        
-    return (None, False)
-
-def _assets_upload_confirm():
-    print '--> This file does not exist on S3.'
-    answer = prompt('Upload local copy [u] Delete local copy [d] Upload all [ua] Delete all [da] cancel', default='c')
-
-    if answer == 'u':
-        return ('upload', False)
-    elif answer == 'd':
-        return ('delete', False)
-    elif answer == 'ua':
-        return ('upload', True)
-    elif answer == 'da':
-        return ('download', True)
-
-    return (None, False) 
-
-def _assets_download(s3_key, local_path):
-    """
-    Utility method to download a single asset from S3.
-    """
-    print '--> Downloading!' 
-
-    dirname = os.path.dirname(local_path)
-
-    if not (os.path.exists(dirname)):
-        os.makedirs(dirname)
-    
-    s3_key.get_contents_to_filename(local_path)
-
-def _assets_upload(local_path, s3_key):
-    """
-    Utility method to upload a single asset to S3.
-    """
-    print '--> Uploading!'
-    
-    with open(local_path, 'rb') as f:
-        local_md5 = s3_key.compute_md5(f)[0]
-
-    s3_key.set_metadata('md5', local_md5)
-    s3_key.set_contents_from_filename(local_path)
-
-def _assets_delete(local_path, s3_key):
-    """
-    Utility method to delete assets both locally and remotely.
-    """
-    print '--> Deleting!'
-
-    s3_key.delete()
-    os.remove(local_path)
-
-def assets_rm(path):
-    """
-    Remove an asset from s3 and locally
-    """
-    bucket = _assets_get_bucket()
-
-    file_list = glob(path)
-
-    if len(file_list) > 0:
-        _confirm("You are about to destroy %i files. Are you sure?" % len(file_list))
-
-        for local_path in file_list:
-            key_name = local_path.replace('www/assets', app_config.PROJECT_SLUG, 1)
-            key = bucket.get_key(key_name)
-            
-            _assets_delete(local_path, key)
-
-
-"""
 Destruction
 
 Changes to destruction require setup/deploy to a test host in order to test.
 Destruction should remove all files related to the project from both a remote
 host and S3.
 """
-def _confirm(message):
-    answer = prompt(message, default="Not at all")
-
-    if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
-        exit()
-
+@task
 def nuke_confs():
     """
     DESTROYS rendered server configurations from the specified server.
@@ -722,13 +569,14 @@ def nuke_confs():
                 sudo('rm %s' % app_config.UWSGI_LOG_PATH)
                 sudo('rm %s' % app_config.APP_LOG_PATH)
 
+@task
 def shiva_the_destroyer():
     """
     Deletes the app from s3
     """
     require('settings', provided_by=[production, staging])
 
-    _confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
+    utils.confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
 
     with settings(warn_only=True):
         sync = 'aws s3 rm %s --recursive --region "us-east-1"'
@@ -748,6 +596,7 @@ def shiva_the_destroyer():
 """
 App-template specific setup. Not relevant after the project is running.
 """
+@task
 def app_template_bootstrap(project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
@@ -760,7 +609,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
 
-    _confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
+    utils.confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
 
     for k, v in config.items():
         local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
@@ -776,5 +625,3 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git push -u origin master')
 
     local('mkdir ~/Dropbox/nprapps/assets/%s' % config['$NEW_PROJECT_NAME'])
-
-    bootstrap()

@@ -49,6 +49,7 @@ The project contains the following folders and important files:
 
 * ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> render_confs``, don't edit anything in ``confs/rendered`` directly.
 * ``data`` -- Data files, such as those used to generate HTML.
+* ``fabfile`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands for automating setup and deployment.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
 * ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
@@ -62,7 +63,6 @@ The project contains the following folders and important files:
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
 * ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
 * ``crontab`` -- Cron jobs to be installed as part of the project.
-* ``fabfile.py`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands automating setup and deployment.
 * ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
@@ -97,7 +97,7 @@ Save media assets
 
 Large media assets (images, videos, audio) are synced with an Amazon S3 bucket called ```assets.apps.npr.org``` in a folder with the name of the project. This allows everyone who works on the project to access these assets without storing them in the repo, giving us faster clone times and the ability to open source our work.
 
-Syncing these assets requires running a couple different commands at the right times. When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets_sync```. This will do a few things:
+Syncing these assets requires running a couple different commands at the right times. When you create new assets or make changes to current assets that need to get uploaded to the server, run ```fab assets.sync```. This will do a few things:
 
 * If there is an asset on S3 that does not exist on your local filesystem it will be downloaded.
 * If there is an asset on that exists on your local filesystem but not on S3, you will be prompted to either upload (type "u") OR delete (type "d") your local copy.
@@ -106,7 +106,8 @@ Syncing these assets requires running a couple different commands at the right t
 * If both you and the server have an asset and they are different, you will be prompted to take either the remote version (type "r") or the local version (type "l").
 * You can also take all remote versions (type "ra") or all local versions (type "la"). Type "c" to cancel if you aren't sure what to do.
 
-Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to simultaneously remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets_rm:"www/assets/file_name_here.jpg"```
+Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to simultaneously remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets.rm:"www/assets/file_name_here.jpg"```
+
 Adding a page to the site
 -------------------------
 
