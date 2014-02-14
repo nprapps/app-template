@@ -215,7 +215,15 @@ def render():
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
-            view = app.__dict__[name]
+            bits = name.split('.')
+
+            # Determine which module the view resides in
+            if len(bits) > 1:
+                module, name = bits
+            else:
+                module = 'app'
+
+            view = globals()[module].__dict__[name]
             content = view()
 
             compiled_includes = g.compiled_includes
