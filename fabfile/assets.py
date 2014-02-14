@@ -147,7 +147,7 @@ def _assets_upload_confirm():
     elif answer == 'ua':
         return ('upload', True)
     elif answer == 'da':
-        return ('download', True)
+        return ('delete', True)
 
     return (None, False) 
 
