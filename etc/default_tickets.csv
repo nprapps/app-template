@@ -8,6 +8,7 @@ Create Seamus shell page and request redirect,,Launch TODO
 Update widget analytics with project name,,Launch TODO
 Browser testing: IE9,,
 Browser testing: IE10,,
+Browser testing: IE11,,
 Browser testing: Latest Firefox,,
 Browser testing: Latest Chrome,,
 Browser testing: Desktop Safari,,
@@ -22,6 +23,8 @@ Ad,,
 Double-check analytics code,,Launch TODO
 DevOps: Enable scout monitor for /<project_slug>/test/,,Launch TODO
 Write the team blog post,,Launch TODO
+Byline for visuals team,,Launch TODO
+Add project to team projects list,Update https://github.com/nprapps/nprapps.github.com/blob/master/_data/apps.yml,LaunchTODO
 Update master sitemaps index and redeploy,,Launch TODO
 Email Emerson in marketing re: press releasees,,Launch TODO
 Schedule iteration reviews,,Project Management
