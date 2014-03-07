@@ -631,6 +631,4 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
     local('git push -u origin master')
 
-    local('mkdir ~/Dropbox/nprapps/assets/%s' % config['$NEW_PROJECT_NAME'])
-
     bootstrap()
