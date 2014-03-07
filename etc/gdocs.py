@@ -33,7 +33,7 @@ class GoogleDoc(object):
     file_name = "copy"
 
     # You can change these with kwargs but it's not recommended.
-    spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=csv&gid=%s"
+    spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%s"
     auth = None
     email = os.environ.get('APPS_GOOGLE_EMAIL', None)
     password = os.environ.get('APPS_GOOGLE_PASS', None)
@@ -86,7 +86,7 @@ class GoogleDoc(object):
             headers = {}
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
 
-            r = requests.get(self.spreadsheet_url % (self.key, self.gid), headers=headers)
+            r = requests.get(self.spreadsheet_url % (self.key, self.file_format, self.gid), headers=headers)
 
             if r.status_code != 200:
                 raise KeyError("Error! Your Google Doc does not exist.")

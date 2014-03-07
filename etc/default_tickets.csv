@@ -31,8 +31,8 @@ Setup Hipchat service hook on github,,
 Let the copy desk know an app is coming,,
 Make sure the copy desk is happy,,Launch TODO
 Let the homepage team know an app is coming,,
-Distribute launch timeline,Let stakeholders, social media, etc know what the launch schedule is,Launch TODO
+Distribute launch timeline,"Let stakeholders, social media, etc know what the launch schedule is",Launch TODO
 Run the app through Google Page Speed,http://developers.google.com/speed/pagespeed/insights/,
-Verify repository LICENSE is correct,,Launch TODO
+Change LICENSE to MIT if open sourcing,By default things are copyright NPR,Launch TODO
 Add Staff team to repository,https://github.com/organizations/nprapps/teams/629980,
 Add Intern team to repository,https://github.com/organizations/nprapps/teams/210132,
