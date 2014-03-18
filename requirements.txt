@@ -9,7 +9,6 @@ botocore==0.31.0
 colorama==0.2.5
 cssmin==0.1.4
 docutils==0.11
-dulwich==0.9.4
 envoy==0.0.2
 jmespath==0.2.1
 nose==1.2.1
