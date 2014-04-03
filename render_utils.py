@@ -15,22 +15,25 @@ import copytext
 class Includer(object):
     """
     Base class for Javascript and CSS psuedo-template-tags.
+
+    See `make_context` for an explanation of `asset_depth`.
     """
-    def __init__(self):
+    def __init__(self, asset_depth=0):
         self.includes = []
         self.tag_string = None
+        self.asset_depth = asset_depth
 
     def push(self, path):
-            self.includes.append(path)
+        self.includes.append(path)
 
-            return ""
+        return ''
 
     def _compress(self):
         raise NotImplementedError()
 
     def _relativize_path(self, path):
         relative_path = path
-        depth = len(request.path.split('/')) - 2
+        depth = len(request.path.split('/')) - (2 + self.asset_depth) 
 
         while depth > 0:
             relative_path = '../%s' % relative_path
@@ -79,8 +82,8 @@ class JavascriptIncluder(Includer):
     """
     Psuedo-template tag that handles collecting Javascript and serving appropriate clean or compressed versions.
     """
-    def __init__(self):
-        Includer.__init__(self)
+    def __init__(self, *args, **kwargs):
+        Includer.__init__(self, *args, **kwargs)
 
         self.tag_string = '<script type="text/javascript" src="%s"></script>'
 
@@ -107,8 +110,8 @@ class CSSIncluder(Includer):
     """
     Psuedo-template tag that handles collecting CSS and serving appropriate clean or compressed versions.
     """
-    def __init__(self):
-        Includer.__init__(self)
+    def __init__(self, *args, **kwargs):
+        Includer.__init__(self, *args, **kwargs)
 
         self.tag_string = '<link rel="stylesheet" type="text/css" href="%s" />'
 
@@ -153,16 +156,20 @@ def flatten_app_config():
 
     return config
 
-def make_context():
+def make_context(asset_depth=0):
     """
     Create a base-context for rendering views.
     Includes app_config and JS/CSS includers.
+
+    `asset_depth` indicates how far into the url hierarchy
+    the assets are hosted. If 0, then they are at the root.
+    If 1 then at /foo/, etc.
     """
     context = flatten_app_config()
 
     context['COPY'] = copytext.Copy()
-    context['JS'] = JavascriptIncluder()
-    context['CSS'] = CSSIncluder()
+    context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
+    context['CSS'] = CSSIncluder(asset_depth=asset_depth)
 
     return context
 

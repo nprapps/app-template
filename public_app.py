@@ -4,13 +4,12 @@ import argparse
 import datetime
 import logging
 
-from flask import Flask
+from flask import Flask, render_template
 
 import app_config
-#import static
+from render_utils import make_context
 
 app = Flask(app_config.PROJECT_NAME)
-#app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
@@ -27,6 +26,20 @@ def _test_app():
     app.logger.info('Test URL requested.')
 
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+# Example of rendering HTML with the rig
+import static
+from render_utils import urlencode_filter
+
+app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
+app.jinja_env.filters['urlencode'] = urlencode_filter
+
+@app.route ('/%s/' % app_config.PROJECT_SLUG, methods=['GET'])
+def index():
+    """
+    Example view rendering a simple page.
+    """
+    return render_template('index.html', **make_context(asset_depth=1))
 
 # Boilerplate
 if __name__ == '__main__':
