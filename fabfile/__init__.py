@@ -605,7 +605,7 @@ def shiva_the_destroyer():
 App-template specific setup. Not relevant after the project is running.
 """
 @task
-def app_template_bootstrap(project_name=None, repository_name=None):
+def app_template_bootstrap(github_username='nprapps', project_name=None, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
@@ -629,7 +629,7 @@ def app_template_bootstrap(project_name=None, repository_name=None):
     local('rm LICENSE')
     local('git add .')
     local('git commit -am "Initial import from app-template."')
-    local('git remote add origin git@github.com:nprapps/%s.git' % config['$NEW_REPOSITORY_NAME'])
+    local('git remote add origin git@github.com:%s/%s.git' % (github_username, config['$NEW_REPOSITORY_NAME']))
     local('git push -u origin master')
 
     bootstrap()

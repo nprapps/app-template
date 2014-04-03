@@ -52,6 +52,12 @@ fab app_template_bootstrap
 
 This will setup the new repo and will replace `README.md` (this file) with `PROJECT_README.md`. See that file for usage documentation.
 
+By default `app_template_bootstrap` will use `nprapps` as the Github username, and the current directory name as the project name and repository name. **This is a best practice**, but you can override these defaults if you need to:
+
+```
+fab app_template_bootstrap:$GITHUB_USERNAME,$PROJECT_NAME,$REPOSTORY_NAME
+```
+
 Bootstrap issues
 ----------------
 
