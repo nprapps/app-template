@@ -20,7 +20,7 @@ def sync():
             local_paths.append(os.path.join(local_path, name))
 
     bucket = _assets_get_bucket()
-    keys = bucket.list(app_config.PROJECT_SLUG)
+    keys = bucket.list(app_config.ASSETS_SLUG)
 
     which = None
     always = False
@@ -29,7 +29,7 @@ def sync():
         download = False
         upload = False
 
-        local_path = key.name.replace(app_config.PROJECT_SLUG, 'www/assets', 1)
+        local_path = key.name.replace(app_config.ASSETS_SLUG, 'www/assets', 1)
 
         print local_path
 
@@ -74,7 +74,7 @@ def sync():
 
     # Iterate over files that didn't exist on S3
     for local_path in local_paths:
-        key_name = local_path.replace('www/assets', app_config.PROJECT_SLUG, 1)
+        key_name = local_path.replace('www/assets', app_config.ASSETS_SLUG, 1)
         key = bucket.get_key(key_name, validate=False)
 
         print local_path
@@ -105,7 +105,7 @@ def assets_rm(path):
         utils.confirm("You are about to destroy %i files. Are you sure?" % len(file_list))
 
         for local_path in file_list:
-            key_name = local_path.replace('www/assets', app_config.PROJECT_SLUG, 1)
+            key_name = local_path.replace('www/assets', app_config.ASSETS_SLUG, 1)
             key = bucket.get_key(key_name)
             
             _assets_delete(local_path, key)

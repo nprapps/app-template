@@ -16,7 +16,7 @@ NAMES
 # Project name used for display
 PROJECT_NAME = '$NEW_PROJECT_NAME'
 
-# Project name in urls
+# Project name to be used in urls
 # Use dashes, not underscores!
 PROJECT_SLUG = '$NEW_PROJECT_SLUG'
 
@@ -25,7 +25,11 @@ REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
 REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
-# The name to be used in paths on the server
+# Project name used for assets rig
+# Should stay the same, even if PROJECT_SLUG changes
+ASSETS_SLUG = '$NEW_PROJECT_SLUG'
+
+# Project name to be used in file paths
 PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 """
