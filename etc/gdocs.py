@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import csv
 from exceptions import KeyError
 import os
 
@@ -14,26 +13,23 @@ class GoogleDoc(object):
 
         doc = {
             "key": "123456abcdef",
-            "gid": "4",
-            "file_format": "csv",
             "file_name": "my_google_doc"
         }
         g = GoogleDoc(**doc)
         g.get_auth()
         g.get_document()
 
-    Will download your google doc to data/my_google_doc.csv in the CSV format.
+    Will download your google doc to data/my_google_doc.xls in the CSV format.
     """
 
     # You can update these values with kwargs.
     # In fact, you better pass a key or else it won't work!
     key = None
-    gid = "0"
     file_format = "xls"
     file_name = "copy"
 
     # You can change these with kwargs but it's not recommended.
-    spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s&gid=%s"
+    spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s"
     auth = None
     email = os.environ.get('APPS_GOOGLE_EMAIL', None)
     password = os.environ.get('APPS_GOOGLE_PASS', None)
@@ -86,7 +82,7 @@ class GoogleDoc(object):
             headers = {}
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
 
-            r = requests.get(self.spreadsheet_url % (self.key, self.file_format, self.gid), headers=headers)
+            r = requests.get(self.spreadsheet_url % (self.key, self.file_format), headers=headers)
 
             if r.status_code != 200:
                 raise KeyError("Error! Your Google Doc does not exist.")
@@ -95,28 +91,3 @@ class GoogleDoc(object):
                 with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
                     writefile.write(r.content)
 
-    def parse_document(self):
-        """
-        A stub method for reading the document after it's been downloaded.
-        """
-        with open('data/gdoc_%s.csv' % self.key, 'rb') as readfile:
-            csv_file = list(csv.DictReader(readfile))
-
-        print csv_file
-
-
-if __name__ == "__main__":
-    """
-    Here's an example of how to use the class.
-    Don't forget to pass a key and a gid!
-    """
-    doc = {}
-    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
-    doc['gid'] = '4'
-    doc['file_format'] = 'csv'
-    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
-
-    g = GoogleDoc(**doc)
-    g.get_auth()
-    g.get_document()
-    g.parse_document()
