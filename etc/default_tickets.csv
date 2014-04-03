@@ -3,9 +3,10 @@ Update ad tags (DFP),Change `ENVIRONMENT` to `NPR`; change `TESTSERVER` to `fals
 Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
 Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
-Get npr.org redirect (short URL),,Launch TODO
-Create Seamus shell page and request redirect,,Launch TODO
-Update widget analytics with project name,,Launch TODO
+Request npr.org/foo redirect (short URL),https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
+Create Seamus shell page,https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
+Request shell page direct,https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
+Update widget analytics with project name,If using a widget,Launch TODO
 Browser testing: IE9,,
 Browser testing: IE10,,
 Browser testing: IE11,,
@@ -33,7 +34,8 @@ Schedule sprint retrospectives,,Project Management
 Setup Hipchat service hook on github,,
 Let the copy desk know an app is coming,,
 Make sure the copy desk is happy,,Launch TODO
-Let the homepage team know an app is coming,,
+Let the homepage team know an app is coming,"A week or so before launch give them a link, a walkthrough and discuss headlines and teasers",
+Send shell page to homepage editors,,Launch TODO
 Distribute launch timeline,"Let stakeholders, social media, etc know what the launch schedule is",Launch TODO
 Run the app through Google Page Speed,http://developers.google.com/speed/pagespeed/insights/,
 Change LICENSE to MIT if open sourcing,By default things are copyright NPR,Launch TODO
