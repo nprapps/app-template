@@ -127,10 +127,32 @@ def rm(path):
 
     file_list = glob(path)
 
+    found_folder = True
+
+    # Add files in folders, instead of folders themselves (S3 doesn't have folders)
+    while found_folder:
+        found_folder = False
+
+        for local_path in file_list:
+            if os.path.isdir(local_path):
+                found_folder = True
+
+                file_list.remove(local_path)
+
+                for path in os.listdir(local_path):
+                    file_list.append(os.path.join(local_path, path))
+
     if len(file_list) > 0:
         utils.confirm("You are about to destroy %i files. Are you sure?" % len(file_list))
 
         for local_path in file_list:
+            print local_path
+
+            if os.path.isdir(local_path):
+                file_list.extend(os.listdir(local_path))
+
+                continue
+
             key_name = local_path.replace(ASSETS_ROOT, app_config.ASSETS_SLUG, 1)
             key = bucket.get_key(key_name)
             
