@@ -2,10 +2,10 @@
  * Google Analytics
  */
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS.ACCOUNT_ID }}']);
-_gaq.push(['_setDomainName', '{{ GOOGLE_ANALYTICS.DOMAIN }}']);
+_gaq.push(['_setAccount', APP_CONFIG.GOOGLE_ANALYTICS.ACCOUNT_ID]);
+_gaq.push(['_setDomainName', APP_CONFIG.GOOGLE_ANALYTICS.DOMAIN]);
 //_gaq.push(['_setCustomVar', 1, 'BC', '', 3]);
-_gaq.push(['_setCustomVar', 2, 'Topics', '{{ GOOGLE_ANALYTICS.TOPICS }}', 3]);
+_gaq.push(['_setCustomVar', 2, 'Topics', APP_CONFIG.GOOGLE_ANALYTICS.TOPICS, 3]);
 //_gaq.push(['_setCustomVar', 3, 'Program ID', '', 3]);
 //_gaq.push(['_setCustomVar', 3, 'Localization', '', 1]);
 _gaq.push(['_setCustomVar', 4, 'OrgID', '1', 3]);
