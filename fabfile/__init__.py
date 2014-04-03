@@ -17,6 +17,8 @@ from etc.gdocs import GoogleDoc
 import assets
 import utils
 
+NPM_INSTALL_COMMAND = 'npm install less universal-jst -g --prefix node_modules' 
+
 """
 Base configuration
 """
@@ -61,8 +63,6 @@ def fabcast(command):
 
     if not app_config.DEPLOY_TO_SERVERS:
         print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting..'
-
-        return
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
@@ -109,14 +109,22 @@ def less():
         name = os.path.splitext(filename)[0]
         out_path = 'www/css/%s.less.css' % name
 
-        local('node_modules/bin/lessc %s %s' % (path, out_path))
+        try:
+            local('node_modules/bin/lessc %s %s' % (path, out_path))
+        except:
+            print 'It looks like "lessc" isn\'t installed. Try running: "%s"' % NPM_INSTALL_COMMAND
+            raise
 
 @task
 def jst():
     """
     Render Underscore templates to a JST package.
     """
-    local('node_modules/bin/jst --template underscore jst www/js/templates.js')
+
+    try:
+        local('node_modules/bin/jst --template underscore jst www/js/templates.js')
+    except:
+        print 'It looks like "jst" isn\'t installed. Try running: "%s"' % NPM_INSTALL_COMMAND
 
 @task
 def download_copy():
@@ -316,7 +324,7 @@ def install_requirements():
     require('settings', provided_by=[production, staging])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install less universal-jst -g --prefix node_modules' % app_config.__dict__)
+    run('cd %s; %s' % (app_config.SERVER_REPOSITORY_PATH, NPM_INSTALL_PATH)) 
 
 @task
 def install_crontab():
@@ -364,7 +372,7 @@ def bootstrap():
     # Reimport app_config in case this is part of the app_template bootstrap
     import app_config
 
-    local('npm install less universal-jst -g --prefix node_modules')
+    local(NPM_INSTALL_COMMAND)
 
     assets.sync()
     update_copy()
