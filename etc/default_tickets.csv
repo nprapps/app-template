@@ -41,3 +41,4 @@ Run the app through Google Page Speed,http://developers.google.com/speed/pagespe
 Change LICENSE to MIT if open sourcing,By default things are copyright NPR,Launch TODO
 Add Staff team to repository,https://github.com/organizations/nprapps/teams/629980,
 Add Intern team to repository,https://github.com/organizations/nprapps/teams/210132,
+Update Google Analytics topics variable with Seamus topic ids,`app_config.GOOGLE_ANALYTICS.topics` is necessary to be tracked in all reports. You can steal this value from the source of a related npr.org story,Launch TODO
