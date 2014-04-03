@@ -12,22 +12,6 @@ from slimit import minify
 import app_config
 import copytext
 
-CSS_HEADER = '''
-/*
- * Looking for the full, uncompressed source? Try here:
- *
- * https://github.com/nprapps/%s
- */
-''' % app_config.REPOSITORY_NAME
-
-JS_HEADER = '''
-/*
- * Looking for the full, uncompressed source? Try here:
- *
- * https://github.com/nprapps/%s
- */
-''' % app_config.REPOSITORY_NAME
-
 class Includer(object):
     """
     Base class for Javascript and CSS psuedo-template-tags.
@@ -63,8 +47,8 @@ class Includer(object):
             out_path = 'www/%s' % path
 
             # Delete old rendered versions, just to be tidy
-            old_versions = glob.glob('%s.*.%s' % (front, back))
-            
+            old_versions = glob.glob('www/%s.*.%s' % (front, back))
+
             for f in old_versions:
                 os.remove(f)
 
