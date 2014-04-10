@@ -1,24 +1,31 @@
 var $comments = null;
-var $showComments = null;
-var $hideComments = null;
+var $commentButton = null;
+var $commentCount = null;
 var fullpage = false;
+var disqusEndpoint = "https://disqus.com/api/3.0/threads/details.jsonp?api_key=tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW&thread%3Aident="
+var commentCount = null;
 
-var onShowCommentsClick = function() {
-    $comments.addClass('show');
+var renderCommentCount = function(data) {
+    var thread = data.response;
+    commentCount = thread.posts;
 
-    return false;
+    $commentCount.text(commentCount);
 }
 
-var onHideCommentsClick = function() {
-    $comments.removeClass('show');
+var onCommentButtonClick = function() {
+    if ( $comments.hasClass('show') ) {
+        $comments.removeClass('show');
+    } else {
+        $comments.addClass('show');
+    }
 
     return false;
 }
 
 $(function() {
     $comments = $('#comments');
-    $showComments = $('.show-comments');
-    $hideComments = $('.hide-comments');
+    $commentButton = $('.comment-button');
+    $commentCount = $('.comment-count');
     fullpage = $comments.hasClass('fullpage');
 
     var context = $.extend(APP_CONFIG, {});
@@ -26,8 +33,12 @@ $(function() {
 
     $comments.html(html);
 
-    console.log($showComments);
+    $commentButton.on('click', onCommentButtonClick);
 
-    $showComments.on('click', onShowCommentsClick);
-    $hideComments.on('click', onHideCommentsClick);
+    $.ajax({
+        url: disqusEndpoint + APP_CONFIG.DISQUS_SHORTNAME + "-comments&forum=" + APP_CONFIG.DISQUS_SHORTNAME,
+        dataType: "jsonp",
+        success: renderCommentCount
+    });
 });
+

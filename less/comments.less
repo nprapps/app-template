@@ -1,4 +1,42 @@
 
+.comment-button {
+	background: @gray-light;
+	color: #fff;
+	padding: 5px;
+	min-width: 30px;
+	position: relative;
+	display: inline-block;
+	text-align: center;
+
+	&:after {
+		display: block;
+		position: absolute;
+		right: 5px;
+		bottom: -10px;
+		content: ' ';
+		width: 0px;
+		height: 0px;
+		border-style: solid;
+		border-width: 0 10px 10px 0;
+		border-color: transparent @gray-light transparent transparent;
+	}
+
+	&:hover {
+		color: #fff;
+		background: @brand-primary;
+
+		&:after {
+			border-color: transparent @brand-primary transparent transparent;
+		}
+	}
+
+	&:link {
+		color: #fff;
+	}
+
+
+}
+
 .comments-container {
 
 	&.comments-panel {
