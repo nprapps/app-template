@@ -43,3 +43,4 @@ Add Staff team to repository,https://github.com/organizations/nprapps/teams/6299
 Add Intern team to repository,https://github.com/organizations/nprapps/teams/210132,
 Update Google Analytics topics variable with Seamus topic ids,`app_config.GOOGLE_ANALYTICS.topics` is necessary to be tracked in all reports. You can steal this value from the source of a related npr.org story,Launch TODO
 Update project meta description,By default this is the `PROJECT_DESCRIPTION` field in`app_config.py`. This gets indexed by Google.,Launch TODO
+Create a DISQUS site and updated DISQUS_SHORTNAME in APP_CONFIG,,

@@ -119,6 +119,9 @@ GOOGLE_ANALYTICS = {
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
+
+DISQUS_SHORTNAME = 'nprviz-test'
+
 """
 Utilities
 """
