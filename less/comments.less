@@ -1,48 +1,60 @@
-// Bootstrap components
-@import "less/lib/bootstrap/variables.less";
-@import "less/lib/bootstrap/mixins.less";
-@import "less/lib/bootstrap/normalize.less";
-@import "less/lib/bootstrap/print.less";
-@import "less/lib/bootstrap/scaffolding.less";
-@import "less/lib/bootstrap/type.less";
 
-@import "less/lib/font-awesome/font-awesome";
-@import "less/lib/prefixer";
-@import "less/adhesion";
+.comments-container {
 
-.container {
-	max-width: 600px;
-	margin: 0 auto;
-	padding: @grid-gutter-width / 2;
+	&.comments-panel {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		overflow: auto;
+		padding: @grid-gutter-width / 2;
+		max-width: 600px;
+		width: 50%;
+		background: #fff;
+		.transition(all 0.2s ease-in-out);
+		.translate(100%,0);
 
-	> .back {
-		color: @gray-light;
-		font-family: "Gotham SSm", @font-family-base;
-
-		@media screen and (min-width: @screen-sm){
-			position: absolute;
-			left: 0;
-			top: 35px;
-			margin-left: @grid-gutter-width / 2;
+		&.show {
+			.translate(0,0);
+			.box-shadow(0 10px 20px rgba(0,0,0,.4));
 		}
 	}
 
-	.npr-logo {
-		width: 60px;
-	}
 
-	> h2 {
-		line-height: 20px;
-	}
+	&.full-page {
+		max-width: 600px;
+		margin: 0 auto;
+		padding: @grid-gutter-width / 2;
 
-	> h1 {
-		font-family: "Gotham SSm", @font-family-base;
-		font-weight: bold;
-		text-transform: uppercase;
-		margin-bottom: @line-height-computed;
+		> .back {
+			color: @gray-light;
+			font-family: "Gotham SSm", @font-family-base;
 
-		a {
-			color: @text-color;
+			@media screen and (min-width: @screen-sm){
+				position: absolute;
+				left: 0;
+				top: 35px;
+				margin-left: @grid-gutter-width / 2;
+			}
+		}
+
+		.npr-logo {
+			width: 60px;
+		}
+
+		> h2 {
+			line-height: 20px;
+		}
+
+		> h1 {
+			font-family: "Gotham SSm", @font-family-base;
+			font-weight: bold;
+			text-transform: uppercase;
+			margin-bottom: @line-height-computed;
+
+			a {
+				color: @text-color;
+			}
 		}
 	}
 }

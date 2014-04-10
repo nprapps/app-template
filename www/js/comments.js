@@ -4,13 +4,13 @@ var $hideComments = null;
 var fullpage = false;
 
 var onShowCommentsClick = function() {
-    $comments.show();
+    $comments.addClass('show');
 
     return false;
 }
 
 var onHideCommentsClick = function() {
-    $comments.hide();
+    $comments.removeClass('show');
 
     return false;
 }

@@ -14,7 +14,7 @@
     {% include '_fonts.html' %}
 
     <!-- CSS -->
-    {{ CSS.push('less/comments.less') }}
+    {{ CSS.push('less/comments_full.less') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
@@ -26,14 +26,14 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container comments-container fullpage">
         <a class="back" href="{{ S3_BASE_URL }}"><i class="fa fa-chevron-left"></i> home</a>
 
         <h2><a href="http://npr.org"><img class="npr-logo" src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></h2>
 
         <h1><a href="{{ S3_BASE_URL }}">{{ PROJECT_NAME }}</a></h1>
 
-        <div id="comments" class="fullpage"></div>
+        <div id="comments"></div>
     </div>
 
     {{ JS.push('js/lib/jquery.js') }}
