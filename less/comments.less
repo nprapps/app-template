@@ -1,29 +1,30 @@
 
 .comment-button {
-	background: @gray-light;
-	color: #fff;
-	padding: 5px;
-	min-width: 30px;
 	position: relative;
 	display: inline-block;
+	padding: 5px;
+	min-width: 30px;
+	background: @gray-light;
+	color: #fff;
 	text-align: center;
+	font-family: "Gotham SSm", @font-family-base;
 
 	&:after {
-		display: block;
 		position: absolute;
 		right: 5px;
 		bottom: -10px;
-		content: ' ';
+		display: block;
 		width: 0px;
 		height: 0px;
-		border-style: solid;
 		border-width: 0 10px 10px 0;
+		border-style: solid;
 		border-color: transparent @gray-light transparent transparent;
+		content: ' ';
 	}
 
 	&:hover {
-		color: #fff;
 		background: @brand-primary;
+		color: #fff;
 
 		&:after {
 			border-color: transparent @brand-primary transparent transparent;
