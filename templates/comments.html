@@ -33,7 +33,7 @@
 
         <h1><a href="{{ S3_BASE_URL }}">{{ PROJECT_NAME }}</a></h1>
 
-        <div id="comments"></div>
+        <div id="comments" class="fullpage"></div>
     </div>
 
     {{ JS.push('js/lib/jquery.js') }}
@@ -41,11 +41,5 @@
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/comments.js') }}
-    {{ JS.render('js/comments-ooter.min.js') }}
-
-    <script type="text/javascript">
-        $(function() {
-            renderComments();    
-        });
-    </script>
+    {{ JS.render('js/comments-footer.min.js') }}
 </body>

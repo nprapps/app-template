@@ -16,6 +16,7 @@
 
 {% block content %}
 <h1>{{ PROJECT_NAME }}</h1>
+
 <div id="story-meta">
     <p class="byline">by <span>{{ COPY.attribution.byline }}</span></p>
     <p class="dateblock">
@@ -23,6 +24,9 @@
         <span class="time"> {{ COPY.attribution.pubtime }}</span>
     </p>
 </div>
+
+<a class="show-comments" href="#">Show comments</a>
+<a class="hide-comments" href="#">Hide comments</a>
 
 <h2>Example COPY list</h2>
 <dl>
