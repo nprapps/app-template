@@ -122,9 +122,6 @@
 
     {% endblock outer_content %}
 
-    {% block extra_foot %}
-    {% endblock extra_foot %}
-
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
@@ -138,6 +135,9 @@
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.push('js/analytics.js') }}
     {{ JS.render('js/app-footer.min.js') }}
+
+    {% block extra_foot %}
+    {% endblock extra_foot %}
 
     {# Adhesion ad #}
     <div id="adhesion">

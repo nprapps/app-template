@@ -19,6 +19,13 @@ def index():
     """
     return render_template('index.html', **make_context())
 
+@app.route('/comments/')
+def comments():
+    """
+    Full-page comments view.
+    """
+    return render_template('comments.html', **make_context())
+
 @app.route('/widget.html')
 def widget():
     """

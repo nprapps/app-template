@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+This is the full-page comments view.
+
+{% endblock %}
+
+{% block wide_content %}
+<div id="comments"></div>
+{% endblock %}
+
+{% block extra_foot_js %}
+
+    {{ JS.push('js/comments.js') }}
+
+{% endblock %}
+
+{% block extra_foot %}
+
+<script type="text/javascript">
+    $(function() {
+        $('#comments').comments();    
+    });
+</script>
+
+{% endblock %}
