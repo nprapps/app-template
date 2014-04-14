@@ -1,3 +1,6 @@
+var EVENT_CATEGORY = APP_CONFIG.PROJECT_SLUG;
+
+
 var $comments = null;
 var $commentButton = null;
 var $commentCount = null;
@@ -18,6 +21,8 @@ var onCommentButtonClick = function() {
     } else {
         $comments.addClass('show');
     }
+
+    _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Clicked to reveal comments']);
 
     return false;
 }
