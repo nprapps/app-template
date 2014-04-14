@@ -121,6 +121,7 @@ GOOGLE_ANALYTICS = {
 
 
 DISQUS_SHORTNAME = 'nprviz-test'
+COMMENT_PROMPT = 'What\'s your take?'
 
 """
 Utilities
