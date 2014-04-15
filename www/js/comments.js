@@ -28,9 +28,8 @@ var onCommentButtonClick = function() {
         $comments.removeClass('show');
     } else {
         $comments.addClass('show');
+        _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Clicked to reveal comments']);
     }
-
-    _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Clicked to reveal comments']);
 
     return false;
 }
@@ -47,6 +46,10 @@ $(function() {
     $comments.html(html);
 
     $commentButton.on('click', onCommentButtonClick);
+
+    if (!fullpage){
+        $comments.find('.comments-close').on('click', onCommentButtonClick);
+    }
 
     $.ajax({
         url: disqusEndpoint + APP_CONFIG.DISQUS_SHORTNAME + "-comments&forum=" + APP_CONFIG.DISQUS_SHORTNAME,
