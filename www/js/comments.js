@@ -13,6 +13,14 @@ var renderCommentCount = function(data) {
     commentCount = thread.posts;
 
     $commentCount.text(commentCount);
+
+    if (commentCount > 0) {
+        $commentCount.addClass('has-comments');
+    }
+
+    if ( commentCount > 1) {
+        $commentCount.next('.comment-label').text('Comments');
+    }
 }
 
 var onCommentButtonClick = function() {

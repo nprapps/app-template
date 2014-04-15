@@ -2,42 +2,91 @@
 @import "less/lib/bootstrap/mixins";
 
 .comment-button {
-	position: relative;
-	display: inline-block;
-	padding: 5px;
-	min-width: 30px;
-	background: @gray-light;
-	color: #fff;
-	text-align: center;
-	font-family: "Gotham SSm", @font-family-base;
-
-	&:after {
-		position: absolute;
-		right: 5px;
-		bottom: -10px;
+	&.comment-button-article {
 		display: block;
-		width: 0px;
-		height: 0px;
-		border-width: 0 10px 10px 0;
-		border-style: solid;
-		border-color: transparent @gray-light transparent transparent;
-		content: ' ';
-	}
+		background: #e0e0e0;
+		font-weight: bold;
+		height: 44px;
+		line-height: 44px;
+		text-align: center;
 
-	&:hover {
-		background: @brand-primary;
-		color: #fff;
+		&:hover {
+			opacity: 0.7;
+		}
 
-		&:after {
-			border-color: transparent @brand-primary transparent transparent;
+		@media screen and (min-width: 481px){
+			position: fixed;
+			right: 0;
+			bottom: @line-height-computed * 4;
+			z-index: 100;
+			width: 91px;
+			background: #7598c9;
+			color: #fff;
+			font-size: 11px;
+			text-align: left;
+
+			.comment-count {
+				position: absolute;
+				top: 50%;
+				right: 80px;
+				display: none;
+				margin-top: -11px;
+				padding: 0 5px;
+				min-width: 22px;
+				height: 22px;
+				background: #bccae5;
+				color: #fff;
+				text-align: center;
+				line-height: 22px;
+				.border-radius(11px);
+
+				&.has-comments {
+					display: block;
+				}
+			}
+
+			.comment-label {
+				margin-left: 16px;
+			}
 		}
 	}
 
-	&:link {
+	&.comment-button-bubble {
+		position: relative;
+		display: inline-block;
+		padding: 5px;
+		min-width: 30px;
+		background: @gray-light;
 		color: #fff;
+		text-align: center;
+		font-family: "Gotham SSm", @font-family-base;
+
+		&:after {
+			position: absolute;
+			right: 5px;
+			bottom: -10px;
+			display: block;
+			width: 0px;
+			height: 0px;
+			border-width: 0 10px 10px 0;
+			border-style: solid;
+			border-color: transparent @gray-light transparent transparent;
+			content: ' ';
+		}
+
+		&:hover {
+			background: @brand-primary;
+			color: #fff;
+
+			&:after {
+				border-color: transparent @brand-primary transparent transparent;
+			}
+		}
+
+		&:link {
+			color: #fff;
+		}
 	}
-
-
 }
 
 .comments-container {
