@@ -169,7 +169,7 @@ $(function() {
     $commentCount = $('.comment-count');
 
     // Set some global state.
-    fullpage = $comments.hasClass('fullpage');
+    fullpage = $('.comments-container').hasClass('fullpage');
     disqus_shortname = APP_CONFIG.DISQUS_SHORTNAME;
     disqus_identifier = disqus_shortname + '-comments';
 
@@ -184,6 +184,8 @@ $(function() {
     // If this is the pane view, show a little close-this-pane button.
     if (!fullpage) {
         $comments.find('.comments-close').on('click', onCommentButtonClick);
+    } else {
+        loadDisqusFrame();
     }
 
     // Get the comment count from the Disqus API.
