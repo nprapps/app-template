@@ -8,6 +8,8 @@ var commentCount = null;
 var disqus_config;
 var disqus_shortname;
 var disqus_identifier;
+var startTime;
+var endTime;
 
 var getAuthCookie = function() {
     /*
@@ -81,6 +83,7 @@ var loadDisqusFrame = function() {
 
         // Hide the login bits.
         $('#login-overlay-link').hide();
+        $('#logout-overlay-link').show();
 
         // Set up a callback function to use later. Apparently.
         disqus_config = function () {
@@ -105,9 +108,12 @@ var onCommentButtonClick = function() {
     */
     if ( $comments.hasClass('show') ) {
         $comments.removeClass('show');
+        endTime = moment();
+        _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Read comments for ' + endTime.diff(startTime, 'seconds', true) + ' seconds before closing them']);
     } else {
         $comments.addClass('show');
         _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Clicked to reveal comments']);
+        startTime = moment();
     }
 
     // Doesn't load the Disqus frame (or check auth) until this is clicked.
