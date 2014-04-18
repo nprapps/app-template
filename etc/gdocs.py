@@ -19,17 +19,18 @@ class GoogleDoc(object):
         g.get_auth()
         g.get_document()
 
-    Will download your google doc to data/my_google_doc.xls in the CSV format.
+    Will download your google doc to data/file_name.format.
     """
 
     # You can update these values with kwargs.
     # In fact, you better pass a key or else it won't work!
     key = None
-    file_format = "xls"
-    file_name = "copy"
+    file_format = 'xlsx'
+    file_name = 'copy'
 
     # You can change these with kwargs but it's not recommended.
-    spreadsheet_url = "https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%s&exportFormat=%s"
+    spreadsheet_url = 'https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%(key)s&exportFormat=%(format)s'
+    new_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/%(key)s/export?format=%(format)s&id=%(key)s'
     auth = None
     email = os.environ.get('APPS_GOOGLE_EMAIL', None)
     password = os.environ.get('APPS_GOOGLE_PASS', None)
@@ -74,20 +75,24 @@ class GoogleDoc(object):
         # Handle basically all the things that can go wrong.
         if not self.auth:
             raise KeyError("Error! You didn't get an auth token. Something very bad happened. File a bug?")
-
         elif not self.key:
             raise KeyError("Error! You forgot to pass a key to the class.")
-
         else:
             headers = {}
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
 
-            r = requests.get(self.spreadsheet_url % (self.key, self.file_format), headers=headers)
+            url_params = { 'key': self.key, 'format': self.file_format }
+            url = self.spreadsheet_url % url_params 
+
+            r = requests.get(url, headers=headers)
+
+            if r.status_code != 200:
+                url = self.new_spreadsheet_url % url_params
+                r = requests.get(url, headers=headers)
 
             if r.status_code != 200:
                 raise KeyError("Error! Your Google Doc does not exist.")
-
-            else:
-                with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
-                    writefile.write(r.content)
+                
+            with open('data/%s.%s' % (self.file_name, self.file_format), 'wb') as writefile:
+                writefile.write(r.content)
 

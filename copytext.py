@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from flask import Markup
-import xlrd
+from openpyxl.reader.excel import load_workbook
 
 class CopyException(Exception):
     pass
@@ -114,7 +114,7 @@ class Copy(object):
     _filename = ''
     _copy = {}
 
-    def __init__(self, filename='data/copy.xls'):
+    def __init__(self, filename='data/copy.xlsx'):
         self._filename = filename
         self.load()
 
@@ -129,22 +129,31 @@ class Copy(object):
 
     def load(self):
         """
-        Parses the downloaded .xls file and writes it as JSON.
+        Parses the downloaded Excel file and writes it as JSON.
         """
         try:
-            book = xlrd.open_workbook(self._filename)
+            book = load_workbook(self._filename, data_only=True)
         except IOError:
             raise CopyException('"%s" does not exist. Have you run "fab update_copy"?' % self._filename)
 
-        for sheet in book.sheets():
-            columns = sheet.row_values(0)
+        for sheet in book:
+            columns = []
             rows = []
 
-            for n in range(0, sheet.nrows):
-                # Sheet takes array of rows
-                rows.append(dict(zip(columns, sheet.row_values(n))))
+            for i, row in enumerate(sheet.rows):
+                row_data = [c.internal_value for c in row]
 
-            self._copy[sheet.name] = Sheet(sheet.name, rows, columns)
+                if i == 0:
+                    columns = row_data 
+                    continue
+
+                # If nothing in a row then it doesn't matter
+                if all([c is None for c in row_data]):
+                    continue
+
+                rows.append(dict(zip(columns, row_data)))
+
+            self._copy[sheet.title] = Sheet(sheet.title, rows, columns)
 
     def json(self):
         """

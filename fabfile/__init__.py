@@ -129,7 +129,7 @@ def jst():
 @task
 def download_copy():
     """
-    Downloads a Google Doc as an .xls file.
+    Downloads a Google Doc as an Excel file.
     """
     doc = {}
     doc['key'] = app_config.COPY_GOOGLE_DOC_KEY
