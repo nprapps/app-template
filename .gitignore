@@ -42,6 +42,7 @@ www/js/app_config.js
 www/js/copy.js
 confs/rendered/*
 data/copy.xls
+data/copy.xlsx
 tumblr-theme.html
 www/test/test.html
 www/assets

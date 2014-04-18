@@ -13,6 +13,7 @@ envoy==0.0.2
 jmespath==0.2.1
 nose==1.2.1
 odict==1.5.1
+openpyxl==1.8.5
 ply==3.4
 pyasn1==0.1.7
 pycrypto==2.6
@@ -23,4 +24,3 @@ six==1.5.2
 slimit==0.7.4
 ssh==1.7.14
 wsgiref==0.1.2
-xlrd==0.9.0
