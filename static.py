@@ -5,6 +5,7 @@ from mimetypes import guess_type
 
 from flask import abort
 
+import app_config
 import copytext
 import envoy
 from flask import Blueprint
@@ -43,7 +44,7 @@ def _app_config_js():
 # Render copytext
 @static.route('/js/copy.js')
 def _copy_js():
-    copy = 'window.COPY = ' + copytext.Copy().json()
+    copy = 'window.COPY = ' + copytext.Copy(app_config.COPY_PATH).json()
 
     return copy, 200, { 'Content-Type': 'application/javascript' }
 
