@@ -224,7 +224,7 @@ Google documents will be downloaded to `data/gdoc.csv` by default.
 You can pass the class many keyword arguments if you'd like; here's what you can change:
 * gid AKA the sheet number
 * key AKA the Google Docs document ID
-* file_format (xls, csv, json)
+* file_format (xlsx, csv, json)
 * file_name (to download to)
 
 See `etc/gdocs.py` for more documentation.
