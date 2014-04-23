@@ -102,9 +102,15 @@
 		font-size: 22px;
 	}
 
-	p small {
+	h3 {
+		font-size: @font-size-large;
+		color: @gray-light;
+	}
+
+	p small,
+	.comment-terms {
 		font-size: @font-size-small;
-		line-height: 1.2;
+		line-height: 1.5;
 	}
 
 	&.comments-panel {
@@ -128,6 +134,7 @@
 
 		@media screen and (min-width: @screen-sm){
 			width: 50%;
+			padding: @grid-gutter-width;
 		}
 
 		.comments-close {
