@@ -161,7 +161,7 @@ var loadCommentCount = function() {
     * Calls renderCommentCount as a callback on success.
     */
     $.ajax({
-        url: disqusEndpoint + disqus_shortname + "-" + APP_CONFIG.DISQUS_UUID + "&forum=" + disqus_shortname,
+        url: disqusEndpoint + APP_CONFIG.PROJECT_SLUG + "-" + APP_CONFIG.DISQUS_UUID + "&forum=" + disqus_shortname,
         dataType: "jsonp",
         success: renderCommentCount
     });
