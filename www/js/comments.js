@@ -177,7 +177,7 @@ $(function() {
     // Set some global state.
     fullpage = $('.comments-container').hasClass('fullpage');
     disqus_shortname = APP_CONFIG.DISQUS_SHORTNAME;
-    disqus_identifier = disqus_shortname + '-' + APP_CONFIG.DISQUS_UUID;
+    disqus_identifier = APP_CONFIG.PROJECT_SLUG + '-' + APP_CONFIG.DISQUS_UUID;
 
     // Set some vars for JST rendering, e.g., the comments frame.
     var context = $.extend(APP_CONFIG, {});
