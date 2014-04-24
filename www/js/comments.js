@@ -171,7 +171,7 @@ $(function() {
 
     // Bind the DOM elements we care about.
     $comments = $('#comments');
-    $commentButton = $('.comment-button');
+    $commentButton = $('.comment-drawer-toggle');
     $commentCount = $('.comment-count');
 
     // Set some global state.
