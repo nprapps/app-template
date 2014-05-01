@@ -16,11 +16,11 @@
     <!-- CSS -->
     {{ CSS.push('less/comments_full.less') }}
     {% block extra_css %}{% endblock extra_css %}
-    {{ CSS.render('css/app.min.css') }}
+    {{ CSS.render('css/comments.min.css') }}
 
     <!-- JS -->
     {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.render('js/app-header.min.js') }}
+    {{ JS.render('js/comments-header.min.js') }}
 
     {% include '_social_tags.html' %}
 </head>
