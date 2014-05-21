@@ -24,4 +24,4 @@ six==1.5.2
 slimit==0.7.4
 ssh==1.7.14
 wsgiref==0.1.2
-copytext==0.1.0
+copytext==0.1.1
