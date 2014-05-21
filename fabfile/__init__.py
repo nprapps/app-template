@@ -3,6 +3,7 @@
 import copy
 from glob import glob
 import os
+import uuid
 
 from fabric.api import local, put, require, run, settings, sudo, task
 from fabric.state import env
@@ -624,6 +625,7 @@ def app_template_bootstrap(github_username='nprapps', project_name=None, reposit
     config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
+    config['$NEW_DISQUS_UUID'] = str(uuid.uuid1())
 
     utils.confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
 

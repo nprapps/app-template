@@ -20,6 +20,7 @@ Device testing: Android phone,,
 Device testing: Android tablet,,
 Data download,,
 Link to repo,,
+Update comment prompt,,
 Ad,,
 Double-check analytics code,,Launch TODO
 DevOps: Enable scout monitor for /<project_slug>/test/,,Launch TODO
@@ -43,3 +44,4 @@ Add Staff team to repository,https://github.com/organizations/nprapps/teams/6299
 Add Intern team to repository,https://github.com/organizations/nprapps/teams/210132,
 Update Google Analytics topics variable with Seamus topic ids,`app_config.GOOGLE_ANALYTICS.topics` is necessary to be tracked in all reports. You can steal this value from the source of a related npr.org story,Launch TODO
 Update project meta description,By default this is the `PROJECT_DESCRIPTION` field in`app_config.py`. This gets indexed by Google.,Launch TODO
+Create a DISQUS site and updated DISQUS_SHORTNAME in APP_CONFIG,"Goto `http://disqus.com/admin/create/`. Create a new site with a name like `nprviz-project-slug`. Put it in the News category. Update APP_CONFIG.DISQUS_SHORTNAME with your new site name. Refresh http://localhost:8000/comments/ to make sure it worked.",

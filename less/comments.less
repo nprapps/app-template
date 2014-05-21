@@ -1,0 +1,210 @@
+@import "less/lib/bootstrap/variables";
+@import "less/lib/bootstrap/mixins";
+@import "less/lib/prefixer";
+
+.comment-button {
+	&.comment-button-article {
+		display: block;
+		background: #e0e0e0;
+		font-weight: bold;
+		height: 44px;
+		line-height: 44px;
+		text-align: center;
+
+		&:hover {
+			opacity: 0.7;
+		}
+
+		@media screen and (min-width: 481px){
+			position: fixed;
+			right: 0;
+			bottom: @line-height-computed * 4;
+			z-index: 100;
+			width: 91px;
+			background: #7598c9;
+			color: #fff;
+			font-size: 11px;
+			text-align: left;
+
+			.comment-count {
+				position: absolute;
+				top: 50%;
+				right: 80px;
+				display: none;
+				margin-top: -11px;
+				padding: 0 5px;
+				min-width: 22px;
+				height: 22px;
+				background: #bccae5;
+				color: #fff;
+				text-align: center;
+				line-height: 22px;
+				.border-radius(11px);
+
+				&.has-comments {
+					display: block;
+				}
+			}
+
+			.comment-label {
+				margin-left: 16px;
+			}
+		}
+	}
+
+	&.comment-button-bubble {
+		position: relative;
+		display: inline-block;
+		padding: 5px;
+		min-width: 30px;
+		background: @gray-light;
+		color: #fff;
+		text-align: center;
+		font-family: "Gotham SSm", @font-family-base;
+
+		&:after {
+			position: absolute;
+			right: 5px;
+			bottom: -10px;
+			display: block;
+			width: 0px;
+			height: 0px;
+			border-width: 0 10px 10px 0;
+			border-style: solid;
+			border-color: transparent @gray-light transparent transparent;
+			content: ' ';
+		}
+
+		&:hover {
+			background: @brand-primary;
+			color: #fff;
+
+			&:after {
+				border-color: transparent @brand-primary transparent transparent;
+			}
+		}
+
+		&:link {
+			color: #fff;
+		}
+	}
+}
+
+.comments-container {
+
+	h2,
+	h5 {
+		font-weight: bold;
+		color: @text-color;
+		margin-bottom: @line-height-computed;
+	}
+
+	h2 {
+		font-size: 22px;
+	}
+
+	h3 {
+		font-size: @font-size-large;
+		color: @gray-light;
+	}
+
+	p small,
+	.comment-terms {
+		font-size: @font-size-small;
+		line-height: 1.5;
+	}
+
+	&.comments-panel {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 200;
+		overflow: auto;
+		padding: @grid-gutter-width / 2;
+		max-width: 600px;
+		background: #fff;
+		width: 100%;
+		.transition(all 0.2s ease-in-out);
+		.translate(100%,0);
+
+		&.show {
+			.translate(0,0);
+			.box-shadow(0 10px 20px rgba(0,0,0,.25));
+		}
+
+		@media screen and (min-width: @screen-sm){
+			width: 50%;
+			padding: @grid-gutter-width;
+		}
+
+		.comments-close {
+			position: absolute;
+			top: 0;
+			right: 0;
+			display: block;
+			.square(36px);
+			background: @gray-light;
+			line-height: 36px;
+			text-align: center;
+
+			&:after {
+				content: "\00d7";
+				color: #fff;
+				font-size: 24px;
+				font-weight: bold;
+				position: relative;
+				top: -3px;
+			}
+
+			.touch & {
+				.square(44px);
+				line-height: 44px;
+
+				&:after {
+					font-size: 36px;
+				}
+			}
+		}
+	}
+
+
+	&.fullpage {
+		max-width: 600px;
+		margin: 0 auto;
+		padding: @grid-gutter-width / 2;
+
+		> .back {
+			color: @gray-light;
+			font-family: "Gotham SSm", @font-family-base;
+
+			@media screen and (min-width: @screen-sm){
+				position: absolute;
+				left: 0;
+				top: 35px;
+				margin-left: @grid-gutter-width / 2;
+			}
+		}
+
+		.npr-logo {
+			width: 60px;
+		}
+
+		> h2 {
+			line-height: 20px;
+		}
+
+		> h1 {
+			font-family: "Gotham SSm", @font-family-base;
+			font-weight: bold;
+			text-transform: uppercase;
+			margin-bottom: @line-height-computed;
+
+			a {
+				color: @text-color;
+			}
+		}
+	}
+}
+
+

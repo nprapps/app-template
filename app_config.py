@@ -120,6 +120,9 @@ GOOGLE_ANALYTICS = {
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
+COMMENT_PROMPT = 'Leave a comment'
+DISQUS_UUID = '$NEW_DISQUS_UUID'
+
 """
 Utilities
 """
@@ -151,24 +154,29 @@ def configure_targets(deployment_target):
     global DEBUG
     global DEPLOYMENT_TARGET
     global APP_LOG_PATH
+    global DISQUS_SHORTNAME
+
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
     else:
         S3_BUCKETS = []
         S3_BASE_URL = 'http://127.0.0.1:8000'
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 
