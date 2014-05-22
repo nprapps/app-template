@@ -9,12 +9,12 @@ from fabric.state import env
 
 import app
 import app_config
-from etc import github
 
 # Other fabfiles
 import assets
 import copytext
 import data
+import issues
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:
@@ -202,26 +202,6 @@ def npm_install():
     Install Node dependecies.
     """
     local(app_config.NPM_INSTALL_COMMAND)
-
-@task
-def import_issues(path):
-    """
-    Import a list of a issues from any CSV formatted like default_tickets.csv.
-    """
-    auth = github.get_auth()
-    github.create_tickets(auth, path)
-
-@task
-def bootstrap_issues():
-    """
-    Bootstraps Github issues with default configuration.
-    """
-    auth = github.get_auth()
-    github.delete_existing_labels(auth)
-    github.create_labels(auth)
-    github.create_tickets(auth)
-    github.create_milestones(auth)
-    github.create_hipchat_hook(auth)
 
 @task
 def bootstrap():

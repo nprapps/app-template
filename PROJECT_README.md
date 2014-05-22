@@ -29,7 +29,7 @@ $NEW_PROJECT_NAME
 What is this?
 -------------
 
-**Describe $NEW_PROJECT_NAME here.**
+**TKTK: Describe $NEW_PROJECT_NAME here.**
 
 Assumptions
 -----------

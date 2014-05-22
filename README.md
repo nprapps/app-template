@@ -59,5 +59,5 @@ fab app_template_bootstrap:$GITHUB_USERNAME,$PROJECT_NAME,$REPOSTORY_NAME
 Bootstrap issues
 ----------------
 
-The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab bootstrap_issues``. You will be prompted for your Github username and password.
+The app-template can automatically setup your Github repo with our default labels and tickets by running ``fab issues.bootstrap``. You will be prompted for your Github username and password.
 
