@@ -141,7 +141,7 @@ def render():
     app_config_js()
     copytext.js()
 
-    compiled_includes = []
+    compiled_includes = {} 
 
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule

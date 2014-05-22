@@ -53,11 +53,11 @@ def sync():
 
         local_path = key.name.replace(app_config.ASSETS_SLUG, ASSETS_ROOT, 1)
 
-        print local_path
-
         # Skip root key
         if local_path == '%s/' % ASSETS_ROOT:
             continue
+
+        print local_path
 
         if local_path in local_paths:
             # A file can only exist once, this speeds up future checks

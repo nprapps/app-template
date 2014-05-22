@@ -43,28 +43,32 @@ class Includer(object):
 
     def render(self, path):
         if getattr(g, 'compile_includes', False):
-            # Add a timestamp to the rendered filename to prevent caching
-            timestamp = int(time.time())
-            front, back = path.rsplit('.', 1)
-            path = '%s.%i.%s' % (front, timestamp, back)
-            out_path = 'www/%s' % path
+            if path in g.compiled_includes:
+                timestamp_path = g.compiled_includes[path]
+            else:
+                # Add a timestamp to the rendered filename to prevent caching
+                timestamp = int(time.time())
+                front, back = path.rsplit('.', 1)
+                timestamp_path = '%s.%i.%s' % (front, timestamp, back)
 
-            # Delete old rendered versions, just to be tidy
-            old_versions = glob.glob('www/%s.*.%s' % (front, back))
+                # Delete old rendered versions, just to be tidy
+                old_versions = glob.glob('www/%s.*.%s' % (front, back))
 
-            for f in old_versions:
-                os.remove(f)
+                for f in old_versions:
+                    os.remove(f)
 
-            if out_path not in g.compiled_includes:
+            out_path = 'www/%s' % timestamp_path
+
+            if path not in g.compiled_includes:
                 print 'Rendering %s' % out_path
 
                 with open(out_path, 'w') as f:
                     f.write(self._compress().encode('utf-8'))
 
             # See "fab render"
-            g.compiled_includes.append(out_path)
+            g.compiled_includes[path] = timestamp_path
 
-            markup = Markup(self.tag_string % self._relativize_path(path))
+            markup = Markup(self.tag_string % self._relativize_path(timestamp_path))
         else:
             response = ','.join(self.includes)
 
