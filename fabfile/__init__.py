@@ -315,7 +315,7 @@ def shiva_the_destroyer():
 App-template specific setup. Not relevant after the project is running.
 """
 @task
-def app_template_bootstrap(github_username='nprapps', project_name=None, repository_name=None):
+def app_template_bootstrap(github_username='nprapps', repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
@@ -323,7 +323,6 @@ def app_template_bootstrap(github_username='nprapps', project_name=None, reposit
 
     config = {}
     config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
-    config['$NEW_PROJECT_NAME'] = project_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
     config['$NEW_DISQUS_UUID'] = str(uuid.uuid1())

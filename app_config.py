@@ -13,12 +13,12 @@ import os
 """
 NAMES
 """
-# Project name used for display
-PROJECT_NAME = '$NEW_PROJECT_NAME'
-
 # Project name to be used in urls
 # Use dashes, not underscores!
 PROJECT_SLUG = '$NEW_PROJECT_SLUG'
+
+# Project name to be used in file paths
+PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
@@ -28,9 +28,6 @@ REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME
 # Project name used for assets rig
 # Should stay the same, even if PROJECT_SLUG changes
 ASSETS_SLUG = '$NEW_PROJECT_SLUG'
-
-# Project name to be used in file paths
-PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 """
 DEPLOYMENT
@@ -90,8 +87,6 @@ SHARING
 """
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
 
-FACEBOOK_APP_ID = '138837436154588'
-
 """
 ADS
 """
@@ -112,7 +107,6 @@ GOOGLE_ANALYTICS = {
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
-COMMENT_PROMPT = 'Leave a comment'
 DISQUS_UUID = '$NEW_DISQUS_UUID'
 
 """

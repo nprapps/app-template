@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>{{ PROJECT_NAME }}</title>
+    <title>{{ COPY.content.project_name }}</title>
 
     <!-- META TAGS -->
     {% include '_meta.html' %}
@@ -27,11 +27,11 @@
 <body>
 
     <div class="container comments-container fullpage">
-        <a class="back" href="{{ S3_BASE_URL }}"><i class="fa fa-chevron-left"></i> Back to {{ PROJECT_NAME }}</a>
+        <a class="back" href="{{ S3_BASE_URL }}"><i class="fa fa-chevron-left"></i> Back to {{ COPY.content.project_name }}</a>
 
         <h2><a href="http://npr.org"><img class="npr-logo" src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></h2>
 
-        <h1><a href="{{ S3_BASE_URL }}">{{ PROJECT_NAME }}</a></h1>
+        <h1><a href="{{ S3_BASE_URL }}">{{ COPY.content.project_name }}</a></h1>
 
         <div id="comments"></div>
     </div>

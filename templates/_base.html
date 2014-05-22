@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>{{ PROJECT_NAME }}</title>
+    <title>{{ COPY.content.project_name }}</title>
 
     <!-- META TAGS -->
     {% include '_meta.html' %}
@@ -40,8 +40,8 @@
             <li class="listen"><a href="http://www.npr.org/listen/">Listen</a></li>
         </ul>
         <ul class="social-links">
-            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.sharing.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_NAME }}']);">Share This Page On Twitter</a></li>
-            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK_APP_ID }}&amp;link={{ SHARE_URL|urlencode }}&amp;name={{ COPY.sharing.facebook_title|urlencode }}&amp;picture={{ FACEBOOK_IMAGE_URL|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_NAME }}']);">Like This Page On Facebook</a></li>
+            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.sharing.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Twitter In Navbar', '{{ PROJECT_SLUG }}']);">Share This Page On Twitter</a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/dialog/feed?app_id={{ FACEBOOK_APP_ID }}&amp;link={{ SHARE_URL|urlencode }}&amp;name={{ COPY.sharing.facebook_title|urlencode }}&amp;picture={{ FACEBOOK_IMAGE_URL|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', 'Social', 'Click Facebook In Navbar', '{{ PROJECT_SLUG }}']);">Like This Page On Facebook</a></li>
         </ul>
         <ul class="site-links-2">
             <li class="stations"><a href="http://www.npr.org/templates/stations/stations/">Stations</a></li>
