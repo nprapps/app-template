@@ -1,0 +1,6 @@
+{
+    "dependencies": {
+        "less": "~1.7.0",
+        "universal-jst": "~1.0.5"
+    }
+}

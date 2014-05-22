@@ -98,9 +98,9 @@ def less():
         out_path = 'www/css/%s.less.css' % name
 
         try:
-            local('node_modules/bin/lessc %s %s' % (path, out_path))
+            local('node_modules/less/bin/lessc %s %s' % (path, out_path))
         except:
-            print 'It looks like "lessc" isn\'t installed. Try running: "fab npm_install"'
+            print 'It looks like "lessc" isn\'t installed. Try running: "npm install"'
             raise
 
 def jst():
@@ -109,9 +109,9 @@ def jst():
     """
 
     try:
-        local('node_modules/bin/jst --template underscore jst www/js/templates.js')
+        local('node_modules/universal-jst/bin/jst.js --template underscore jst www/js/templates.js')
     except:
-        print 'It looks like "jst" isn\'t installed. Try running: "fab npm_install"'
+        print 'It looks like "jst" isn\'t installed. Try running: "npm install"'
 
 def app_config_js():
     """
@@ -197,13 +197,6 @@ def tests():
 Bootstrapping
 """
 @task
-def npm_install():
-    """
-    Install Node dependecies.
-    """
-    local(app_config.NPM_INSTALL_COMMAND)
-
-@task
 def bootstrap():
     """
     Bootstrap this project. Should only need to be run once.
@@ -212,7 +205,7 @@ def bootstrap():
     # (it may have changed)
     import app_config
 
-    npm_install()
+    local('npm install')
     assets.sync()
     copytext.update()
     data.update()
