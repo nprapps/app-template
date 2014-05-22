@@ -3,7 +3,7 @@ Copyright 2014 NPR.  All rights reserved.  No part of these materials may be rep
 (Want to use this code? Send an email to nprapps@npr.org!)
 
 
-$NEW_PROJECT_NAME
+$NEW_PROJECT_SLUG
 ========================
 
 * [What is this?](#what-is-this)
@@ -29,7 +29,7 @@ $NEW_PROJECT_NAME
 What is this?
 -------------
 
-**TKTK: Describe $NEW_PROJECT_NAME here.**
+**TKTK: Describe $NEW_PROJECT_SLUG here.**
 
 Assumptions
 -----------
@@ -82,11 +82,13 @@ curl https://npmjs.org/install.sh | sh
 Then bootstrap the project:
 
 ```
-cd $NEW_PROJECT_NAME
-mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+cd $NEW_PROJECT_SLUG
+mkvirtualenv --no-site-packages $NEW_PROJECT_SLUG
 pip install -r requirements.txt
 fab bootstrap
 ```
+
+**Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
 
 Hide project secrets
 --------------------
@@ -124,7 +126,7 @@ Run the project
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
 ```
-workon $NEW_PROJECT_NAME
+workon $PROJECT_SLUG
 python app.py
 ```
 
@@ -245,7 +247,7 @@ Compile static assets
 Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
 ```
-workon $NEW_PROJECT_NAME
+workon $NEW_PROJECT_SLUG
 fab render
 ```
 
@@ -297,10 +299,8 @@ Install cron jobs
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/$PROJECT_NAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
+* * * * * ubuntu bash /home/ubuntu/apps/$NEW_PROJECT_FILENAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
 ```
-
-**Note:** In this example you will need to replace `$PROJECT_NAME` with your actual deployed project name.
 
 To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
 

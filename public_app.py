@@ -9,7 +9,7 @@ from flask import Flask, render_template
 import app_config
 from render_utils import make_context
 
-app = Flask(app_config.PROJECT_NAME)
+app = Flask(app_config.PROJECT_SLUG)
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 file_handler = logging.FileHandler(app_config.APP_LOG_PATH)
