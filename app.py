@@ -7,7 +7,7 @@ import app_config
 from render_utils import make_context, urlencode_filter
 import static
 
-app = Flask(app_config.PROJECT_SLUG)
+app = Flask(__name__)
 
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
