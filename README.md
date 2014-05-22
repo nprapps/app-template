@@ -54,6 +54,8 @@ By default `app_template_bootstrap` will use `nprapps` as the Github username, a
 fab app_template_bootstrap:$GITHUB_USERNAME,$PROJECT_NAME,$REPOSTORY_NAME
 ```
 
+**Problem's installing requirements?** You may need to the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
+
 Bootstrap issues
 ----------------
 

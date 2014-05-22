@@ -10,10 +10,11 @@ from fabric.state import env
 import app
 import app_config
 from etc import github
-from etc.gdocs import GoogleDoc
 
 # Other fabfiles
 import assets
+import copytext
+import data
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:
@@ -102,7 +103,6 @@ def less():
             print 'It looks like "lessc" isn\'t installed. Try running: "fab npm_install"'
             raise
 
-@task
 def jst():
     """
     Render Underscore templates to a JST package.
@@ -113,33 +113,6 @@ def jst():
     except:
         print 'It looks like "jst" isn\'t installed. Try running: "fab npm_install"'
 
-@task
-def download_copy():
-    """
-    Downloads a Google Doc as an Excel file.
-    """
-    doc = {}
-    doc['key'] = app_config.COPY_GOOGLE_DOC_KEY
-
-    g = GoogleDoc(**doc)
-    g.get_auth()
-    g.get_document()
-
-@task
-def update_copy():
-    """
-    Fetches the latest Google Doc and updates local JSON.
-    """
-    download_copy()
-
-@task
-def update_data():
-    """
-    Stub function for updating app-specific data.
-    """
-    pass
-
-@task
 def app_config_js():
     """
     Render app_config.js to file.
@@ -153,33 +126,20 @@ def app_config_js():
         f.write(js)
 
 @task
-def copy_js():
-    """
-    Render copy.js to file.
-    """
-    from static import _copy_js
-
-    response = _copy_js()
-    js = response[0]
-
-    with open('www/js/copy.js', 'w') as f:
-        f.write(js)
-
-@task
 def render():
     """
     Render HTML templates and compile assets.
     """
     from flask import g
 
-    update_copy()
+    copytext.update()
     assets.sync()
-    update_data()
+    data.update()
     less()
     jst()
 
     app_config_js()
-    copy_js()
+    copytext.js()
 
     compiled_includes = []
 
@@ -274,8 +234,8 @@ def bootstrap():
 
     npm_install()
     assets.sync()
-    update_copy()
-    update_data()
+    copytext.update()
+    data.update()
 
 """
 Deployment
@@ -332,9 +292,9 @@ def deploy(remote='origin'):
 
         servers.checkout_latest(remote)
 
-        servers.fabcast('update_copy')
-        servers.fabcast('assets_sync')
-        servers.fabcast('update_data')
+        servers.fabcast('copytext.update')
+        servers.fabcast('assets.sync')
+        servers.fabcast('data.update')
 
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
