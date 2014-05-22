@@ -72,6 +72,9 @@ SERVER_SERVICES = [
     ('nginx', '/etc/nginx/locations-enabled', 'conf'),
 ]
 
+# Command to run to install required NPM packages
+NPM_INSTALL_COMMAND = 'npm install less universal-jst -g --prefix node_modules' 
+
 # These variables will be set at runtime. See configure_targets() below
 S3_BUCKETS = []
 S3_BASE_URL = ''
