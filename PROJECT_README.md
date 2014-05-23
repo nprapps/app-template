@@ -179,6 +179,18 @@ You may also access rows using iterators. In this case, the column headers of th
 {% endfor %}
 ```
 
+When naming keys in the COPY document, pleaseattempt to group them by common prefixes and order them by appearance on the page. For instance:
+
+```
+title
+byline
+about_header
+about_body
+about_url
+download_label
+download_url
+```
+
 Arbitrary Google Docs
 ----------------------
 Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
