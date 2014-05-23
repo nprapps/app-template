@@ -48,7 +48,7 @@ What's in here?
 
 The project contains the following folders and important files:
 
-* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> render_confs``, don't edit anything in ``confs/rendered`` directly.
+* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> servers.render_confs``, don't edit anything in ``confs/rendered`` directly.
 * ``data`` -- Data files, such as those used to generate HTML.
 * ``fabfile`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands for automating setup, deployment, data processing, etc.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
@@ -294,14 +294,14 @@ For running a Web application:
 
 * In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
 * Also in ``app_config.py`` set ``DEPLOY_WEB_SERVICES`` to ``True``.
-* Run ``fab staging master setup_server`` to configure the server.
+* Run ``fab staging master servers.setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 For running cron jobs:
 
 * In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
 * Also in ``app_config.py``, set ``INSTALL_CRONTAB`` to ``True``
-* Run ``fab staging master setup_server`` to configure the server.
+* Run ``fab staging master servers.setup`` to configure the server.
 * Run ``fab staging master deploy`` to deploy the app.
 
 You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
@@ -312,28 +312,30 @@ Install cron jobs
 Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
 
 ```
-* * * * * ubuntu bash /home/ubuntu/apps/$NEW_PROJECT_FILENAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_test
+* * * * * ubuntu bash /home/ubuntu/apps/$NEW_PROJECT_FILENAME/repository/cron.sh fab $DEPLOYMENT_TARGET cron_jobs.test 
 ```
 
 To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
+
+The cron jobs themselves should be defined in `fabfile/cron_jobs.py` whenever possible.
 
 Install web services
 ---------------------
 
 Web services are configured in the `confs/` folder.
 
-Running ``fab setup_server`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
+Running ``fab servers.setup`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
 
 To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
 
 ```
-fab render_confs
+fab servers.render_confs
 ```
 
-You can also deploy the configuration files independently of the setup command by running:
+You can also deploy only configuration files by running (normally this is invoked by `deploy`):
 
 ```
-fab deploy_confs
+fab servers.deploy_confs
 ```
 
 Run a  remote fab command
@@ -342,7 +344,7 @@ Run a  remote fab command
 Sometimes it makes sense to run a fabric command on the server, for instance, when you need to render using a production database. You can do this with the `fabcast` fabric command. For example:
 
 ```
-fab staging master fabcast:deploy
+fab staging master servers.fabcast:deploy
 ```
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
