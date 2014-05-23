@@ -42,16 +42,17 @@ cd $NEW_PROJECT_NAME
 
 mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
 pip install -r requirements.txt
+npm install
 
-fab app_template_bootstrap
+fab bootstrap
 ```
 
 This will setup the new repo and will replace `README.md` (this file) with `PROJECT_README.md`. See that file for usage documentation.
 
-By default `app_template_bootstrap` will use `nprapps` as the Github username, and the current directory name as the repository name. **This is a best practice**, but you can override these defaults if you need to:
+By default `bootstrap` will use `nprapps` as the Github username, and the current directory name as the repository name. **This is a best practice**, but you can override these defaults if you need to:
 
 ```
-fab app_template_bootstrap:$GITHUB_USERNAME,$REPOSITORY_NAME
+fab bootstrap:$GITHUB_USERNAME,$REPOSITORY_NAME
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import uuid
-
 from fabric.api import local, require, settings, task
 from fabric.state import env
 
@@ -18,6 +15,10 @@ import utils
 
 if app_config.DEPLOY_TO_SERVERS:
     import servers
+
+# Bootstrap can only be run once, then it's disabled
+if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
+    import bootstrap
 
 """
 Base configuration
@@ -197,35 +198,3 @@ def shiva_the_destroyer():
             if app_config.DEPLOY_SERVICES:
                 servers.nuke_confs()
 
-"""
-App-template specific setup. Not relevant after the project is running.
-"""
-@task
-def app_template_bootstrap(github_username='nprapps', repository_name=None):
-    """
-    Execute the bootstrap tasks for a new project.
-    """
-    config_files = ' '.join(['PROJECT_README.md', 'app_config.py'])
-
-    config = {}
-    config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
-    config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
-    config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
-    config['$NEW_DISQUS_UUID'] = str(uuid.uuid1())
-
-    utils.confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
-
-    for k, v in config.items():
-        local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
-
-    local('rm -rf .git')
-    local('git init')
-    local('mv PROJECT_README.md README.md')
-    local('rm *.pyc')
-    local('rm LICENSE')
-    local('git add .')
-    local('git commit -am "Initial import from app-template."')
-    local('git remote add origin git@github.com:%s/%s.git' % (github_username, config['$NEW_REPOSITORY_NAME']))
-    local('git push -u origin master')
-
-    bootstrap()
