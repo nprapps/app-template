@@ -17,15 +17,3 @@ def update():
     g.get_auth()
     g.get_document()
 
-def js():
-    """
-    Render COPY to copy.js.
-    """
-    from static import _copy_js
-
-    response = _copy_js()
-    js = response[0]
-
-    with open('www/js/copy.js', 'w') as f:
-        f.write(js)
-

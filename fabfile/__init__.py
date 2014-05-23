@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-from glob import glob
 import os
 import uuid
 
 from fabric.api import local, require, settings, task
 from fabric.state import env
 
-import app
 import app_config
 
 # Other fabfiles
@@ -15,6 +13,7 @@ import assets
 import copytext
 import data
 import issues
+import render
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:
@@ -80,135 +79,12 @@ def branch(branch_name):
     """
     env.branch = branch_name
 
-"""
-Template-specific functions
-
-Changing the template functions should produce output
-with fab render without any exceptions. Any file used
-by the site templates should be rendered by fab render.
-"""
-@task
-def less():
-    """
-    Render LESS files to CSS.
-    """
-    for path in glob('less/*.less'):
-        filename = os.path.split(path)[-1]
-        name = os.path.splitext(filename)[0]
-        out_path = 'www/css/%s.less.css' % name
-
-        try:
-            local('node_modules/less/bin/lessc %s %s' % (path, out_path))
-        except:
-            print 'It looks like "lessc" isn\'t installed. Try running: "npm install"'
-            raise
-
-def jst():
-    """
-    Render Underscore templates to a JST package.
-    """
-
-    try:
-        local('node_modules/universal-jst/bin/jst.js --template underscore jst www/js/templates.js')
-    except:
-        print 'It looks like "jst" isn\'t installed. Try running: "npm install"'
-
-def app_config_js():
-    """
-    Render app_config.js to file.
-    """
-    from static import _app_config_js
-
-    response = _app_config_js()
-    js = response[0]
-
-    with open('www/js/app_config.js', 'w') as f:
-        f.write(js)
-
-@task
-def render():
-    """
-    Render HTML templates and compile assets.
-    """
-    from flask import g
-
-    copytext.update()
-    assets.sync()
-    data.update()
-    less()
-    jst()
-
-    app_config_js()
-    copytext.js()
-
-    compiled_includes = {} 
-
-    for rule in app.app.url_map.iter_rules():
-        rule_string = rule.rule
-        name = rule.endpoint
-
-        if name == 'static' or name.startswith('_'):
-            print 'Skipping %s' % name
-            continue
-
-        if rule_string.endswith('/'):
-            filename = 'www' + rule_string + 'index.html'
-        elif rule_string.endswith('.html'):
-            filename = 'www' + rule_string
-        else:
-            print 'Skipping %s' % name
-            continue
-
-        dirname = os.path.dirname(filename)
-
-        if not (os.path.exists(dirname)):
-            os.makedirs(dirname)
-
-        print 'Rendering %s' % (filename)
-
-        with app.app.test_request_context(path=rule_string):
-            g.compile_includes = True
-            g.compiled_includes = compiled_includes
-
-            bits = name.split('.')
-
-            # Determine which module the view resides in
-            if len(bits) > 1:
-                module, name = bits
-            else:
-                module = 'app'
-
-            view = globals()[module].__dict__[name]
-            content = view()
-
-            compiled_includes = g.compiled_includes
-
-        with open(filename, 'w') as f:
-            f.write(content.encode('utf-8'))
-
 @task
 def tests():
     """
     Run Python unit tests.
     """
     local('nosetests')
-
-"""
-Bootstrapping
-"""
-@task
-def bootstrap():
-    """
-    Bootstrap this project. Should only need to be run once.
-    """
-    # Reimport app_config in case this is part of the app_template bootstrap
-    # (it may have changed)
-    import app_config
-
-    local('npm install')
-    assets.sync()
-    copytext.update()
-    data.update()
 
 """
 Deployment
@@ -251,6 +127,15 @@ def _gzip(in_path='www', out_path='.gzip'):
     local('python gzip_assets.py %s %s' % (in_path, out_path))
 
 @task
+def update():
+    """
+    Update all application data not in repository (copy, assets, etc).
+    """
+    copytext.update()
+    assets.sync()
+    data.update()
+
+@task
 def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -275,7 +160,8 @@ def deploy(remote='origin'):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    render()
+    update()
+    render.render_all()
     _gzip('www', '.gzip')
     _deploy_to_s3()
 
