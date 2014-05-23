@@ -24,6 +24,13 @@ SERVICE_VERSION = 'v3'
 SCOPE = 'https://www.googleapis.com/auth/analytics.readonly'
 NPR_ORG_LIVE_ID = '53470309'
 
+TOTAL_METRICS = [
+    'ga:pageviews',
+    'ga:uniquePageviews',
+    'ga:users',
+    'ga:sessions'
+]
+
 class GoogleAnalytics(object):
     def __init__(self, property_id=NPR_ORG_LIVE_ID, domain=None, slug=None):
         self.property_id = property_id
@@ -106,33 +113,26 @@ class GoogleAnalytics(object):
 
     def totals(self):
         results = self.query(
-            metrics=[
-                'ga:pageviews',
-                'ga:users',
-                'ga:sessions'
-            ]
+            metrics=TOTAL_METRICS
         )
 
-        return OrderedDict([
-            ['pageviews', int(results['rows'][0][0])],
-            ['users', int(results['rows'][0][1])],
-            ['sessions', int(results['rows'][0][2])]
-        ])
+        d = OrderedDict()
+
+        for i, k in enumerate(TOTAL_METRICS):
+            d[k] = int(results['rows'][0][i])
+
+        return d
 
     def totals_by_device_category(self, totals):
         results = self.query(
-            metrics=[
-                'ga:pageviews',
-                'ga:users',
-                'ga:sessions'
-            ],
+            metrics=TOTAL_METRICS,
             dimensions=['ga:deviceCategory'],
             sort=['-ga:pageviews']
         )
         
         d = OrderedDict()
 
-        for i, column in enumerate(['pageviews', 'users', 'sessions']):
+        for i, column in enumerate(TOTAL_METRICS):
             d[column] = OrderedDict()
 
             for row in results['rows']:
