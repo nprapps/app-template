@@ -249,17 +249,3 @@ def fabcast(command):
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
-"""
-Cron jobs
-"""
-
-@task
-def cron_test():
-    """
-    Example cron task. Note we use "local" instead of "run"
-    because this will run on the server.
-    """
-    require('settings', provided_by=['production', 'staging'])
-
-    local('echo $DEPLOYMENT_TARGET > /tmp/cron_test.txt')
-
