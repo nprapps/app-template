@@ -6,6 +6,7 @@ Analytics reporting tasks
 
 from fabric.api import task
 
+import app_config
 from etc.ga import GoogleAnalytics
 
 @task
@@ -13,7 +14,7 @@ def report():
     """
     Query some things.
     """
-    ga = GoogleAnalytics(slug='commencement')
+    ga = GoogleAnalytics(slug=app_config.PROJECT_SLUG)
 
     print 'Totals:'
 
