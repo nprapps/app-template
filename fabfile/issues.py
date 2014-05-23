@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Commands that integrate with Github issues.
+"""
+
 from fabric.api import task
 
 from etc import github

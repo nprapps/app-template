@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Commands work with servers. (Hiss, boo.)
+"""
+
 import copy
 
 from fabric.api import local, put, settings, require, run, sudo, task
@@ -13,11 +17,11 @@ Setup
 """
 
 @task
-def setup_server():
+def setup():
     """
     Setup servers for deployment.
 
-    NB: This does not setup services or push to S3. Run deploy() next.
+    This does not setup services or push to S3. Run deploy() next.
     """
     require('settings', provided_by=['production', 'staging'])
     require('branch', provided_by=['stable', 'master', 'branch'])
@@ -27,13 +31,13 @@ def setup_server():
 
         return
 
-    setup_directories()
-    setup_virtualenv()
+    create_directories()
+    create_virtualenv()
     clone_repo()
     checkout_latest()
     install_requirements()
 
-def setup_directories():
+def create_directories():
     """
     Create server directories.
     """
@@ -42,7 +46,7 @@ def setup_directories():
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
     run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
-def setup_virtualenv():
+def create_virtualenv():
     """
     Setup a server virtualenv.
     """

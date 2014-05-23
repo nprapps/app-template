@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+"""
+Commands for rendering various parts of the app stack.
+"""
+
 from glob import glob
 import os
 
-from fabric.api import execute, local, task
+from fabric.api import local, task
 
 import app
 

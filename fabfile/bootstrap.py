@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+
+"""
+Bootstrap the app-template. This module disables itself
+after execution.
+"""
+
 import os
 import uuid
 
@@ -7,9 +13,6 @@ from fabric.api import execute, local, task
 
 import utils
 
-"""
-App-template specific setup. Not relevant after the project is running.
-"""
 @task(default=True)
 def go(github_username='nprapps', repository_name=None):
     """

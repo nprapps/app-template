@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Commands related to syncing copytext from Google Docs.
+"""
+
 from fabric.api import task
 
 import app_config

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Commands related to the syncing assets.
+"""
+
 from glob import glob
 import os
 

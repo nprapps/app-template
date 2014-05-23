@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Utilities used by multiple commands.
+"""
+
 from fabric.api import prompt
 
 def confirm(message):

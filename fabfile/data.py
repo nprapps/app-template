@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from fabric.api import task
+"""
+Commands that update or process the application data.
+"""
 
-"""
-Data update functions belong in this module.
-"""
+from fabric.api import task
 
 @task
 def update():
