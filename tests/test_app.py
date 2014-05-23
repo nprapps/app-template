@@ -17,7 +17,7 @@ class IndexTestCase(unittest.TestCase):
     def test_index_exists(self):
         response = self.client.get('/')
 
-        assert app_config.PROJECT_NAME in response.data
+        assert app_config.PROJECT_SLUG in response.data
 
 class AppConfigTestCase(unittest.TestCase):
     """

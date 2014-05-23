@@ -39,10 +39,14 @@ describe('app.js', function() {
     });
 
     it('should render a javascript template', function() {
-        var html = JST.example({ 'config': 'test', 'template_path': 'test' });
+        var context = $.extend(APP_CONFIG, {
+            'template_path': 'jst/example.html',
+            'config': JSON.stringify(APP_CONFIG, null, 4),
+            'copy': JSON.stringify(COPY, null, 4)
+        });
 
-        console.log(html);
+        var html = JST.example(context);
 
-        expect(html).toMatch('<code>test</code>');
+        expect(html).toContain('jst/example.html');
     });
 });
