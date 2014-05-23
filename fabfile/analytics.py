@@ -33,6 +33,14 @@ def report():
             print '\t\t%.1f%%\t\t%s' % (v, d)
 
     print ''
+    print 'Top browsers (pageviews):'
+
+    browsers = ga.totals_by_browser(totals)['ga:pageviews']
+
+    for d, v in browsers.items():
+        print '\t%.1f%%\t\t%s' % (v, d)
+
+    print ''
     print 'Top pageviews:'
 
     for page, pageviews in ga.top_pageviews().items():
