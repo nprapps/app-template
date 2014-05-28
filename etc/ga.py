@@ -136,7 +136,7 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column] * 100
+                d[column][row[0]] = float(row[1 + i]) / totals[column]
 
         return d
 
@@ -153,7 +153,7 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column] * 100
+                d[column][row[0]] = float(row[1 + i]) / totals[column]
 
         return d
 
@@ -165,4 +165,18 @@ class GoogleAnalytics(object):
         )
 
         return OrderedDict([(r[0], int(r[1])) for r in results['rows']])
+
+    def performance(self):
+        metrics = ['ga:avgPageLoadTime', 'ga:avgPageDownloadTime', 'ga:avgDomInteractiveTime', 'ga:avgDomContentLoadedTime']
+
+        results = self.query(
+            metrics=metrics
+        )
+
+        d = OrderedDict()
+
+        for i, k in enumerate(metrics):
+            d[k] = float(results['rows'][0][i])
+
+        return d
 
