@@ -15,6 +15,7 @@ def report():
     Query some things.
     """
     ga = GoogleAnalytics(slug=app_config.PROJECT_SLUG)
+    #ga = GoogleAnalytics(slug='commencement')
 
     print 'Totals:'
 
@@ -30,7 +31,15 @@ def report():
         print '    %s' % column
 
         for d, v in devices.items():
-            print '{:>15.1f}    {:s}'.format(v, d)
+            print '{:>15.1%}    {:s}'.format(v, d)
+
+    print ''
+    print 'Top sources (pageviews):'
+
+    sources = ga.totals_by_source(totals)['ga:pageviews']
+
+    for d, v in sources.items():
+        print '{:>15.1%}    {:s}'.format(v, d)
 
     print ''
     print 'Top browsers (pageviews):'

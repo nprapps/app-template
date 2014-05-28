@@ -157,6 +157,23 @@ class GoogleAnalytics(object):
 
         return d
 
+    def totals_by_source(self, totals):
+        results = self.query(
+            metrics=TOTAL_METRICS,
+            dimensions=['ga:source'],
+            sort=['-ga:pageviews']
+        )
+        
+        d = OrderedDict()
+
+        for i, column in enumerate(TOTAL_METRICS):
+            d[column] = OrderedDict()
+
+            for row in results['rows']:
+                d[column][row[0]] = float(row[1 + i]) / totals[column]
+
+        return d
+
     def top_pageviews(self):
         results = self.query(
             metrics=['ga:pageviews'],
@@ -179,4 +196,3 @@ class GoogleAnalytics(object):
             d[k] = float(results['rows'][0][i])
 
         return d
-
