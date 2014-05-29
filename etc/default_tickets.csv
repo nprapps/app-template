@@ -49,3 +49,4 @@ Setup retrospective review with editor,What did we learn? How do we do better ne
 Verify page title tags are good,,Launch TODO
 Duplicate the COPY spreadsheet,Make a copy for this project and update `app_config.COPY_GOOGLE_DOC_KEY` with new key: https://docs.google.com/spreadsheet/ccc?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc&usp=drive_web#gid=0,
 Optimize images,,Launch TODO
+Document custom Google Analytics events in README,,Launch TODO
