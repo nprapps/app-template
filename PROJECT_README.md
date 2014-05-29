@@ -348,3 +348,25 @@ fab staging master servers.fabcast:deploy
 ```
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
+
+Analytics
+---------
+
+Event tracking and reporting is backed into the app-template using Google Analytics.Running the reports requires Google Analytics API access setup as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Youranalytics secrets and "dat" files must be placed in your home directory as `.google_analytics_secrets.json` and`.google_analytics_auth.dat`, respectively.
+
+Once configured you can run the analytics report by executing `fab analytics`.
+
+The events tracked in this application are:
+
+|Category|Action|Label|Value|Custom 1|Custom 2|
+|--------|------|-----|-----|--------|--------|
+|$NEW_PROJECT_SLUG|tweet|`location`||||
+|$NEW_PROJECT_SLUG|facebook|`location`||||
+|$NEW_PROJECT_SLUG|facebook|`location`||||
+|$NEW_PROJECT_SLUG|comments_opened|||||
+|$NEW_PROJECT_SLUG|comments_closed||`seconds_open`|||
+|$NEW_PROJECT_SLUG|comments_read|||||
+
+**Notes:**
+
+* The *comments_read* action is fired once the comments pane has been open for at least ten seconds.

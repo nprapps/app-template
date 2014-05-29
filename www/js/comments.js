@@ -1,4 +1,4 @@
-var EVENT_CATEGORY = APP_CONFIG.PROJECT_SLUG;
+var EVENT_CATEGORY = ;
 var $comments = null;
 var $commentButton = null;
 var $commentCount = null;
@@ -109,10 +109,10 @@ var onCommentButtonClick = function() {
     if ( $comments.hasClass('show') ) {
         $comments.removeClass('show');
         endTime = moment();
-        _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Read comments for ' + endTime.diff(startTime, 'seconds', true) + ' seconds before closing them']);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_closed', '', endTime.diff(startTime, 'seconds', true)]);
     } else {
         $comments.addClass('show');
-        _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Clicked to reveal comments']);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_opened']);
         startTime = moment();
     }
 
@@ -125,7 +125,7 @@ var onCommentButtonClick = function() {
     var onReadingComments = function() {
 
         // Push an event to google analytics.
-        _gaq.push(['_trackEvent', EVENT_CATEGORY, 'Read comments for 10 seconds']);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_read']);
 
         // Clear the timeout.
         window.clearTimeout(readingCommentsTimeout);
