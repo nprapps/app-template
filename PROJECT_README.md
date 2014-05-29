@@ -25,6 +25,7 @@ $NEW_PROJECT_SLUG
 * [Install cron jobs](#install-cron-jobs)
 * [Install web services](#install-web-services)
 * [Run a remote fab command](#run-a-remote-fab-command)
+* [Report analytics](#report-analytics)
 
 What is this?
 -------------
@@ -349,8 +350,8 @@ fab staging master servers.fabcast:deploy
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
 
-Analytics
----------
+Report Analytics
+----------------
 
 Event tracking and reporting is backed into the app-template using Google Analytics.Running the reports requires Google Analytics API access setup as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Youranalytics secrets and "dat" files must be placed in your home directory as `.google_analytics_secrets.json` and`.google_analytics_auth.dat`, respectively.
 
