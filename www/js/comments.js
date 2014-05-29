@@ -125,7 +125,7 @@ var onCommentButtonClick = function() {
     var onReadingComments = function() {
 
         // Push an event to google analytics.
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_read']);
+        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_open_for', '10']);
 
         // Clear the timeout.
         window.clearTimeout(readingCommentsTimeout);

@@ -353,7 +353,7 @@ If any of the commands you run themselves require executing on the server, the s
 Report Analytics
 ----------------
 
-Event tracking and reporting is backed into the app-template using Google Analytics.Running the reports requires Google Analytics API access setup as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Youranalytics secrets and "dat" files must be placed in your home directory as `.google_analytics_secrets.json` and`.google_analytics_auth.dat`, respectively.
+Event tracking and reporting is backed into the app-template using Google Analytics. Running the reports requires Google Analytics API access to be configured as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Your analytics secrets and "dat" file must be placed in your home directory as `.google_analytics_secrets.json` and `.google_analytics_auth.dat`, respectively.
 
 Once configured you can run the analytics report by executing `fab analytics`.
 
@@ -363,10 +363,9 @@ The events tracked in this application are:
 |--------|------|-----|-----|--------|--------|
 |$NEW_PROJECT_SLUG|tweet|`location`||||
 |$NEW_PROJECT_SLUG|facebook|`location`||||
-|$NEW_PROJECT_SLUG|facebook|`location`||||
 |$NEW_PROJECT_SLUG|comments_opened|||||
 |$NEW_PROJECT_SLUG|comments_closed||`seconds_open`|||
-|$NEW_PROJECT_SLUG|comments_read|||||
+|$NEW_PROJECT_SLUG|comments_open_for|`seconds_open`||||
 
 **Notes:**
 
