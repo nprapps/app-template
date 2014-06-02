@@ -196,3 +196,26 @@ class GoogleAnalytics(object):
             d[k] = float(results['rows'][0][i])
 
         return d
+
+    def time_on_site(self):
+        results = self.query(
+            metrics=['ga:avgSessionDuration']
+        )
+
+        return float(results['rows'][0][0])
+
+        
+    def time_on_site_by_device_category(self):
+        results = self.query(
+            metrics=['ga:avgSessionDuration'],
+            dimensions=['ga:deviceCategory'],
+            sort=['-ga:avgSessionDuration']
+        )
+        
+        d = OrderedDict()
+
+        for row in results['rows']:
+            d[row[0]] = float(row[1])
+
+        return d
+

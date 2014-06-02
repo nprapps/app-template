@@ -19,6 +19,7 @@ def machine(path):
     Write current analytics to a JSON file.
     """
     ga = GoogleAnalytics(slug=app_config.PROJECT_SLUG)
+    #ga = GoogleAnalytics(slug='tshirt')
 
     output = {}
     print 'Getting totals'
@@ -33,9 +34,24 @@ def machine(path):
     output['top_pageviews'] = ga.top_pageviews()
     print 'Getting performance data'
     output['performance'] = ga.performance()
+    print 'Getting time on site'
+    output['time_on_site'] = ga.time_on_site()
+    print 'Getting time on site by devices'
+    output['time_on_site_devices'] = ga.time_on_site_by_device_category()
 
     with open(path, 'w') as f:
         json.dump(output, f)
+
+def _format_duration(secs):
+    secs = int(secs)
+
+    if secs > 60:
+        mins = secs / 60
+        secs = secs - (mins * 60)
+
+        return '%im %02is' % (mins, secs)
+
+    return '%02is' % secs  
 
 @task
 def human(path):
@@ -51,6 +67,9 @@ def human(path):
 
     for k, v in totals.items():
         print '{:>15,d}    {:s}'.format(v, k)
+
+    print ''
+    print '{:>15s}    {:s}'.format(_format_duration(data['time_on_site']), 'ga:avgSessionDuration')
     
     print ''
     print 'Top devices:'
@@ -60,6 +79,12 @@ def human(path):
 
         for d, v in devices.items():
             print '{:>15.1%}    {:s}'.format(v, d)
+
+    print ''
+    print '    ga:avgSessionDuration'
+    
+    for d, v in data['time_on_site_devices'].items(): 
+        print '{:>15s}    {:s}'.format(_format_duration(v), d)
 
     print ''
     print 'Top sources (pageviews):'
