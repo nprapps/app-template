@@ -5,6 +5,7 @@ Analytics reporting tasks
 """
 
 from collections import OrderedDict
+from datetime import timedelta
 import json
 import os
 
@@ -14,14 +15,33 @@ import app_config
 from etc.ga import GoogleAnalytics
 
 @task
-def machine(path):
+def machine(path, ndays=None):
     """
     Write current analytics to a JSON file.
     """
-    ga = GoogleAnalytics(slug=app_config.PROJECT_SLUG)
-    #ga = GoogleAnalytics(slug='tshirt')
+    start_date = None
+    end_date = None
+
+    if ndays and not app_config.LAUNCH_DATE:
+        print 'You must specify a LAUNCH_DATE in app_config.py before you can report a number of days.'
+
+        return
+
+    if app_config.LAUNCH_DATE:
+        start_date = app_config.LAUNCH_DATE
+
+        if ndays:
+            end_date = start_date + timedelta(days=int(ndays))
+
+    slug = app_config.PROJECT_SLUG
+
+    ga = GoogleAnalytics(slug=slug, start_date=start_date, end_date=end_date)
 
     output = {}
+    output['slug'] = slug
+    output['start_date'] = start_date.strftime('%Y-%m-%d') if start_date else None
+    output['ndays'] = int(ndays) if ndays else None
+
     print 'Getting totals'
     output['totals'] = ga.totals()
     print 'Getting top devices'
@@ -43,6 +63,9 @@ def machine(path):
         json.dump(output, f)
 
 def _format_duration(secs):
+    """
+    Format a duration in seconds as minutes and seconds.
+    """
     secs = int(secs)
 
     if secs > 60:
@@ -61,6 +84,9 @@ def human(path):
     with open(path) as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
+    print 'Report for "%(slug)s" beginning %(start_date)s and running for %(ndays)i days' % (data)
+
+    print ''
     print 'Totals:'
 
     totals = data['totals'] 
@@ -118,11 +144,11 @@ def human(path):
 
 
 @task(default=True)
-def report():
+def report(ndays=None):
     """
     Print current analytics to the console.
     """
-    machine('.temp_report.json')
+    machine('.temp_report.json', ndays)
     human('.temp_report.json')
     os.remove('.temp_report.json')
 

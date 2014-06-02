@@ -32,10 +32,12 @@ TOTAL_METRICS = [
 ]
 
 class GoogleAnalytics(object):
-    def __init__(self, property_id=NPR_ORG_LIVE_ID, domain=None, slug=None):
+    def __init__(self, property_id=NPR_ORG_LIVE_ID, domain=None, slug=None, start_date=None, end_date=None):
         self.property_id = property_id
         self.domain = domain
         self.slug = slug
+        self.start_date = start_date
+        self.end_date = end_date
 
         self.storage = Storage(DAT)
         self.credentials = self.storage.get()
@@ -75,11 +77,15 @@ class GoogleAnalytics(object):
         """
         if start_date:
             start_date = start_date.strftime('%Y-%m-%d')
+        elif self.start_date:
+            start_date = self.start_date.strftime('%Y-%m-%d')
         else:
             start_date = '2005-01-01'
 
         if end_date:
             end_date = end_date.strftime('%Y-%m-%d')
+        elif self.end_date:
+            end_date = self.end_date.strftime('%Y-%m-%d')
         else:
             end_date = 'today' 
 
