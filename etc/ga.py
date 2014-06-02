@@ -129,7 +129,7 @@ class GoogleAnalytics(object):
 
         return d
 
-    def totals_by_device_category(self, totals):
+    def totals_by_device_category(self):
         results = self.query(
             metrics=TOTAL_METRICS,
             dimensions=['ga:deviceCategory'],
@@ -142,11 +142,11 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column]
+                d[column][row[0]] = int(row[1 + i])
 
         return d
 
-    def totals_by_browser(self, totals):
+    def totals_by_browser(self):
         results = self.query(
             metrics=TOTAL_METRICS,
             dimensions=['ga:browser'],
@@ -159,11 +159,11 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column]
+                d[column][row[0]] = int(row[1 + i])
 
         return d
 
-    def totals_by_source(self, totals):
+    def totals_by_source(self):
         results = self.query(
             metrics=TOTAL_METRICS,
             dimensions=['ga:source'],
@@ -176,11 +176,11 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column]
+                d[column][row[0]] = int(row[1 + i])
 
         return d
 
-    def totals_by_social_network(self, totals):
+    def totals_by_social_network(self):
         results = self.query(
             metrics=TOTAL_METRICS,
             dimensions=['ga:socialNetwork'],
@@ -193,7 +193,7 @@ class GoogleAnalytics(object):
             d[column] = OrderedDict()
 
             for row in results['rows']:
-                d[column][row[0]] = float(row[1 + i]) / totals[column]
+                d[column][row[0]] = int(row[1 + i])
 
         return d
 
