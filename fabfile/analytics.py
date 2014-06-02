@@ -42,6 +42,8 @@ def machine(start_date=None, ndays=None, slug=None):
     output['top_devices'] = ga.totals_by_device_category(output['totals'])
     print 'Getting top sources'
     output['top_sources'] = ga.totals_by_source(output['totals'])
+    print 'Getting top social networks'
+    output['top_social'] = ga.totals_by_social_network(output['totals'])
     print 'Getting top browsers'
     output['top_browsers'] = ga.totals_by_browser(output['totals'])
     print 'Getting top pages'
@@ -114,6 +116,13 @@ def human(path='analytics.json'):
         sources = data['top_sources']['ga:pageviews']
 
         for d, v in sources.items():
+            f.write('{:>15.1%}    {:s}\n'.format(v, d))
+
+        f.write('\nTop social networks (pageviews):\n')
+
+        social_networks = data['top_social']['ga:pageviews']
+
+        for d, v in social_networks.items():
             f.write('{:>15.1%}    {:s}\n'.format(v, d))
 
         f.write('\nTop browsers (pageviews):\n')
