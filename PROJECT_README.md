@@ -353,9 +353,9 @@ If any of the commands you run themselves require executing on the server, the s
 Report Analytics
 ----------------
 
-Event tracking and reporting is backed into the app-template using Google Analytics. Running the reports requires Google Analytics API access to be configured as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Your analytics secrets and "dat" file must be placed in your home directory as `.google_analytics_secrets.json` and `.google_analytics_auth.dat`, respectively.
+Event tracking and reporting is backed into the app-template using Google Analytics. Running the reports requires Google Analytics API access to be configured as described [here](https://developers.google.com/analytics/solutions/articles/hello-analytics-api#environment). Your analytics secrets and "dat" file must be placed in your home directory as ``.google_analytics_secrets.json`` and ``.google_analytics_auth.dat``, respectively.
 
-Once configured you can run the analytics report by executing `fab analytics`.
+Once configured you can run the analytics report by executing `fab analytics`. This will gather all analytics ever reported for this project. To run the report for a specific window in time, run ``fab analytics:2014-6-1,7`` where, **2014-6-1** is the start (launch) date and **7** is the number of days you would like to report for. This will write the files ``analytics.json`` and ``analytics.txt`` in the root directory of the project.
 
 The events tracked in this application are:
 
@@ -364,8 +364,8 @@ The events tracked in this application are:
 |$NEW_PROJECT_SLUG|tweet|`location`||||
 |$NEW_PROJECT_SLUG|facebook|`location`||||
 |$NEW_PROJECT_SLUG|comments_opened|||||
-|$NEW_PROJECT_SLUG|comments_closed||`seconds_open`|||
-|$NEW_PROJECT_SLUG|comments_open_for|`seconds_open`||||
+|$NEW_PROJECT_SLUG|comments_closed||``seconds_open``|||
+|$NEW_PROJECT_SLUG|comments_open_for|``seconds_open``|||
 
 **Notes:**
 

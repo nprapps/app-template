@@ -5,35 +5,29 @@ Analytics reporting tasks
 """
 
 from collections import OrderedDict
-from datetime import timedelta
+from datetime import date, timedelta
 import json
-import os
 
 from fabric.api import task
 
 import app_config
 from etc.ga import GoogleAnalytics
 
-@task
-def machine(path, ndays=None):
+@task(name='json')
+def machine(start_date=None, ndays=None, slug=None):
     """
-    Write current analytics to a JSON file.
+    Write analytics to a JSON file.
     """
-    start_date = None
     end_date = None
 
-    if ndays and not app_config.LAUNCH_DATE:
-        print 'You must specify a LAUNCH_DATE in app_config.py before you can report a number of days.'
+    if start_date:
+        start_date = date(*map(int, start_date.split('-')))
 
-        return
+    if ndays:
+        end_date = start_date + timedelta(days=int(ndays))
 
-    if app_config.LAUNCH_DATE:
-        start_date = app_config.LAUNCH_DATE
-
-        if ndays:
-            end_date = start_date + timedelta(days=int(ndays))
-
-    slug = app_config.PROJECT_SLUG
+    if not slug:
+        slug = app_config.PROJECT_SLUG
 
     ga = GoogleAnalytics(slug=slug, start_date=start_date, end_date=end_date)
 
@@ -59,8 +53,8 @@ def machine(path, ndays=None):
     print 'Getting time on site by devices'
     output['time_on_site_devices'] = ga.time_on_site_by_device_category()
 
-    with open(path, 'w') as f:
-        json.dump(output, f)
+    with open('analytics.json', 'w') as f:
+        json.dump(output, f, indent=4)
 
 def _format_duration(secs):
     """
@@ -76,80 +70,77 @@ def _format_duration(secs):
 
     return '%02is' % secs  
 
-@task
-def human(path):
+@task(name='txt')
+def human(path='analytics.json'):
     """
-    Print analytics from a saved file.
+    Write analytics from a JSON file to a human-readable text file.
     """
     with open(path) as f:
         data = json.load(f, object_pairs_hook=OrderedDict)
 
-    print 'Report for "%(slug)s" beginning %(start_date)s and running for %(ndays)i days' % (data)
+    with open('analytics.txt', 'w') as f:
+        f.write('Report for "%s"\n' % data['slug'])
+        
+        if data['start_date']:
+            f.write('Beginning %s\n' % data['start_date'])
 
-    print ''
-    print 'Totals:'
+        if data['ndays']:
+            f.write('Running for %i days\n' % data['ndays'])
 
-    totals = data['totals'] 
+        f.write('\nTotals:\n')
 
-    for k, v in totals.items():
-        print '{:>15,d}    {:s}'.format(v, k)
+        totals = data['totals'] 
 
-    print ''
-    print '{:>15s}    {:s}'.format(_format_duration(data['time_on_site']), 'ga:avgSessionDuration')
-    
-    print ''
-    print 'Top devices:'
+        for k, v in totals.items():
+            f.write('{:>15,d}    {:s}\n'.format(v, k))
 
-    for column, devices in data['top_devices'].items():
-        print '    %s' % column
+        f.write('\n{:>15s}    {:s}\n'.format(_format_duration(data['time_on_site']), 'ga:avgSessionDuration'))
+        
+        f.write('\nTop devices:\n')
 
-        for d, v in devices.items():
-            print '{:>15.1%}    {:s}'.format(v, d)
+        for column, devices in data['top_devices'].items():
+            f.write('    %s\n' % column)
 
-    print ''
-    print '    ga:avgSessionDuration'
-    
-    for d, v in data['time_on_site_devices'].items(): 
-        print '{:>15s}    {:s}'.format(_format_duration(v), d)
+            for d, v in devices.items():
+                f.write('{:>15.1%}    {:s}\n'.format(v, d))
 
-    print ''
-    print 'Top sources (pageviews):'
+        f.write('\n    ga:avgSessionDuration\n')
+        
+        for d, v in data['time_on_site_devices'].items(): 
+            f.write('{:>15s}    {:s}\n'.format(_format_duration(v), d))
 
-    sources = data['top_sources']['ga:pageviews']
+        f.write('\nTop sources (pageviews):\n')
 
-    for d, v in sources.items():
-        print '{:>15.1%}    {:s}'.format(v, d)
+        sources = data['top_sources']['ga:pageviews']
 
-    print ''
-    print 'Top browsers (pageviews):'
+        for d, v in sources.items():
+            f.write('{:>15.1%}    {:s}\n'.format(v, d))
 
-    browsers = data['top_browsers']['ga:pageviews']
+        f.write('\nTop browsers (pageviews):\n')
 
-    for d, v in browsers.items():
-        print '{:>15.1%}    {:s}'.format(v, d)
+        browsers = data['top_browsers']['ga:pageviews']
 
-    print ''
-    print 'Top pageviews:'
+        for d, v in browsers.items():
+            f.write('{:>15.1%}    {:s}\n'.format(v, d))
 
-    for page, pageviews in data['top_pageviews'].items():
-        print '{:>15,d}    {:s}'.format(pageviews, page)
+        f.write('\nTop pageviews:\n')
 
-    print ''
-    print 'Performance (seconds):'
+        for page, pageviews in data['top_pageviews'].items():
+            f.write('{:>15,d}    {:s}\n'.format(pageviews, page))
 
-    metrics = data['performance'] 
+        f.write('\nPerformance (seconds):\n')
 
-    for k, v in metrics.items():
-        print '{:>15.1f}    {:s}'.format(v, k)
+        metrics = data['performance'] 
 
+        for k, v in metrics.items():
+            f.write('{:>15.1f}    {:s}\n'.format(v, k))
 
 @task(default=True)
-def report(ndays=None):
+def report(start_date=None, ndays=None, slug=None):
     """
-    Print current analytics to the console.
+    Write both JSON and human-readable analytics.
     """
-    machine('.temp_report.json', ndays)
-    human('.temp_report.json')
-    os.remove('.temp_report.json')
+    machine(start_date, ndays, slug)
+    human()
 
 

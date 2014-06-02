@@ -110,12 +110,6 @@ GOOGLE_ANALYTICS = {
 DISQUS_UUID = '$NEW_DISQUS_UUID'
 
 """
-MISCELLANEOUS
-"""
-#from datetime import date
-LAUNCH_DATE = None #date(2013, 12, 15)
-
-"""
 Utilities
 """
 def get_secrets():
