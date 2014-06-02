@@ -38,22 +38,33 @@ def machine(start_date=None, ndays=None, slug=None):
 
     print 'Getting totals'
     output['totals'] = ga.totals()
+    
     print 'Getting top devices'
     output['top_devices'] = ga.totals_by_device_category()
+    
     print 'Getting top sources'
     output['top_sources'] = ga.totals_by_source()
+    
     print 'Getting top social networks'
     output['top_social'] = ga.totals_by_social_network()
+    
     print 'Getting top browsers'
     output['top_browsers'] = ga.totals_by_browser()
+    
     print 'Getting top pages'
     output['top_pageviews'] = ga.top_pageviews()
+    
     print 'Getting performance data'
     output['performance'] = ga.performance()
+    
     print 'Getting time on site'
     output['time_on_site'] = ga.time_on_site()
+
     print 'Getting time on site by devices'
     output['time_on_site_devices'] = ga.time_on_site_by_device_category()
+
+    #print 'Getting events'
+    #output['event'] = ga.event_by_label('onTagButtonClick')
 
     print 'Writing analytics.json'
 
@@ -146,7 +157,7 @@ def human(path='analytics.json'):
             f.write(_three_columns(_duration(v), '-', d))
 
         # Top sources
-        f.write('\nTop sources (pageviews):\n')
+        f.write(_header('Top sources (pageviews):'))
 
         sources = data['top_sources']['ga:pageviews']
 
@@ -154,7 +165,7 @@ def human(path='analytics.json'):
             f.write(_three_columns(_comma(v), _percent(v, totals['ga:pageviews']), d))
 
         # Top social networks
-        f.write('\nTop social networks (pageviews):\n')
+        f.write(_header('Top social networks (pageviews):'))
 
         social_networks = data['top_social']['ga:pageviews']
 
@@ -162,7 +173,7 @@ def human(path='analytics.json'):
             f.write(_three_columns(_comma(v), _percent(v, totals['ga:pageviews']), d))
 
         # Top browsers
-        f.write('\nTop browsers (pageviews):\n')
+        f.write(_header('Top browsers (pageviews):'))
 
         browsers = data['top_browsers']['ga:pageviews']
 
@@ -170,18 +181,28 @@ def human(path='analytics.json'):
             f.write(_three_columns(_comma(v), _percent(v, totals['ga:pageviews']), d))
 
         # Top pages
-        f.write('\nTop pages (pageviews):\n')
+        f.write(_header('Top pages (pageviews):'))
 
         for page, pageviews in data['top_pageviews'].items():
             f.write(_three_columns(_comma(pageviews), _percent(pageviews, totals['ga:pageviews']), page))
 
         # Performance
-        f.write('\nPerformance:\n')
+        f.write(_header('Performance:'))
 
         metrics = data['performance'] 
 
         for k, v in metrics.items():
             f.write(_three_columns(_duration(v), '-', k))
+
+        # Events
+        #f.write(_header('Event:'))
+
+        #for column, labels in data['event'].items():
+        #    f.write('    %s\n' % column)
+
+        #    for l, v in labels.items():
+        #        f.write(_three_columns(_comma(int(v)), '-', l)) 
+
 
 @task(default=True)
 def report(start_date=None, ndays=None, slug=None):

@@ -242,3 +242,21 @@ class GoogleAnalytics(object):
 
         return d
 
+    def event_by_label(self, name):
+        metrics = ['ga:eventValue', 'ga:avgEventValue']
+        results = self.query(
+            metrics=metrics,
+            dimensions=['ga:eventLabel'],
+            filters='ga:eventAction==%s' % name
+        )
+
+        d = OrderedDict()
+
+        for i, column in enumerate(metrics):
+            d[column] = OrderedDict()
+
+            for row in results['rows']:
+                d[column][row[0]] = float(row[1 + i])
+
+        return d
+
