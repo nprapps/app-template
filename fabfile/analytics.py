@@ -75,15 +75,27 @@ def _duration(secs):
     return '%is' % secs
 
 def _comma(d):
+    """
+    Format a comma separated number.
+    """
     return '{:,d}'.format(d)
 
 def _percent(d, t):
+    """
+    Format a value as a percent of a total.
+    """
     return '{:.1%}'.format(float(d) / t)
 
 def _header(s):
+    """
+    Format a report header.
+    """
     return '\n%s\n' % s
 
 def _three_columns(a, b, c):
+    """
+    Format a three-column layout.
+    """
     return '{:>15s}    {:>6s}    {:s}\n'.format(a, b, c)
 
 @task(name='txt')
