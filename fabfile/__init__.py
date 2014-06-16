@@ -6,7 +6,6 @@ from fabric.state import env
 import app_config
 
 # Other fabfiles
-import analytics
 import assets
 import copytext
 import data
