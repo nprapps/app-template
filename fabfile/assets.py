@@ -26,6 +26,7 @@ def sync():
         ignore_globs = [l.strip() for l in f]
 
     local_paths = []
+    not_lowercase = []
 
     for local_path, subdirs, filenames in os.walk(ASSETS_ROOT):
         for name in filenames:
@@ -43,7 +44,19 @@ def sync():
                 print 'Ignoring: %s' % full_path
                 continue
 
+            if name.lower() != name:
+                not_lowercase.append(full_path)
+
             local_paths.append(full_path)
+
+    # Prevent case sensitivity differences between OSX and S3 from screwing us up
+    if not_lowercase:
+        print 'The following filenames are not lowercase, please change them before running `assets.sync`:'
+
+        for name in not_lowercase:
+            print '    %s' % name
+    
+        return
 
     bucket = _assets_get_bucket()
     keys = bucket.list(app_config.ASSETS_SLUG)
