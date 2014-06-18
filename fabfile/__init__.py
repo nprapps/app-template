@@ -7,10 +7,10 @@ import app_config
 
 # Other fabfiles
 import assets
-import copytext
 import data
 import issues
 import render
+import text
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:

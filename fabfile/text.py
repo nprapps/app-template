@@ -9,7 +9,7 @@ from fabric.api import task
 import app_config
 from etc.gdocs import GoogleDoc
 
-@task
+@task(default=True)
 def update():
     """
     Downloads a Google Doc as an Excel file.
