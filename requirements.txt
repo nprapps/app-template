@@ -25,4 +25,4 @@ slimit==0.7.4
 ssh==1.7.14
 wsgiref==0.1.2
 copytext==0.1.4
-google-api-python-client==1.2
+clan==0.1.3
