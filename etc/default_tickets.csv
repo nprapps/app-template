@@ -43,7 +43,7 @@ Change LICENSE to MIT if open sourcing,By default things are copyright NPR,Launc
 Add Staff team to repository,https://github.com/organizations/nprapps/teams/629980,
 Add Intern team to repository,https://github.com/organizations/nprapps/teams/210132,
 Update Google Analytics topics variable with Seamus topic ids,`app_config.GOOGLE_ANALYTICS.topics` is necessary to be tracked in all reports. You can steal this value from the source of a related npr.org story,Launch TODO
-Update project meta description,By default this is the `PROJECT_DESCRIPTION` field in`app_config.py`. This gets indexed by Google.,Launch TODO
+Update project meta description,It's in the copytext document. This gets indexed by Google.,Launch TODO
 Setup retrospective review with editor,What did we learn? How do we do better next time?,
 Verify page title tags are good,,Launch TODO
 Duplicate the COPY spreadsheet,Make a copy for this project and update `app_config.COPY_GOOGLE_DOC_KEY` with new key: https://docs.google.com/spreadsheet/ccc?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc&usp=drive_web#gid=0,
