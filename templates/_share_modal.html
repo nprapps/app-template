@@ -7,12 +7,12 @@
                     <h4>Share this story</h4>
 
                     <p> 
-                    <b class="summary-text">{{ COPY.meta.story_summary }} {{ SHARE_URL }}</b> <a class="clippy" data-clipboard-text="{{ COPY.meta.story_summary }} {{ SHARE_URL }}"><i class="fa fa-clipboard"></i> Copy</a> </p>
+                    <b class="summary-text">{{ COPY.share.story_summary }} {{ COPY.share.share_url }}</b> <a class="clippy" data-clipboard-text="{{ COPY.share.story_summary }} {{ COPY.share.share_url }}"><i class="fa fa-clipboard"></i> Copy</a> </p>
                 
                 </div><!-- / story-summary -->
           
                 <div class="email-friend">
-                        <h4><a href="mailto:?body={{ COPY.meta.email_body|safe }}&subject={{ COPY.meta.email_subject }}" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'email', 'share-discuss']);"><i class="fa fa-envelope share-icon"></i> <b>Email to a friend</b></a></h4>
+                        <h4><a href="mailto:?body={{ COPY.share.email_body|safe }}&subject={{ COPY.share.email_subject }}" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'email', 'share-discuss']);"><i class="fa fa-envelope share-icon"></i> <b>Email to a friend</b></a></h4>
                     </div><!-- / email-friend -->
 
                 <div class="facebook-share share-section">
@@ -25,7 +25,7 @@
                         {% endfor %}
                     </ul><!-- / featured-tweets -->
                     
-                    <p class="share-story"><a href="https://www.facebook.com/dialog/feed?app_id={{ COPY.meta.facebook_app_id }}&amp;link={{ SHARE_URL|urlencode }}&amp;name={{ COPY.meta.facebook_title|urlencode }}&amp;picture={{ COPY.meta.facebook_image_url|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'facebook', 'share-discuss']);"><i class="fa fa-facebook share-icon"></i> <b>Share story on Facebook</b></a></p>
+                    <p class="share-story"><a href="https://www.facebook.com/dialog/feed?app_id={{ COPY.share.facebook_app_id }}&amp;link={{ COPY.share.share_url|urlencode }}&amp;name={{ COPY.share.facebook_title|urlencode }}&amp;picture={{ COPY.share.facebook_image_url|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'facebook', 'share-discuss']);"><i class="fa fa-facebook share-icon"></i> <b>Share story on Facebook</b></a></p>
                 </div><!-- / facebook-share -->
 
                 <div class="twitter-share share-section">
@@ -40,16 +40,16 @@
                     </ul><!-- / featured-tweets -->
                     
                     <p class="share-story">
-                        <a href="http://twitter.com/share?text={{ COPY.meta.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'tweet', 'share-discuss']);"><i class="fa fa-twitter share-icon"></i> <b>Share story on Twitter</b></a>
+                        <a href="http://twitter.com/share?text={{ COPY.share.twitter_text|urlencode }}&amp;url={{ COPY.share.share_url|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'tweet', 'share-discuss']);"><i class="fa fa-twitter share-icon"></i> <b>Share story on Twitter</b></a>
                     </p>
                 </div><!-- / twitter-share -->
 
                 <div class="disqus-comments comments-container">
-                    <h4>{{ COPY.comments.prompt }}</h4>
+                    <h4>{{ COPY.share.comment_prompt }}</h4>
 
-                    <h3 class="commentBoxNotLoggedIn" id="login-overlay-link">You must be signed in to leave a comment. <a href="http://www.npr.org/templates/reg/login.php?returnUrl={{ SHARE_URL }}">Sign In / Register</a></h3>
+                    <h3 class="commentBoxNotLoggedIn" id="login-overlay-link">You must be signed in to leave a comment. <a href="http://www.npr.org/templates/reg/login.php?returnUrl={{ COPY.share.share_url }}">Sign In / Register</a></h3>
 
-                    <h3 class="commentBoxNotLoggedIn" id="logout-overlay-link" style="display:none;"><a href="http://www.npr.org/templates/reg/logout.php?returnUrl={{ SHARE_URL }}">Sign out
+                    <h3 class="commentBoxNotLoggedIn" id="logout-overlay-link" style="display:none;"><a href="http://www.npr.org/templates/reg/logout.php?returnUrl={{ COPY.share.share_url }}">Sign out
                     </a></h3>
 
                     <p class="comment-terms">Please keep your community civil. All comments must follow the <a href="http://npr.org/discussionrules" target="new">NPR.org Community rules</a> and <a href="http://www.npr.org/about/termsofuse.html" target="new">terms of use</a>, and will be moderated prior to posting. NPR reserves the right to use the comments we receive, in whole or in part, and to use the commenter's name and location, in any medium. See also the <a href="http://www.npr.org/about/termsofuse.html" target="new">Terms of Use</a>, <a href="http://www.npr.org/about/privacypolicy.html" target="new">Privacy Policy</a> and <a href="http://npr.org/communityfaq" target="new">Community FAQ</a>.</p>
