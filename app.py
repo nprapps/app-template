@@ -47,10 +47,6 @@ def test_widget():
     """
     return render_template('test_widget.html', **make_context())
 
-@app.route('/test/test.html')
-def test_dir():
-    return render_template('index.html', **make_context())
-    
 app.register_blueprint(static.static)
 
 # Boilerplate
