@@ -6,11 +6,12 @@ import argparse
 from flask import Flask, render_template
 
 import app_config
-from render_utils import make_context, urlencode_filter
+from render_utils import make_context, smarty_filter, urlencode_filter
 import static
 
 app = Flask(__name__)
 
+app.jinja_env.filters['smarty'] = smarty_filter
 app.jinja_env.filters['urlencode'] = urlencode_filter
 
 # Example application views

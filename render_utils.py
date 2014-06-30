@@ -8,6 +8,7 @@ import urllib
 from cssmin import cssmin
 from flask import Markup, g, render_template, request
 from slimit import minify
+from smartypants import smartypants
 
 import app_config
 import copytext
@@ -190,6 +191,22 @@ def urlencode_filter(s):
 
     s = s.encode('utf8')
     s = urllib.quote_plus(s)
+
+    return Markup(s)
+
+def smarty_filter(s):
+    """
+    Filter to smartypants strings.
+    """
+    if type(s) == 'Markup':
+        s = s.unescape()
+
+    # Evaulate COPY elements
+    if type(s) is not unicode:
+        s = unicode(s)
+
+    s = s.encode('utf8')
+    s = smartypants(s)
 
     return Markup(s)
 
