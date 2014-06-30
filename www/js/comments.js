@@ -1,8 +1,4 @@
-var EVENT_CATEGORY = ;
-var $comments = null;
-var $commentButton = null;
 var $commentCount = null;
-var fullpage = false;
 var disqusEndpoint = "https://disqus.com/api/3.0/threads/details.jsonp?api_key=tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW&thread%3Aident="
 var commentCount = null;
 var disqus_config;
@@ -89,6 +85,13 @@ var loadDisqusFrame = function() {
         disqus_config = function () {
             this.page.remote_auth_s3 = auth['dm'] + ' ' + auth['dh'] + ' ' + auth['dt'];
             this.page.api_key = 'K5ANvxVxS7meX7au7vJpUpqIgFqQcDBEH8q39Z8N750SFmBhaOLTsShueMWid956';
+
+            this.callbacks.onNewComment = [
+                function() { 
+                    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'new-comment']);
+                    trackComment(); 
+                }
+            ];
         }
     }
 
@@ -102,37 +105,11 @@ var loadDisqusFrame = function() {
     (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(dsq);
 }
 
-var onCommentButtonClick = function() {
+var loadComments = function() {
     /*
     * Click handler for the show comments button.
     */
-    if ( $comments.hasClass('show') ) {
-        $comments.removeClass('show');
-        endTime = moment();
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_closed', '', endTime.diff(startTime, 'seconds', true)]);
-    } else {
-        $comments.addClass('show');
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_opened']);
-        startTime = moment();
-    }
-
-    // Doesn't load the Disqus frame (or check auth) until this is clicked.
     loadDisqusFrame();
-
-    // Check to see if the comments pane has been open for at least 10 seconds.
-    var readingCommentsTimeout;
-
-    var onReadingComments = function() {
-
-        // Push an event to google analytics.
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'comments_open_for', '10']);
-
-        // Clear the timeout.
-        window.clearTimeout(readingCommentsTimeout);
-    }
-
-    // Ten. Seconds.
-    readingCommentsTimeout = window.setTimeout(onReadingComments, 10000);
 
     return false;
 }
@@ -150,7 +127,7 @@ var renderCommentCount = function(data) {
         $commentCount.addClass('has-comments');
     }
 
-    if ( commentCount > 1) {
+    if (commentCount > 1) {
         $commentCount.next('.comment-label').text('Comments');
     }
 }
@@ -168,34 +145,8 @@ var loadCommentCount = function() {
 }
 
 $(function() {
-
-    // Bind the DOM elements we care about.
-    $comments = $('#comments');
-    $commentButton = $('.comment-drawer-toggle');
-    $commentCount = $('.comment-count');
-
     // Set some global state.
-    fullpage = $('.comments-container').hasClass('fullpage');
     disqus_shortname = APP_CONFIG.DISQUS_SHORTNAME;
     disqus_identifier = APP_CONFIG.PROJECT_SLUG + '-' + APP_CONFIG.DISQUS_UUID;
-
-    // Set some vars for JST rendering, e.g., the comments frame.
-    var context = $.extend(APP_CONFIG, {});
-    var html = JST.comments();
-    $comments.html(html);
-
-    // Click handler for the show comments button.
-    $commentButton.on('click', onCommentButtonClick);
-
-    // If this is the pane view, show a little close-this-pane button.
-    if (!fullpage) {
-        $comments.find('.comments-close').on('click', onCommentButtonClick);
-    } else {
-        loadDisqusFrame();
-    }
-
-    // Get the comment count from the Disqus API.
-    loadCommentCount();
-
 });
 

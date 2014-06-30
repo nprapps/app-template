@@ -29,9 +29,9 @@
     <span class="comment-count"></span>
 </a>
 
-<a class="comment-button comment-button-article comment-drawer-toggle" href="javascript:">
+<a class="comment-button comment-button-article comment-drawer-toggle" data-toggle="modal" data-backdrop="static" data-target="#share-modal">
     <span class="comment-count"></span>
-    <span class="comment-label">Comment</span>
+    <span class="comment-label">Share / Discuss</span>
 </a>
 
 <h2>Example COPY list</h2>
@@ -54,3 +54,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% include '_share_modal.html' %}

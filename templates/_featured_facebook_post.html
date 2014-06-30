@@ -1,0 +1,34 @@
+<li class="facebook-post">
+
+    <p class="facebook-author-avatar">
+        <a href="{{ post.from.link }}">
+            <img src="{{ post.from.picture }}" />
+        </a>
+    </p>
+    
+    <div class="facebook-content clearfix">
+        <p class="facebook-author-name"><a href="{{ post.from.link }}" target="_blank">{{ post.from.name }}</a></p>
+        <p class="facebook-message">{{ post.message }}</p>
+
+<!--
+        <div class="facebook-shared-entity clearfix">
+            <a href="{{ post.from.link }}/posts/{{ post.id }}" target="_blank">
+                
+    
+                <p class="facebook-name">{{ post.link.name }}</p>
+                
+                <img class="facebook-picture" src="{{ post.link.picture }}" />
+            </a>
+        </div> facebook-shared-entity -->
+    </div><!-- / facebook-content -->
+
+    <div class="facebook-meta">
+        <p class="facebook-actions">
+            <span class="facebook-like">Likes: {{ post.likes }}</span>
+            <span class="facebook-comment">Comments: {{ post.comments }}</span>
+            <a class="facebook-view" href="{{ post.from.link }}/posts/{{ post.id }}" target="_blank">View Post</a>
+        </p>
+    </div><!-- / facebook-meta -->
+
+</li>
+
