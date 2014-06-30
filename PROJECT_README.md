@@ -359,10 +359,11 @@ The Google Analytics events tracked in this application are:
 |--------|------|-----|-----|--------|--------|
 |$NEW_PROJECT_SLUG|tweet|`location`||||
 |$NEW_PROJECT_SLUG|facebook|`location`||||
-|$NEW_PROJECT_SLUG|comments_opened|||||
-|$NEW_PROJECT_SLUG|comments_closed||``seconds_open``|||
-|$NEW_PROJECT_SLUG|comments_open_for|``seconds_open``|||
+|$NEW_PROJECT_SLUG|email|`location`||||
+|$NEW_PROJECT_SLUG|new-comment||||
+|$NEW_PROJECT_SLUG|open-share-discuss||||
+|$NEW_PROJECT_SLUG|close-share-discuss||||
+|$NEW_PROJECT_SLUG|summary-copied||||
+|$NEW_PROJECT_SLUG|featured-tweet-action|`action`||``tweet_url``|
+|$NEW_PROJECT_SLUG|featured-facebook-action|`action`||``post_url``|
 
-**Notes:**
-
-* The *comments_read* action is fired once the comments pane has been open for at least ten seconds.
