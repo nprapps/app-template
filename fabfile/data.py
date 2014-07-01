@@ -18,7 +18,7 @@ def update():
     """
     Stub function for updating app-specific data.
     """
-    update_featured_social()
+    #update_featured_social()
 
 @task
 def update_featured_social():
