@@ -2,6 +2,7 @@
 
 from fabric.api import local, require, settings, task
 from fabric.state import env
+from termcolor import colored
 
 import app_config
 
@@ -15,7 +16,7 @@ import utils
 
 if app_config.DEPLOY_TO_SERVERS:
     import servers
-    
+
 if app_config.DEPLOY_CRONTAB:
     import cron_jobs
 
@@ -150,7 +151,9 @@ def deploy(remote='origin'):
         require('branch', provided_by=[stable, master, branch])
 
         if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
-            utils.confirm("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch)
+            utils.confirm(
+                colored("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch, "red")
+            )
 
         servers.checkout_latest(remote)
 
@@ -184,7 +187,9 @@ def shiva_the_destroyer():
     """
     require('settings', provided_by=[production, staging])
 
-    utils.confirm("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?" % app_config.DEPLOYMENT_TARGET)
+    utils.confirm(
+        colored("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?')" % app_config.DEPLOYMENT_TARGET, "red")
+    )
 
     with settings(warn_only=True):
         sync = 'aws s3 rm %s --recursive --region "us-east-1"'
