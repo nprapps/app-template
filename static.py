@@ -2,12 +2,12 @@
 
 import json
 from mimetypes import guess_type
+import subprocess
 
 from flask import abort
 
 import app_config
 import copytext
-import envoy
 from flask import Blueprint
 from render_utils import flatten_app_config
 
@@ -17,6 +17,8 @@ static = Blueprint('static', __name__)
 @static.route('/js/templates.js')
 def _templates_js():
     r = envoy.run('node_modules/universal-jst/bin/jst.js --template underscore jst')
+
+    r = subprocess.check_output(["node_modules/universal-jst/bin/jst.js", "--template underscore", "jst"])
 
     return r.std_out, 200, { 'Content-Type': 'application/javascript' }
 
@@ -29,7 +31,7 @@ def _less(filename):
     except IOError:
         abort(404)
 
-    r = envoy.run('node_modules/less/bin/lessc -', data=less)
+    r = subprocess.check_output(["node_modules/less/bin/lessc", "-" % (filename)])
 
     return r.std_out, 200, { 'Content-Type': 'text/css' }
 

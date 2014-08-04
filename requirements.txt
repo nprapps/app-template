@@ -13,7 +13,6 @@ colorama==0.2.5
 copytext==0.1.4
 cssmin==0.1.4
 docutils==0.11
-envoy==0.0.2
 facebook-sdk==0.4.0
 google-api-python-client==1.2
 httplib2==0.9
