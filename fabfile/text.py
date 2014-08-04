@@ -15,7 +15,10 @@ def update():
     Downloads a Google Doc as an Excel file.
     """
     doc = {}
-    doc['key'] = app_config.COPY_GOOGLE_DOC_KEY
+    url = app_config.COPY_GOOGLE_DOC_URL
+    bits = url.split('key=')
+    bits = bits[1].split('&')
+    doc['key'] = bits[0]
 
     g = GoogleDoc(**doc)
     g.get_auth()
