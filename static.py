@@ -16,11 +16,9 @@ static = Blueprint('static', __name__)
 # Render JST templates on-demand
 @static.route('/js/templates.js')
 def _templates_js():
-    r = envoy.run('node_modules/universal-jst/bin/jst.js --template underscore jst')
+    r = subprocess.check_output(["node_modules/universal-jst/bin/jst.js", "--template", "underscore", "jst"])
 
-    r = subprocess.check_output(["node_modules/universal-jst/bin/jst.js", "--template underscore", "jst"])
-
-    return r.std_out, 200, { 'Content-Type': 'application/javascript' }
+    return r, 200, { 'Content-Type': 'application/javascript' }
 
 # Render LESS files on-demand
 @static.route('/less/<string:filename>')
@@ -31,9 +29,9 @@ def _less(filename):
     except IOError:
         abort(404)
 
-    r = subprocess.check_output(["node_modules/less/bin/lessc", "-" % (filename)])
+    r = subprocess.check_output(["node_modules/less/bin/lessc", "less/%s" % filename])
 
-    return r.std_out, 200, { 'Content-Type': 'text/css' }
+    return r, 200, { 'Content-Type': 'text/css' }
 
 # Render application configuration
 @static.route('/js/app_config.js')
