@@ -113,7 +113,7 @@ def update_featured_social():
     facebook_posts = []
 
     for i in range(1, 4):
-        fb_url = COPY['meta']['featured_facebook%i' % i]
+        fb_url = COPY['share']['featured_facebook%i' % i]
 
         if isinstance(fb_url, copytext.Error) or unicode(fb_url).strip() == '':
             continue
