@@ -1,4 +1,4 @@
-var disqusEndpoint = "https://disqus.com/api/3.0/threads/details.jsonp?api_key=tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW&thread%3Aident="
+var disqusEndpoint = "https://disqus.com/api/3.0/threads/details.jsonp?api_key=" + APP_CONFIG.DISQUS_API_KEY + "&thread%3Aident="
 var disqus_config;
 var disqus_shortname;
 var disqus_identifier;
@@ -31,9 +31,9 @@ var loadComments = function() {
             this.page.api_key = 'K5ANvxVxS7meX7au7vJpUpqIgFqQcDBEH8q39Z8N750SFmBhaOLTsShueMWid956';
 
             this.callbacks.onNewComment = [
-                function() { 
+                function() {
                     _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'new-comment']);
-                    trackComment(); 
+                    trackComment();
                 }
             ];
         }
