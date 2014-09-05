@@ -11,10 +11,11 @@ import uuid
 
 from fabric.api import execute, local, task
 
+import app_config
 import utils
 
 @task(default=True)
-def go(github_username='nprapps', repository_name=None):
+def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """

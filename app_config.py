@@ -22,7 +22,8 @@ PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
 
 # The name of the repository containing the source
 REPOSITORY_NAME = '$NEW_REPOSITORY_NAME'
-REPOSITORY_URL = 'git@github.com:nprapps/%s.git' % REPOSITORY_NAME
+GITHUB_USERNAME = 'nprapps'
+REPOSITORY_URL = 'git@github.com:%s/%s.git' % (GITHUB_USERNAME, REPOSITORY_NAME)
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
 # Project name used for assets rig
