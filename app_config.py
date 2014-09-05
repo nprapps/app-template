@@ -33,9 +33,28 @@ ASSETS_SLUG = '$NEW_PROJECT_SLUG'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKETS = ['apps.npr.org', 'apps2.npr.org']
-STAGING_S3_BUCKETS = ['stage-apps.npr.org']
-ASSETS_S3_BUCKET = 'assets.apps.npr.org'
+PRODUCTION_S3_BUCKETS = [
+    {
+        'bucket_name': 'apps.npr.org',
+        'region': 'us-east-1'
+    },
+    {
+        'bucket_name': 'apps2.npr.org',
+        'region': 'us-east-1'
+    }
+]
+
+STAGING_S3_BUCKETS = [
+    {
+        'bucket_name': 'stage-apps.npr.org',
+        'region': 'us-east-1'
+    }
+]
+
+ASSETS_S3_BUCKET = {
+    'bucket_name': 'assets.apps.npr.org',
+    'region': 'us-east-1'
+}
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
@@ -146,14 +165,14 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKETS = PRODUCTION_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
         S3_BUCKETS = STAGING_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'nprviz-test'

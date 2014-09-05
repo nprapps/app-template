@@ -181,7 +181,7 @@ def _assets_get_bucket():
     """
     s3 = boto.connect_s3()
 
-    return s3.get_bucket(app_config.ASSETS_S3_BUCKET)
+    return s3.get_bucket(app_config.ASSETS_S3_BUCKET['bucket_name'])
 
 def _assets_confirm(local_path):
     """

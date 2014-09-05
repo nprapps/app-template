@@ -116,14 +116,14 @@ def _deploy_to_s3(path='.gzip'):
 
     exclude_flags += '--exclude "www/assets" '
 
-    sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "us-east-1"'
-    sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "us-east-1"'
-    sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "us-east-1"'
+    sync = 'aws s3 sync %s/ %s --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=5" --region "%s"'
+    sync_gzip = 'aws s3 sync %s/ %s --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=5" --region "%s"'
+    sync_assets = 'aws s3 sync %s/ %s --acl "public-read" --cache-control "max-age=86400" --region "%s"'
 
     for bucket in app_config.S3_BUCKETS:
-        local(sync % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(sync_gzip % (path, 's3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
-        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket, app_config.PROJECT_SLUG)))
+        local(sync % (path, 's3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
+        local(sync_gzip % (path, 's3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
+        local(sync_assets % ('www/assets/', 's3://%s/%s/assets/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
 
 def _gzip(in_path='www', out_path='.gzip'):
     """
@@ -192,10 +192,10 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        sync = 'aws s3 rm %s --recursive --region "us-east-1"'
+        sync = 'aws s3 rm %s --recursive --region "%s"'
 
         for bucket in app_config.S3_BUCKETS:
-            local(sync % ('s3://%s/%s/' % (bucket, app_config.PROJECT_SLUG)))
+            local(sync % ('s3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
