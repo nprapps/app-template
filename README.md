@@ -19,6 +19,8 @@ Please note: logos, fonts and other media referenced via url from this template 
 
 Also note: Though open source, This project is not intended to be a generic solution. We strongly encourage those who love the app-template to use it as a basis for their own project template. We have no plans to remove NPR-specific code from this project.
 
+If you want to setup a version of the app template for yourself, read [this blog post](http://blog.apps.npr.org/2014/09/08/how-to-setup-the-npr-app-template-for-you-and-your-news-org.html) about how to do so.
+
 Assumptions
 -----------
 
