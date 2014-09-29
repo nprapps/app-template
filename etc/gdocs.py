@@ -27,11 +27,17 @@ class GoogleDoc(object):
     key = None
     file_format = 'xlsx'
     file_name = 'copy'
-    gid = '0'
+    gid = None
 
     # You can change these with kwargs but it's not recommended.
-    spreadsheet_url = 'https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%(key)s&exportFormat=%(format)s&gid=%(gid)s'
-    new_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/%(key)s/export?format=%(format)s&id=%(key)s&gid=%(gid)s'
+    spreadsheet_url = 'https://spreadsheets.google.com/feeds/download/spreadsheets/Export?key=%(key)s&exportFormat=%(format)s'
+    if gid:
+        spreadsheet_url = spreadsheet_url + '&gid=%(gid)s'
+
+    new_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/%(key)s/export?format=%(format)s&id=%(key)s'
+    if gid:
+        new_spreadsheet_url = new_spreadsheet_url + '&gid=%(gid)s'
+
     auth = None
     email = os.environ.get('APPS_GOOGLE_EMAIL', None)
     password = os.environ.get('APPS_GOOGLE_PASS', None)
