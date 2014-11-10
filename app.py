@@ -9,7 +9,7 @@ import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter, app_template_url_for
 import static
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='www/assets')
 
 # Template filters
 app.jinja_env.filters['smarty'] = smarty_filter

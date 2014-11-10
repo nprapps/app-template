@@ -217,14 +217,6 @@ def app_template_url_for(endpoint, **values):
     filename = values.get('filename', None)
     project_slug = app_config.PROJECT_SLUG
 
-    # URL for assets dir
-    if endpoint is 'assets' and filename is not None:
-        if target not in targets:
-            return '/assets/' + filename
-        else:
-            return '/' + project_slug + '/assets/' + filename
-
-    # Everything else
     if target not in targets:
         return url_for(endpoint, **values)
     else:
