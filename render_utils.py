@@ -9,6 +9,7 @@ from cssmin import cssmin
 from flask import Markup, g, render_template, request, url_for
 from slimit import minify
 from smartypants import smartypants
+from urlparse import urlparse
 
 import app_config
 import copytext
@@ -34,7 +35,7 @@ class Includer(object):
 
     def _relativize_path(self, path):
         relative_path = path
-        depth = len(request.path.split('/')) - (2 + self.asset_depth) 
+        depth = len(request.path.split('/')) - (2 + self.asset_depth)
 
         while depth > 0:
             relative_path = '../%s' % relative_path
@@ -223,8 +224,17 @@ def app_template_url_for(endpoint, **values):
         else:
             return '/' + project_slug + '/assets/' + filename
 
-    # URL for routes defined in app.py
+    # Everything else
     if target not in targets:
         return url_for(endpoint, **values)
     else:
-        return "/" + project_slug + url_for(endpoint, **values)
+        if values.get('_external', None):
+            parts = urlparse(url_for(endpoint, **values))
+            url = '%s://%s/%s%s' % (parts.scheme, parts.netloc, project_slug, parts.path)
+            if parts.query:
+                url += '?%s' % parts.query
+            if parts.fragment:
+                url += '#%s' % parts.fragment
+            return url
+        else:
+            return "/" + project_slug + url_for(endpoint, **values)
