@@ -100,7 +100,7 @@ code to a remote server if required.
 """
 def _deploy_to_s3(path='.gzip'):
     """
-    Deploy the gzipped stuff to S3.
+    Deploy project files to S3.
     """
     # Clear files that should never be deployed
     local('rm -rf %s/live-data' % path)
@@ -116,18 +116,16 @@ def _deploy_to_s3(path='.gzip'):
 
     exclude_flags += '--exclude "www/assets" '
     
-    bucket_path = 's3://%s/%s' % (app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
-
     sync = ('aws s3 sync %s/ %s/ --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=%i" --region "%s"') % (
         path,
-        bucket_path,
+        app_config.S3_DEPLOY_URL,
         app_config.DEFAULT_MAX_AGE,
         app_config.S3_BUCKET['region']
     )
 
     sync_gzip = ('aws s3 sync %s/ %s/ --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=%i" --region "%s"') % (
         path,
-        bucket_path,
+        app_config.S3_DEPLOY_URL,
         app_config.DEFAULT_MAX_AGE,
         app_config.S3_BUCKET['region']
     )
@@ -139,10 +137,8 @@ def _deploy_assets():
     """
     Deploy assets to S3.
     """
-    bucket_path = 's3://%s/%s' % (app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
-
     sync_assets = 'aws s3 sync www/assets/ %s/assets/ --acl "public-read" --cache-control "max-age=%i" --region "%s"' % (
-        bucket_path,
+        app_config.S3_DEPLOY_URL,
         app_config.ASSETS_MAX_AGE,
         app_config.S3_BUCKET['region']
     )
@@ -191,8 +187,8 @@ def deploy(remote='origin'):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    #update()
-    #render.render_all()
+    update()
+    render.render_all()
     _gzip('www', '.gzip')
     _deploy_to_s3()
     _deploy_assets()

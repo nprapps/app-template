@@ -15,7 +15,7 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = 'test'
+PROJECT_SLUG = '$NEW_PROJECT_SLUG'
 
 # Project name to be used in file paths
 PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
@@ -86,9 +86,10 @@ SERVER_SERVICES = [
 
 # These variables will be set at runtime. See configure_targets() below
 S3_BUCKET = None 
-S3_BASE_URL = ''
+S3_BASE_URL = None 
+S3_DEPLOY_URL = None
 SERVERS = []
-SERVER_BASE_URL = ''
+SERVER_BASE_URL = None
 DEBUG = True
 
 """
@@ -151,6 +152,7 @@ def configure_targets(deployment_target):
     """
     global S3_BUCKET
     global S3_BASE_URL
+    global S3_DEPLOY_URL
     global SERVERS
     global SERVER_BASE_URL
     global DEBUG
@@ -158,10 +160,10 @@ def configure_targets(deployment_target):
     global APP_LOG_PATH
     global DISQUS_SHORTNAME
 
-
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'npr-news'
@@ -169,6 +171,7 @@ def configure_targets(deployment_target):
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'nprviz-test'
@@ -176,6 +179,7 @@ def configure_targets(deployment_target):
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
+        S3_DEPLOY_URL = None 
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         DISQUS_SHORTNAME = 'nprviz-test'
