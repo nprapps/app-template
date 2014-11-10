@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+from datetime import datetime
 import glob
+import json
 import os
 import time
 import urllib
@@ -12,6 +14,18 @@ from smartypants import smartypants
 
 import app_config
 import copytext
+
+class BetterJSONEncoder(json.JSONEncoder):
+    """
+    A JSON encoder that intelligently handles datetimes.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            encoded_object = obj.isoformat()
+        else:
+            encoded_object = json.JSONEncoder.default(self, obj)
+    
+        return encoded_object
 
 class Includer(object):
     """

@@ -2,6 +2,7 @@
 
 import json
 from mimetypes import guess_type
+import os
 import subprocess
 
 from flask import abort
@@ -9,7 +10,7 @@ from flask import abort
 import app_config
 import copytext
 from flask import Blueprint
-from render_utils import flatten_app_config
+from render_utils import BetterJSONEncoder, flatten_app_config
 
 static = Blueprint('static', __name__)
 
@@ -23,10 +24,7 @@ def _templates_js():
 # Render LESS files on-demand
 @static.route('/less/<string:filename>')
 def _less(filename):
-    try:
-        with open('less/%s' % filename) as f:
-            less = f.read()
-    except IOError:
+    if not os.path.exists('less/%s' % filename):
         abort(404)
 
     r = subprocess.check_output(["node_modules/less/bin/lessc", "less/%s" % filename])
@@ -37,7 +35,7 @@ def _less(filename):
 @static.route('/js/app_config.js')
 def _app_config_js():
     config = flatten_app_config()
-    js = 'window.APP_CONFIG = ' + json.dumps(config)
+    js = 'window.APP_CONFIG = ' + json.dumps(config, cls=BetterJSONEncoder)
 
     return js, 200, { 'Content-Type': 'application/javascript' }
 

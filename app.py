@@ -11,8 +11,8 @@ import static
 
 app = Flask(__name__)
 
-app.jinja_env.filters['smarty'] = smarty_filter
-app.jinja_env.filters['urlencode'] = urlencode_filter
+app.add_template_filter(smarty_filter, name='smarty')
+app.add_template_filter(urlencode_filter, name='urlencode')
 
 # Example application views
 @app.route('/')
