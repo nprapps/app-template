@@ -2,9 +2,7 @@
 
 import codecs
 from datetime import datetime
-import glob
 import json
-import os
 import time
 import urllib
 
@@ -62,27 +60,19 @@ class Includer(object):
             if path in g.compiled_includes:
                 timestamp_path = g.compiled_includes[path]
             else:
-                # Add a timestamp to the rendered filename to prevent caching
-                timestamp = int(time.time())
-                front, back = path.rsplit('.', 1)
-                timestamp_path = '%s.%i.%s' % (front, timestamp, back)
+                # Add a querystring to the rendered filename to prevent caching
+                timestamp_path = '%s?%i' % (path, int(time.time()))
 
-                # Delete old rendered versions, just to be tidy
-                old_versions = glob.glob('www/%s.*.%s' % (front, back))
+                out_path = 'www/%s' % path
 
-                for f in old_versions:
-                    os.remove(f)
+                if path not in g.compiled_includes:
+                    print 'Rendering %s' % out_path
 
-            out_path = 'www/%s' % timestamp_path
+                    with codecs.open(out_path, 'w', encoding='utf-8') as f:
+                        f.write(self._compress())
 
-            if path not in g.compiled_includes:
-                print 'Rendering %s' % out_path
-
-                with codecs.open(out_path, 'w', encoding='utf-8') as f:
-                    f.write(self._compress())
-
-            # See "fab render"
-            g.compiled_includes[path] = timestamp_path
+                # See "fab render"
+                g.compiled_includes[path] = timestamp_path
 
             markup = Markup(self.tag_string % self._relativize_path(timestamp_path))
         else:
