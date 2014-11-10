@@ -72,8 +72,6 @@ DEPLOY_CRONTAB = False
 DEPLOY_SERVICES = False
 
 UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
-UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
-APP_LOG_PATH = '/var/log/%s.app.log' % PROJECT_FILENAME
 
 # Services are the server-side services we want to enable and configure.
 # A three-tuple following this format:
@@ -90,6 +88,7 @@ S3_BASE_URL = None
 S3_DEPLOY_URL = None
 SERVERS = []
 SERVER_BASE_URL = None
+SERVER_LOG_PATH = None 
 DEBUG = True
 
 """
@@ -155,9 +154,9 @@ def configure_targets(deployment_target):
     global S3_DEPLOY_URL
     global SERVERS
     global SERVER_BASE_URL
+    global SERVER_LOG_PATH
     global DEBUG
     global DEPLOYMENT_TARGET
-    global APP_LOG_PATH
     global DISQUS_SHORTNAME
 
     if deployment_target == 'production':
@@ -166,6 +165,7 @@ def configure_targets(deployment_target):
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
@@ -174,6 +174,7 @@ def configure_targets(deployment_target):
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
     else:
@@ -182,9 +183,9 @@ def configure_targets(deployment_target):
         S3_DEPLOY_URL = None 
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        SERVER_LOG_PATH = '/tmp'
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
-        APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 
     DEPLOYMENT_TARGET = deployment_target
 
