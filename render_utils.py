@@ -6,7 +6,7 @@ import time
 import urllib
 
 from cssmin import cssmin
-from flask import Markup, g, render_template, request
+from flask import Markup, g, render_template, request, url_for
 from slimit import minify
 from smartypants import smartypants
 
