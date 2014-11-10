@@ -12,7 +12,25 @@ from fabric.api import local, task
 import app
 
 def _fake_context(path):
+    """
+    Create a fact request context for a given path.
+    """
     return app.app.test_request_context(path=path)
+
+def _view_from_name(name):
+    """
+    Determine what module a view resides in, then get
+    a reference to it.
+    """
+    bits = name.split('.')
+
+    # Determine which module the view resides in
+    if len(bits) > 1:
+        module, name = bits
+    else:
+        module = 'app'
+
+    return globals()[module].__dict__[name]
 
 @task
 def less():
@@ -80,14 +98,17 @@ def render_all():
 
     compiled_includes = {} 
 
+    # Loop over all views in the app
     for rule in app.app.url_map.iter_rules():
         rule_string = rule.rule
         name = rule.endpoint
 
+        # Skip utility views
         if name == 'static' or name.startswith('_'):
             print 'Skipping %s' % name
             continue
 
+        # Convert trailing slashes to index.html files
         if rule_string.endswith('/'):
             filename = 'www' + rule_string + 'index.html'
         elif rule_string.endswith('.html'):
@@ -96,6 +117,7 @@ def render_all():
             print 'Skipping %s' % name
             continue
 
+        # Create the output path
         dirname = os.path.dirname(filename)
 
         if not (os.path.exists(dirname)):
@@ -103,24 +125,19 @@ def render_all():
 
         print 'Rendering %s' % (filename)
 
+        # Render views, reusing compiled assets
         with _fake_context(rule_string):
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
-            bits = name.split('.')
+            view = _view_from_name(name)
 
-            # Determine which module the view resides in
-            if len(bits) > 1:
-                module, name = bits
-            else:
-                module = 'app'
-
-            view = globals()[module].__dict__[name]
-            # NB: Flask response object utf-8 encodes the data
             content = view().data
 
             compiled_includes = g.compiled_includes
 
+        # Write rendered view
+        # NB: Flask response object has utf-8 encoded the data
         with open(filename, 'w') as f:
             f.write(content)
 

@@ -220,6 +220,7 @@ def smarty_filter(s):
     if type(s) is not unicode:
         s = unicode(s)
 
+    s = s.encode('utf-8')
     s = smartypants(s)
 
     return Markup(s)
