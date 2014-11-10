@@ -9,6 +9,7 @@ import app_config
 # Other fabfiles
 import assets
 import data
+import flat
 import issues
 import render
 import text
@@ -98,58 +99,15 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3(path='.gzip'):
+def _deploy_to_s3():
     """
     Deploy project files to S3.
     """
     # Clear files that should never be deployed
-    local('rm -rf %s/live-data' % path)
-    local('rm -rf %s/sitemap.xml' % path)
+    local('rm -rf www/live-data')
+    local('rm -rf www/sitemap.xml')
 
-    exclude_flags = ''
-    include_flags = ''
-
-    with open('gzip_types.txt') as f:
-        for line in f:
-            exclude_flags += '--exclude "%s" ' % line.strip()
-            include_flags += '--include "%s" ' % line.strip()
-
-    exclude_flags += '--exclude "www/assets" '
-    
-    sync = ('aws s3 sync %s/ %s/ --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=%i" --region "%s"') % (
-        path,
-        app_config.S3_DEPLOY_URL,
-        app_config.DEFAULT_MAX_AGE,
-        app_config.S3_BUCKET['region']
-    )
-
-    sync_gzip = ('aws s3 sync %s/ %s/ --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=%i" --region "%s"') % (
-        path,
-        app_config.S3_DEPLOY_URL,
-        app_config.DEFAULT_MAX_AGE,
-        app_config.S3_BUCKET['region']
-    )
-
-    local(sync)
-    local(sync_gzip)
-
-def _deploy_assets():
-    """
-    Deploy assets to S3.
-    """
-    sync_assets = 'aws s3 sync www/assets/ %s/assets/ --acl "public-read" --cache-control "max-age=%i" --region "%s"' % (
-        app_config.S3_DEPLOY_URL,
-        app_config.ASSETS_MAX_AGE,
-        app_config.S3_BUCKET['region']
-    )
-
-    local(sync_assets)
-
-def _gzip(in_path='www', out_path='.gzip'):
-    """
-    Gzips everything in www and puts it all in gzip
-    """
-    local('python gzip_assets.py %s %s' % (in_path, out_path))
+    flat.deploy_folder('www', '')
 
 @task
 def update():
@@ -189,9 +147,7 @@ def deploy(remote='origin'):
 
     update()
     render.render_all()
-    _gzip('www', '.gzip')
     _deploy_to_s3()
-    _deploy_assets()
 
 """
 Destruction
@@ -213,6 +169,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
+        # TODO: replace with flat.foo this
         sync = 'aws s3 rm s3://%s/%s/ --recursive --region "%s"' % (
             app_config.S3_BUCKET['bucket_name'],
             app_config.PROJECT_SLUG,
