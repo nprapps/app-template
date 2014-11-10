@@ -15,7 +15,7 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = '$NEW_PROJECT_SLUG'
+PROJECT_SLUG = 'test'
 
 # Project name to be used in file paths
 PROJECT_FILENAME = '$NEW_PROJECT_FILENAME'
@@ -33,23 +33,15 @@ ASSETS_SLUG = '$NEW_PROJECT_SLUG'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKETS = [
-    {
-        'bucket_name': 'apps.npr.org',
-        'region': 'us-east-1'
-    },
-    {
-        'bucket_name': 'apps2.npr.org',
-        'region': 'us-east-1'
-    }
-]
+PRODUCTION_S3_BUCKET = {
+    'bucket_name': 'apps.npr.org',
+    'region': 'us-east-1'
+}
 
-STAGING_S3_BUCKETS = [
-    {
-        'bucket_name': 'stage-apps.npr.org',
-        'region': 'us-east-1'
-    }
-]
+STAGING_S3_BUCKET = {
+    'bucket_name': 'stage-apps.npr.org',
+    'region': 'us-east-1'
+}
 
 ASSETS_S3_BUCKET = {
     'bucket_name': 'assets.apps.npr.org',
@@ -93,7 +85,7 @@ SERVER_SERVICES = [
 ]
 
 # These variables will be set at runtime. See configure_targets() below
-S3_BUCKETS = []
+S3_BUCKET = None 
 S3_BASE_URL = ''
 SERVERS = []
 SERVER_BASE_URL = ''
@@ -108,7 +100,7 @@ COPY_PATH = 'data/copy.xlsx'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
+SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET['bucket_name'], PROJECT_SLUG)
 
 """
 ADS
@@ -126,7 +118,7 @@ SERVICES
 """
 GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
-    'DOMAIN': PRODUCTION_S3_BUCKETS[0],
+    'DOMAIN': PRODUCTION_S3_BUCKET['bucket_name'],
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
@@ -157,7 +149,7 @@ def configure_targets(deployment_target):
     Configure deployment targets. Abstracted so this can be
     overriden for rendering before deployment.
     """
-    global S3_BUCKETS
+    global S3_BUCKET
     global S3_BASE_URL
     global SERVERS
     global SERVER_BASE_URL
@@ -168,21 +160,21 @@ def configure_targets(deployment_target):
 
 
     if deployment_target == 'production':
-        S3_BUCKETS = PRODUCTION_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
+        S3_BUCKET = PRODUCTION_S3_BUCKET
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
-        S3_BUCKETS = STAGING_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
+        S3_BUCKET = STAGING_S3_BUCKET
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
     else:
-        S3_BUCKETS = []
+        S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG

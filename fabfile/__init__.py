@@ -115,17 +115,39 @@ def _deploy_to_s3(path='.gzip'):
             include_flags += '--include "%s" ' % line.strip()
 
     exclude_flags += '--exclude "www/assets" '
+    
+    bucket_path = 's3://%s/%s' % (app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
 
-    sync = 'aws s3 sync %s/ %s/ --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=%i" --region "%s"'
-    sync_gzip = 'aws s3 sync %s/ %s/ --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=%i" --region "%s"'
-    sync_assets = 'aws s3 sync %s/ %s/assets/ --acl "public-read" --cache-control "max-age=%i" --region "%s"'
+    sync = ('aws s3 sync %s/ %s/ --acl "public-read" ' + exclude_flags + ' --cache-control "max-age=%i" --region "%s"') % (
+        path,
+        bucket_path,
+        app_config.DEFAULT_MAX_AGE,
+        app_config.S3_BUCKET['region']
+    )
 
-    for bucket in app_config.S3_BUCKETS:
-        bucket_path = 's3://%s/%s' % (bucket['bucket_name'], app_config.PROJECT_SLUG)
+    sync_gzip = ('aws s3 sync %s/ %s/ --acl "public-read" --content-encoding "gzip" --exclude "*" ' + include_flags + ' --cache-control "max-age=%i" --region "%s"') % (
+        path,
+        bucket_path,
+        app_config.DEFAULT_MAX_AGE,
+        app_config.S3_BUCKET['region']
+    )
 
-        local(sync % (path, bucket_path, app_config.DEFAULT_MAX_AGE, bucket['region']))
-        local(sync_gzip % (path, bucket_path, app_config.DEFAULT_MAX_AGE, bucket['region']))
-        local(sync_assets % ('www/assets', bucket_path, app_config.ASSETS_MAX_AGE, bucket['region']))
+    local(sync)
+    local(sync_gzip)
+
+def _deploy_assets():
+    """
+    Deploy assets to S3.
+    """
+    bucket_path = 's3://%s/%s' % (app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
+
+    sync_assets = 'aws s3 sync www/assets/ %s/assets/ --acl "public-read" --cache-control "max-age=%i" --region "%s"' % (
+        bucket_path,
+        app_config.ASSETS_MAX_AGE,
+        app_config.S3_BUCKET['region']
+    )
+
+    local(sync_assets)
 
 def _gzip(in_path='www', out_path='.gzip'):
     """
@@ -169,10 +191,11 @@ def deploy(remote='origin'):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    update()
-    render.render_all()
+    #update()
+    #render.render_all()
     _gzip('www', '.gzip')
     _deploy_to_s3()
+    _deploy_assets()
 
 """
 Destruction
@@ -194,10 +217,13 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        sync = 'aws s3 rm %s --recursive --region "%s"'
+        sync = 'aws s3 rm s3://%s/%s/ --recursive --region "%s"' % (
+            app_config.S3_BUCKET['bucket_name'],
+            app_config.PROJECT_SLUG,
+            app_config.S3_BUCKET['region']
+        ) 
 
-        for bucket in app_config.S3_BUCKETS:
-            local(sync % ('s3://%s/%s/' % (bucket['bucket_name'], app_config.PROJECT_SLUG), bucket['region']))
+        local(sync)
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
