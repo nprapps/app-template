@@ -11,6 +11,9 @@ from fabric.api import local, task
 
 import app
 
+def _fake_context(path):
+    return app.app.test_request_context(path=path)
+
 @task
 def less():
     """
@@ -32,7 +35,6 @@ def jst():
     """
     Render Underscore templates to a JST package.
     """
-
     try:
         local('node_modules/universal-jst/bin/jst.js --template underscore jst www/js/templates.js')
     except:
@@ -45,11 +47,11 @@ def app_config_js():
     """
     from static import _app_config_js
 
-    response = _app_config_js()
-    js = response[0]
+    with _fake_context('/js/app_config.js'):
+        response = _app_config_js()
 
     with open('www/js/app_config.js', 'w') as f:
-        f.write(js)
+        f.write(response.data)
 
 @task
 def copytext_js():
@@ -58,11 +60,11 @@ def copytext_js():
     """
     from static import _copy_js
 
-    response = _copy_js()
-    js = response[0]
+    with _fake_context('/js/copytext.js'):
+        response = _copy_js()
 
     with open('www/js/copy.js', 'w') as f:
-        f.write(js)
+        f.write(response.data)
 
 @task(default=True)
 def render_all():
@@ -101,7 +103,7 @@ def render_all():
 
         print 'Rendering %s' % (filename)
 
-        with app.app.test_request_context(path=rule_string):
+        with _fake_context(rule_string):
             g.compile_includes = True
             g.compiled_includes = compiled_includes
 
@@ -114,10 +116,11 @@ def render_all():
                 module = 'app'
 
             view = globals()[module].__dict__[name]
-            content = view()
+            # NB: Flask response object utf-8 encodes the data
+            content = view().data
 
             compiled_includes = g.compiled_includes
 
         with open(filename, 'w') as f:
-            f.write(content.encode('utf-8'))
+            f.write(content)
 

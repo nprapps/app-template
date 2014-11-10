@@ -3,7 +3,7 @@
 import json
 
 import argparse
-from flask import Flask, render_template
+from flask import Flask, make_response, render_template
 
 import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter
@@ -25,28 +25,28 @@ def index():
     with open('data/featured.json') as f:
         context['featured'] = json.load(f)
 
-    return render_template('index.html', **context)
+    return make_response(render_template('index.html', **context))
 
 @app.route('/comments/')
 def comments():
     """
     Full-page comments view.
     """
-    return render_template('comments.html', **make_context())
+    return make_response(render_template('comments.html', **make_context()))
 
 @app.route('/widget.html')
 def widget():
     """
     Embeddable widget example page.
     """
-    return render_template('widget.html', **make_context())
+    return make_response(render_template('widget.html', **make_context()))
 
 @app.route('/test_widget.html')
 def test_widget():
     """
     Example page displaying widget at different embed sizes.
     """
-    return render_template('test_widget.html', **make_context())
+    return make_response(render_template('test_widget.html', **make_context()))
 
 app.register_blueprint(static.static)
 
