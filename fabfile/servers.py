@@ -245,7 +245,7 @@ def fabcast(command):
     require('settings', provided_by=['production', 'staging'])
 
     if not app_config.DEPLOY_TO_SERVERS:
-        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting..'
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.'
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 
