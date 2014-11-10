@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 from datetime import datetime
 import glob
 import json
@@ -77,8 +78,8 @@ class Includer(object):
             if path not in g.compiled_includes:
                 print 'Rendering %s' % out_path
 
-                with open(out_path, 'w') as f:
-                    f.write(self._compress().encode('utf-8'))
+                with codecs.open(out_path, 'w', encoding='utf-8') as f:
+                    f.write(self._compress())
 
             # See "fab render"
             g.compiled_includes[path] = timestamp_path
@@ -113,9 +114,9 @@ class JavascriptIncluder(Includer):
         for src in self.includes:
             src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(minify(f.read().encode('utf-8')))
+                output.append(minify(f.read()))
 
         context = make_context()
         context['paths'] = src_paths
@@ -148,9 +149,9 @@ class CSSIncluder(Includer):
             else:
                 src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(cssmin(f.read().encode('utf-8')))
+                output.append(cssmin(f.read()))
 
         context = make_context()
         context['paths'] = src_paths
