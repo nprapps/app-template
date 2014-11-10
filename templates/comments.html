@@ -18,10 +18,6 @@
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/comments.min.css') }}
 
-    <!-- JS -->
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.render('js/comments-header.min.js') }}
-
     {% include '_social_tags.html' %}
 </head>
 <body>
@@ -37,6 +33,7 @@
     </div>
 
     {{ JS.push('js/lib/jquery.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/comments.js') }}
