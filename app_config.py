@@ -56,6 +56,9 @@ ASSETS_S3_BUCKET = {
     'region': 'us-east-1'
 }
 
+DEFAULT_MAX_AGE = 20 
+ASSETS_MAX_AGE = 86400
+
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
 
