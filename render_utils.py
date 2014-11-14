@@ -214,7 +214,6 @@ def smarty_filter(s):
 def app_template_url_for(endpoint, **values):
     target = app_config.DEPLOYMENT_TARGET
     targets = ['staging', 'production', ]
-    filename = values.get('filename', None)
     project_slug = app_config.PROJECT_SLUG
 
     if target not in targets:
