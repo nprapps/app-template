@@ -42,7 +42,7 @@ Create a new repository on Github. Everywhere you see ``$NEW_PROJECT_NAME`` in t
 git clone git@github.com:nprapps/app-template.git $NEW_PROJECT_NAME
 cd $NEW_PROJECT_NAME
 
-mkvirtualenv --no-site-packages $NEW_PROJECT_NAME
+mkvirtualenv $NEW_PROJECT_NAME
 pip install -r requirements.txt
 npm install
 
