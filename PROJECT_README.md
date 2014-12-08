@@ -84,7 +84,7 @@ Then bootstrap the project:
 
 ```
 cd $NEW_PROJECT_SLUG
-mkvirtualenv --no-site-packages $NEW_PROJECT_SLUG
+mkvirtualenv $NEW_PROJECT_SLUG
 pip install -r requirements.txt
 npm install
 fab update
