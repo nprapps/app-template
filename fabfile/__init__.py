@@ -92,6 +92,13 @@ def tests():
     local('nosetests')
 
 """
+Running the app
+"""
+@task
+def runserver(port=8000):
+    local('gunicorn -b 0.0.0.0:%s app:app' % port)
+
+"""
 Deployment
 
 Changes to deployment requires a full-stack test. Deployment
