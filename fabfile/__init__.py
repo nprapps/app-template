@@ -85,6 +85,23 @@ def branch(branch_name):
     """
     env.branch = branch_name
 
+"""
+Running the app
+"""
+@task
+def app(port='8000'):
+    """
+    Serve app.py.
+    """
+    local('gunicorn -b 0.0.0.0:%s app:app' % port)
+
+@task
+def public_app(port='8000'):
+    """
+    Serve public_app.py.
+    """
+    local('gunicorn -b 0.0.0.0:%s public_app:app' % port)
+
 @task
 def tests():
     """
@@ -174,7 +191,7 @@ def shiva_the_destroyer():
             app_config.S3_BUCKET['bucket_name'],
             app_config.PROJECT_SLUG,
             app_config.S3_BUCKET['region']
-        ) 
+        )
 
         local(sync)
 
