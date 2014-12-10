@@ -4,7 +4,6 @@ Jinja2==2.6
 MarkupSafe==0.23
 PyYAML==3.11
 Werkzeug==0.8.3
-awscli==1.2.10
 bcdoc==0.12.0
 boto==2.34.0
 botocore==0.31.0
