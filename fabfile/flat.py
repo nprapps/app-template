@@ -2,6 +2,7 @@
 
 from cStringIO import StringIO
 import gzip
+import hashlib
 import mimetypes
 import os
 
@@ -26,8 +27,15 @@ def deploy_file(connection, src, dst, max_age):
     Deploy a single file to S3.
     """
     bucket = connection.get_bucket(app_config.S3_BUCKET['bucket_name'])
-    k = Key(bucket) 
-    k.key = dst
+    
+    k = bucket.get_key(dst)
+    s3_md5 = None
+
+    if k:
+        s3_md5 = k.etag.strip('"')
+    else:
+        k = Key(bucket) 
+        k.key = dst
 
     headers = {
         'Content-Type': mimetypes.guess_type(src),
@@ -45,13 +53,26 @@ def deploy_file(connection, src, dst, max_age):
         f_out.write(contents)
         f_out.close()
     
-        print 'Uploading %s --> %s (gzipped)' % (src, dst)
-
-        k.set_contents_from_string(output.getvalue(), headers, policy='public-read')
-    else:
-        print 'Uploading %s --> %s' % (src, dst)
+        local_md5 = hashlib.md5()
+        local_md5.update(output.getvalue())
+        local_md5 = local_md5.hexdigest()
         
-        k.set_contents_from_filename(src, headers, policy='public-read')
+        if local_md5 == s3_md5:
+            print 'Skipping %s (has not changed)' % src
+        else:
+            print 'Uploading %s --> %s (gzipped)' % (src, dst)
+            k.set_contents_from_string(output.getvalue(), headers, policy='public-read')
+    else:
+        with open(src, 'rb') as f:
+            local_md5 = hashlib.md5()
+            local_md5.update(f.read())
+            local_md5 = local_md5.hexdigest()
+        
+        if local_md5 == s3_md5:
+            print 'Skipping %s (has not changed)' % src
+        else:
+            print 'Uploading %s --> %s' % (src, dst)
+            k.set_contents_from_filename(src, headers, policy='public-read')
 
 @task
 def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE):
