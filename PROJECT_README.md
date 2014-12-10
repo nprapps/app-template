@@ -129,7 +129,7 @@ A flask app is used to run the project locally. It will automatically recompile 
 
 ```
 workon $PROJECT_SLUG
-python app.py
+fab app
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
