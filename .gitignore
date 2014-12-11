@@ -13,6 +13,7 @@ var
 sdist
 develop-eggs
 .installed.cfg
+node_modules
 
 # Installer logs
 pip-log.txt
@@ -24,13 +25,9 @@ pip-log.txt
 #Translations
 *.mo
 
-#Mr Developer
-.mr.developer.cfg
-
 .DS_store
-.gzip
 
-node_modules
+# Rendered files
 www/*.html
 www/css/*.min.*.css
 www/css/*.min.css
@@ -40,14 +37,13 @@ www/js/*.min.js
 www/js/templates.js
 www/js/app_config.js
 www/js/copy.js
+www/test/test.html
+www/comments/index.html
 confs/rendered/*
+
+# Local data
+data/gdoc*.csv
 data/copy.xls
 data/copy.xlsx
-tumblr-theme.html
-www/test/test.html
 www/assets/*
 !www/assets/assetsignore
-data/gdoc*.csv
-www/comments/index.html
-analytics.json
-analytics.txt
