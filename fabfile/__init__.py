@@ -152,13 +152,25 @@ def deploy(remote='origin'):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    update()
-    render.render_all()
+    #update()
+    #render.render_all()
 
     # Clear files that should never be deployed
     local('rm -rf www/live-data')
 
-    flat.deploy_folder('www', app_config.PROJECT_SLUG)
+    flat.deploy_folder(
+        'www',
+        app_config.PROJECT_SLUG,
+        max_age=app_config.DEFAULT_MAX_AGE,
+        ignore=['www/assets/*']
+    )
+
+    flat.deploy_folder(
+        'www/assets',
+        '%s/assets' % app_config.PROJECT_SLUG,
+        max_age=app_config.ASSETS_MAX_AGE
+    )
+
 
 """
 Destruction

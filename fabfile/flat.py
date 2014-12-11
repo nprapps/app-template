@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from cStringIO import StringIO
+from fnmatch import fnmatch
 import gzip
 import hashlib
 import mimetypes
@@ -75,7 +76,7 @@ def deploy_file(connection, src, dst, max_age):
             print 'Uploading %s --> %s' % (src, dst)
             k.set_contents_from_filename(src, headers, policy='public-read')
 
-def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE):
+def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE, ignore=[]):
     """
     Deploy a folder to S3, checking each file to see if it has changed.
     """
@@ -89,6 +90,16 @@ def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE):
                 continue
                 
             src_path = os.path.join(local_path, name)
+
+            skip = False
+
+            for pattern in ignore:
+                if fnmatch(src_path, pattern):
+                    skip = True
+                    break
+
+            if skip:
+                continue
 
             if rel_path == '.':
                 dst_path = os.path.join(dst, name)
