@@ -102,4 +102,14 @@ def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE):
     for src, dst in to_deploy:
         deploy_file(s3, src, dst, max_age)
 
+def delete_folder(dst):
+    """
+    Delete a folder from S3.
+    """
+    s3 = boto.connect_s3() 
     
+    bucket = s3.get_bucket(app_config.S3_BUCKET['bucket_name'])
+
+    for key in bucket.list(prefix='%s/' % dst):
+        key.delete()
+

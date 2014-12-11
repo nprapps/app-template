@@ -159,7 +159,7 @@ def deploy(remote='origin'):
     local('rm -rf www/live-data')
     local('rm -rf www/sitemap.xml')
 
-    flat.deploy_folder('www', '')
+    flat.deploy_folder('www', app_config.PROJECT_SLUG)
 
 """
 Destruction
@@ -181,14 +181,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        # TODO: replace with flat.foo this
-        sync = 'aws s3 rm s3://%s/%s/ --recursive --region "%s"' % (
-            app_config.S3_BUCKET['bucket_name'],
-            app_config.PROJECT_SLUG,
-            app_config.S3_BUCKET['region']
-        )
-
-        local(sync)
+        flat.delete_folder(app_config.PROJECT_SLUG) 
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
