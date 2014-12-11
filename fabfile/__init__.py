@@ -116,16 +116,6 @@ Changes to deployment requires a full-stack test. Deployment
 has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
-def _deploy_to_s3():
-    """
-    Deploy project files to S3.
-    """
-    # Clear files that should never be deployed
-    local('rm -rf www/live-data')
-    local('rm -rf www/sitemap.xml')
-
-    flat.deploy_folder('www', '')
-
 @task
 def update():
     """
@@ -164,7 +154,12 @@ def deploy(remote='origin'):
 
     update()
     render.render_all()
-    _deploy_to_s3()
+
+    # Clear files that should never be deployed
+    local('rm -rf www/live-data')
+    local('rm -rf www/sitemap.xml')
+
+    flat.deploy_folder('www', '')
 
 """
 Destruction

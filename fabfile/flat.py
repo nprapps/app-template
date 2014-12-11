@@ -8,7 +8,6 @@ import os
 
 import boto
 from boto.s3.key import Key
-from fabric.api import task
 
 import app_config
 
@@ -24,7 +23,7 @@ gzip.time = FakeTime()
 
 def deploy_file(connection, src, dst, max_age):
     """
-    Deploy a single file to S3.
+    Deploy a single file to S3, if the local version is different.
     """
     bucket = connection.get_bucket(app_config.S3_BUCKET['bucket_name'])
     
@@ -42,6 +41,7 @@ def deploy_file(connection, src, dst, max_age):
         'Cache-Control': 'max-age=%i' % max_age 
     }
 
+    # Gzip file
     if os.path.splitext(src)[1].lower() in GZIP_FILE_TYPES:
         headers['Content-Encoding'] = 'gzip'
     
@@ -62,6 +62,7 @@ def deploy_file(connection, src, dst, max_age):
         else:
             print 'Uploading %s --> %s (gzipped)' % (src, dst)
             k.set_contents_from_string(output.getvalue(), headers, policy='public-read')
+    # Non-gzip file
     else:
         with open(src, 'rb') as f:
             local_md5 = hashlib.md5()
@@ -74,10 +75,9 @@ def deploy_file(connection, src, dst, max_age):
             print 'Uploading %s --> %s' % (src, dst)
             k.set_contents_from_filename(src, headers, policy='public-read')
 
-@task
 def deploy_folder(src, dst, max_age=app_config.DEFAULT_MAX_AGE):
     """
-    Deploy a folder to S3.
+    Deploy a folder to S3, checking each file to see if it has changed.
     """
     to_deploy = []
 
