@@ -152,8 +152,8 @@ def deploy(remote='origin'):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    #update()
-    #render.render_all()
+    update()
+    render.render_all()
 
     # Clear files that should never be deployed
     local('rm -rf www/live-data')

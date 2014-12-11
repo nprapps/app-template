@@ -38,7 +38,7 @@ def deploy_file(connection, src, dst, max_age):
         k.key = dst
 
     headers = {
-        'Content-Type': mimetypes.guess_type(src),
+        'Content-Type': mimetypes.guess_type(src)[0],
         'Cache-Control': 'max-age=%i' % max_age 
     }
 
@@ -122,5 +122,7 @@ def delete_folder(dst):
     bucket = s3.get_bucket(app_config.S3_BUCKET['bucket_name'])
 
     for key in bucket.list(prefix='%s/' % dst):
+        print 'Deleting %s' % (key.key)
+
         key.delete()
 
