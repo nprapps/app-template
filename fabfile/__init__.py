@@ -157,7 +157,6 @@ def deploy(remote='origin'):
 
     # Clear files that should never be deployed
     local('rm -rf www/live-data')
-    local('rm -rf www/sitemap.xml')
 
     flat.deploy_folder('www', app_config.PROJECT_SLUG)
 
