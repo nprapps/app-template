@@ -5,13 +5,14 @@ import logging
 import json
 
 from flask import Flask, make_response, render_template
+from werkzeug.debug import DebuggedApplication
 
 import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter
 import static
 
 app = Flask(__name__)
-app.config['PROPAGATE_EXCEPTIONS'] = True
+app.debug = app_config.DEBUG
 
 file_handler = logging.FileHandler('%s/public_app.log' % app_config.SERVER_LOG_PATH)
 file_handler.setLevel(logging.INFO)
@@ -45,6 +46,12 @@ def index():
         context['featured'] = json.load(f)
 
     return make_response(render_template('index.html', **context))
+
+# Enable Werkzeug debug pages
+if app_config.DEBUG:
+    wsgi_app = DebuggedApplication(app, evalex=False)
+else:
+    wsgi_app = app
 
 # Catch attempts to run the app directly
 if __name__ == '__main__':
