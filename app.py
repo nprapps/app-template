@@ -4,10 +4,12 @@ import json
 
 from flask import Flask, make_response, render_template
 
+import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter
 import static
 
 app = Flask(__name__)
+app.debug = app_config.DEBUG
 
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
