@@ -1,6 +1,6 @@
 title,body,labels
 Update ad tags (DFP),Change `ENVIRONMENT` to `NPR`; change `TESTSERVER` to `false`,Launch TODO
-Update Facebook Open Graph tags,Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
+Update Facebook Open Graph tags,Images should have an aspect ratio of 1.91:1 and be a minimum of 1200 x 630. Verify with debugger: https://developers.facebook.com/tools/debug/,Launch TODO
 Update Twitter Card tags,Validator: https://dev.twitter.com/docs/cards/validation/validator,Launch TODO
 Update Twitter/Facebook links,,Launch TODO
 Request npr.org/foo redirect (short URL),https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
@@ -28,7 +28,7 @@ Write the team blog post,,Launch TODO
 Byline for visuals team,,Launch TODO
 Add project to team projects list,Update https://github.com/nprapps/nprapps.github.com/blob/master/_data/apps.yml,Launch TODO
 Update master sitemaps index and redeploy,,Launch TODO
-Email Emerson in marketing re: press releasees,,Launch TODO
+Email media relations re: press releasees,,Launch TODO
 Schedule iteration reviews,,Project Management
 Schedule sprint planning meetings,,Project Management
 Schedule sprint retrospectives,,Project Management
@@ -51,5 +51,5 @@ Optimize images,,Launch TODO
 Document custom Google Analytics events in README,,Launch TODO
 Implement completion GA event,"Could be implemented based on scroll depth, slide progress or something else",
 Make promotion plans with the social media team,Email socialmediateam@npr.org,
-Draft tweets for social team,,Launch TODO
-Draft Facebook post for social team,,Launch TODO
+Draft tweets for homepage team,,Launch TODO
+Draft Facebook post for homepage team,,Launch TODO

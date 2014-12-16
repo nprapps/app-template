@@ -36,6 +36,7 @@ def setup():
     clone_repo()
     checkout_latest()
     install_requirements()
+    setup_logs()
 
 def create_directories():
     """
@@ -86,6 +87,16 @@ def install_requirements():
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
     run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__) 
+
+@task
+def setup_logs():
+    """
+    Create log directories.
+    """
+    require('settings', provided_by=['production', 'staging'])
+
+    sudo('mkdir %(SERVER_LOG_PATH)s' % app_config.__dict__)
+    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_confing.__dict__)
 
 @task
 def install_crontab():
@@ -196,14 +207,6 @@ def deploy_confs():
                     run('touch %s' % app_config.UWSGI_SOCKET_PATH)
                     sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
                     sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
-
-                    sudo('touch %s' % app_config.UWSGI_LOG_PATH)
-                    sudo('chmod 644 %s' % app_config.UWSGI_LOG_PATH)
-                    sudo('chown ubuntu:ubuntu %s' % app_config.UWSGI_LOG_PATH)
-
-                    sudo('touch %s' % app_config.APP_LOG_PATH)
-                    sudo('chmod 644 %s' % app_config.APP_LOG_PATH)
-                    sudo('chown ubuntu:ubuntu %s' % app_config.APP_LOG_PATH)
             else:
                 print '%s has not changed' % rendered_path
 
@@ -229,8 +232,6 @@ def nuke_confs():
                 sudo('initctl reload-configuration')
             elif service == 'app':
                 sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
-                sudo('rm %s' % app_config.UWSGI_LOG_PATH)
-                sudo('rm %s' % app_config.APP_LOG_PATH)
 
 """
 Fabcasting
@@ -245,7 +246,7 @@ def fabcast(command):
     require('settings', provided_by=['production', 'staging'])
 
     if not app_config.DEPLOY_TO_SERVERS:
-        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting..'
+        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.'
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
 

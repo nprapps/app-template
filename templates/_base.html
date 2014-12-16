@@ -10,17 +10,10 @@
     <!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
-
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
-
-    <!-- JS -->
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.render('js/app-header.min.js') }}
 
     {% include '_social_tags.html' %}
 
@@ -110,13 +103,16 @@
 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
+    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
+    {{ JS.push('js/lib/webfont.js') }}
     {{ JS.push('js/lib/ZeroClipboard.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/copy.js') }}
     {{ JS.push('js/console.js') }}
     {{ JS.push('js/ads.js') }}
+    {{ JS.push('js/fonts.js') }}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/comments.js') }}
     {{ JS.push('js/app.js') }}

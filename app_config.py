@@ -33,28 +33,23 @@ ASSETS_SLUG = '$NEW_PROJECT_SLUG'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKETS = [
-    {
-        'bucket_name': 'apps.npr.org',
-        'region': 'us-east-1'
-    },
-    {
-        'bucket_name': 'apps2.npr.org',
-        'region': 'us-east-1'
-    }
-]
+PRODUCTION_S3_BUCKET = {
+    'bucket_name': 'apps.npr.org',
+    'region': 'us-east-1'
+}
 
-STAGING_S3_BUCKETS = [
-    {
-        'bucket_name': 'stage-apps.npr.org',
-        'region': 'us-east-1'
-    }
-]
+STAGING_S3_BUCKET = {
+    'bucket_name': 'stage-apps.npr.org',
+    'region': 'us-east-1'
+}
 
 ASSETS_S3_BUCKET = {
     'bucket_name': 'assets.apps.npr.org',
     'region': 'us-east-1'
 }
+
+DEFAULT_MAX_AGE = 20 
+ASSETS_MAX_AGE = 86400
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
@@ -77,8 +72,6 @@ DEPLOY_CRONTAB = False
 DEPLOY_SERVICES = False
 
 UWSGI_SOCKET_PATH = '/tmp/%s.uwsgi.sock' % PROJECT_FILENAME
-UWSGI_LOG_PATH = '/var/log/%s.uwsgi.log' % PROJECT_FILENAME
-APP_LOG_PATH = '/var/log/%s.app.log' % PROJECT_FILENAME
 
 # Services are the server-side services we want to enable and configure.
 # A three-tuple following this format:
@@ -90,10 +83,12 @@ SERVER_SERVICES = [
 ]
 
 # These variables will be set at runtime. See configure_targets() below
-S3_BUCKETS = []
-S3_BASE_URL = ''
+S3_BUCKET = None 
+S3_BASE_URL = None 
+S3_DEPLOY_URL = None
 SERVERS = []
-SERVER_BASE_URL = ''
+SERVER_BASE_URL = None
+SERVER_LOG_PATH = None 
 DEBUG = True
 
 """
@@ -105,7 +100,7 @@ COPY_PATH = 'data/copy.xlsx'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKETS[0], PROJECT_SLUG)
+SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET['bucket_name'], PROJECT_SLUG)
 
 """
 ADS
@@ -123,7 +118,7 @@ SERVICES
 """
 GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
-    'DOMAIN': PRODUCTION_S3_BUCKETS[0],
+    'DOMAIN': PRODUCTION_S3_BUCKET['bucket_name'],
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
@@ -154,38 +149,43 @@ def configure_targets(deployment_target):
     Configure deployment targets. Abstracted so this can be
     overriden for rendering before deployment.
     """
-    global S3_BUCKETS
+    global S3_BUCKET
     global S3_BASE_URL
+    global S3_DEPLOY_URL
     global SERVERS
     global SERVER_BASE_URL
+    global SERVER_LOG_PATH
     global DEBUG
     global DEPLOYMENT_TARGET
-    global APP_LOG_PATH
     global DISQUS_SHORTNAME
 
-
     if deployment_target == 'production':
-        S3_BUCKETS = PRODUCTION_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
+        S3_BUCKET = PRODUCTION_S3_BUCKET
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
-        S3_BUCKETS = STAGING_S3_BUCKETS
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKETS[0]['bucket_name'], PROJECT_SLUG)
+        S3_BUCKET = STAGING_S3_BUCKET
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
     else:
-        S3_BUCKETS = []
+        S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
+        S3_DEPLOY_URL = None 
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        SERVER_LOG_PATH = '/tmp'
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
-        APP_LOG_PATH = '/tmp/%s.app.log' % PROJECT_SLUG
 
     DEPLOYMENT_TARGET = deployment_target
 

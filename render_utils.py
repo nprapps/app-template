@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import glob
-import os
+import codecs
+from datetime import datetime
+import json
 import time
 import urllib
 
@@ -12,6 +13,18 @@ from smartypants import smartypants
 
 import app_config
 import copytext
+
+class BetterJSONEncoder(json.JSONEncoder):
+    """
+    A JSON encoder that intelligently handles datetimes.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            encoded_object = obj.isoformat()
+        else:
+            encoded_object = json.JSONEncoder.default(self, obj)
+    
+        return encoded_object
 
 class Includer(object):
     """
@@ -47,27 +60,19 @@ class Includer(object):
             if path in g.compiled_includes:
                 timestamp_path = g.compiled_includes[path]
             else:
-                # Add a timestamp to the rendered filename to prevent caching
-                timestamp = int(time.time())
-                front, back = path.rsplit('.', 1)
-                timestamp_path = '%s.%i.%s' % (front, timestamp, back)
+                # Add a querystring to the rendered filename to prevent caching
+                timestamp_path = '%s?%i' % (path, int(time.time()))
 
-                # Delete old rendered versions, just to be tidy
-                old_versions = glob.glob('www/%s.*.%s' % (front, back))
+                out_path = 'www/%s' % path
 
-                for f in old_versions:
-                    os.remove(f)
+                if path not in g.compiled_includes:
+                    print 'Rendering %s' % out_path
 
-            out_path = 'www/%s' % timestamp_path
+                    with codecs.open(out_path, 'w', encoding='utf-8') as f:
+                        f.write(self._compress())
 
-            if path not in g.compiled_includes:
-                print 'Rendering %s' % out_path
-
-                with open(out_path, 'w') as f:
-                    f.write(self._compress().encode('utf-8'))
-
-            # See "fab render"
-            g.compiled_includes[path] = timestamp_path
+                # See "fab render"
+                g.compiled_includes[path] = timestamp_path
 
             markup = Markup(self.tag_string % self._relativize_path(timestamp_path))
         else:
@@ -99,9 +104,9 @@ class JavascriptIncluder(Includer):
         for src in self.includes:
             src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(minify(f.read().encode('utf-8')))
+                output.append(minify(f.read()))
 
         context = make_context()
         context['paths'] = src_paths
@@ -134,9 +139,9 @@ class CSSIncluder(Includer):
             else:
                 src_paths.append('www/%s' % src)
 
-            with open('www/%s' % src) as f:
+            with codecs.open('www/%s' % src, encoding='utf-8') as f:
                 print '- compressing %s' % src
-                output.append(cssmin(f.read().encode('utf-8')))
+                output.append(cssmin(f.read()))
 
         context = make_context()
         context['paths'] = src_paths
@@ -205,7 +210,7 @@ def smarty_filter(s):
     if type(s) is not unicode:
         s = unicode(s)
 
-    s = s.encode('utf8')
+    s = s.encode('utf-8')
     s = smartypants(s)
 
     return Markup(s)

@@ -4,9 +4,8 @@ Jinja2==2.6
 MarkupSafe==0.23
 PyYAML==3.11
 Werkzeug==0.8.3
-awscli==1.2.10
 bcdoc==0.12.0
-boto==2.25.0
+boto==2.34.0
 botocore==0.31.0
 clan==0.1.3
 colorama==0.2.5
@@ -15,6 +14,7 @@ cssmin==0.1.4
 docutils==0.11
 facebook-sdk==0.4.0
 google-api-python-client==1.2
+gunicorn==19.1.1
 httplib2==0.9
 jmespath==0.2.1
 nose==1.2.1
@@ -24,7 +24,7 @@ ply==3.4
 pyasn1==0.1.7
 pycrypto==2.6
 python-dateutil==2.2
-requests==1.1.0
+requests==2.4.3
 rsa==3.1.2
 six==1.5.2
 slimit==0.7.4

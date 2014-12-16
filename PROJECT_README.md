@@ -129,7 +129,7 @@ A flask app is used to run the project locally. It will automatically recompile 
 
 ```
 workon $PROJECT_SLUG
-python app.py
+fab app
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
@@ -155,10 +155,10 @@ The app template is outfitted with a few ``fab`` utility functions that make pul
 To update the latest document, simply run:
 
 ```
-fab copytext.update 
+fab text.update 
 ```
 
-Note: ``copytext.update`` runs automatically whenever ``fab render`` is called.
+Note: ``text.update`` runs automatically whenever ``fab render`` is called.
 
 At the template level, Jinja maintains a ``COPY`` object that you can use to access your values in the templates. Using our example sheet, to use the ``byline`` key in ``templates/index.html``:
 
