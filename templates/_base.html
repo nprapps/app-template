@@ -105,7 +105,7 @@
     {% endblock outer_content %}
 
     {% block comments %}
-    <div id="comments" class="comments-container comments-panel"></div>
+        {% include '_share_modal.html' %}
     {% endblock %}
 
     {{ JS.push('js/lib/jquery.js') }}
