@@ -96,7 +96,7 @@ def setup_logs():
     require('settings', provided_by=['production', 'staging'])
 
     sudo('mkdir %(SERVER_LOG_PATH)s' % app_config.__dict__)
-    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_confing.__dict__)
+    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_config.__dict__)
 
 @task
 def install_crontab():
