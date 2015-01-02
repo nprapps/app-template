@@ -12,7 +12,7 @@
                 </div><!-- / story-summary -->
           
                 <div class="email-friend">
-                        <h4><a href="mailto:?body={{ COPY.share.email_body|safe }}&subject={{ COPY.share.email_subject }}" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'email', 'share-discuss']);"><i class="fa fa-envelope share-icon"></i> <b>Email to a friend</b></a></h4>
+                        <h4><a href="mailto:?body={{ COPY.share.email_body|safe }}&subject={{ COPY.share.email_subject }}" onclick="ANALYTICS.clickEmail('share-discuss');"><i class="fa fa-envelope share-icon"></i> <b>Email to a friend</b></a></h4>
                     </div><!-- / email-friend -->
 
                 <div class="facebook-share share-section">
@@ -25,7 +25,7 @@
                         {% endfor %}
                     </ul><!-- / featured-tweets -->
                     
-                    <p class="share-story"><a href="https://www.facebook.com/dialog/feed?app_id={{ COPY.share.facebook_app_id }}&amp;link={{ COPY.share.share_url|urlencode }}&amp;name={{ COPY.share.facebook_title|urlencode }}&amp;picture={{ COPY.share.facebook_image_url|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'facebook', 'share-discuss']);"><i class="fa fa-facebook share-icon"></i> <b>Share story on Facebook</b></a></p>
+                    <p class="share-story"><a href="https://www.facebook.com/dialog/feed?app_id={{ COPY.share.facebook_app_id }}&amp;link={{ COPY.share.share_url|urlencode }}&amp;name={{ COPY.share.facebook_title|urlencode }}&amp;picture={{ COPY.share.facebook_image_url|urlencode }}&amp;redirect_uri={{ SHARE_URL|urlencode }}" target="_blank" onclick="ANALYTICS.clickFacebook('share-discuss');"><i class="fa fa-facebook share-icon"></i> <b>Share story on Facebook</b></a></p>
                 </div><!-- / facebook-share -->
 
                 <div class="twitter-share share-section">
@@ -40,7 +40,7 @@
                     </ul><!-- / featured-tweets -->
                     
                     <p class="share-story">
-                        <a href="http://twitter.com/share?text={{ COPY.share.twitter_text|urlencode }}&amp;url={{ COPY.share.share_url|urlencode }}" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'tweet', 'share-discuss']);"><i class="fa fa-twitter share-icon"></i> <b>Share story on Twitter</b></a>
+                        <a href="http://twitter.com/share?text={{ COPY.share.twitter_text|urlencode }}&amp;url={{ COPY.share.share_url|urlencode }}" target="_blank" onclick="ANALYTICS.clickTwitter('share-discuss');"><i class="fa fa-twitter share-icon"></i> <b>Share story on Twitter</b></a>
                     </p>
                 </div><!-- / twitter-share -->
 

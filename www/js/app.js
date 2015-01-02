@@ -63,7 +63,7 @@ var showCommentCount = function(count) {
  * Share modal opened.
  */
 var onShareModalShown = function(e) {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'open-share-discuss']);
+    ANALYTICS.openShareDiscuss();
 
     if (firstShareLoad) {
         loadComments();
@@ -76,7 +76,7 @@ var onShareModalShown = function(e) {
  * Share modal closed.
  */
 var onShareModalHidden = function(e) {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'close-share-discuss']);
+    ANALYTICS.closeShareDiscuss();
 }
 
 /*
@@ -85,7 +85,7 @@ var onShareModalHidden = function(e) {
 var onClippyCopy = function(e) {
     alert('Copied to your clipboard!');
 
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'summary-copied']);
+    ANALYTICS.copySummary();
 }
 
 $(onDocumentLoad);
