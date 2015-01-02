@@ -53,7 +53,7 @@ def create_virtualenv():
     """
     require('settings', provided_by=['production', 'staging'])
 
-    run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
+    run('virtualenv -p %(SERVER_PYTHON)s %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
     run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
 def clone_repo():
