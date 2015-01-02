@@ -1,6 +1,6 @@
 Fabric==1.4.3
 Flask==0.9
-Jinja2==2.6
+Jinja2==2.7.3
 MarkupSafe==0.23
 PyYAML==3.11
 Werkzeug==0.8.3
@@ -13,7 +13,6 @@ copytext==0.1.4
 cssmin==0.1.4
 docutils==0.11
 facebook-sdk==0.4.0
-google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9
 jmespath==0.2.1
@@ -24,8 +23,7 @@ ply==3.4
 pyasn1==0.1.7
 pycrypto==2.6
 python-dateutil==2.2
-requests==2.4.3
-rsa==3.1.2
+requests==2.5.0
 six==1.5.2
 slimit==0.7.4
 smartypants==1.8.6
