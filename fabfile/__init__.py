@@ -96,7 +96,7 @@ def app(port='8000'):
     local('gunicorn -b 0.0.0.0:%s --debug --reload app:wsgi_app' % port)
 
 @task
-def public_app(port='8000'):
+def public_app(port='8001'):
     """
     Serve public_app.py.
     """
