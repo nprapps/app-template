@@ -70,7 +70,7 @@ var ANALYTICS = (function () {
     var setupComscore = function() {
         var _comscore = _comscore || [];
         _comscore.push({ c1: "2", c2: "17691522" });
-        
+
         (function() {
             var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
             s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
@@ -86,7 +86,7 @@ var ANALYTICS = (function () {
             var d = new Image(1, 1);
             d.onerror = d.onload = function () { d.onerror = d.onload = null; };
             d.src = ["//secure-us.imrworldwide.com/cgi-bin/m?ci=us-803244h&cg=0&cc=1&si=", escape(window.location.href), "&rp=", escape(document.referrer), "&ts=compact&rnd=", (new Date()).getTime()].join('');
-        })();   
+        })();
     }
 
     /*
@@ -129,9 +129,9 @@ var ANALYTICS = (function () {
      */
     var trackEvent = function(eventName, label, value, custom1, custom2) {
         var args = ['_trackEvent', APP_CONFIG.PROJECT_SLUG];
-        
+
         args.push(eventName);
-        
+
         if (label) {
             args.push(label);
         } else if (value || custom1 || custom2) {
@@ -196,9 +196,13 @@ var ANALYTICS = (function () {
     }
 
     // NAVIGATION
+    var usedKeyboardNavigation = false;
 
     var useKeyboardNavigation = function() {
-        trackEvent('keyboard-nav');
+        if (!usedKeyboardNavigation) {
+            trackEvent('keyboard-nav');
+            usedKeyboardNavigation = true;
+        }
     }
 
     var completeTwentyFivePercent =  function() {
@@ -208,7 +212,7 @@ var ANALYTICS = (function () {
     var completeFiftyPercent =  function() {
         trackEvent('completion', '0.5');
     }
-    
+
     var completeSeventyFivePercent =  function() {
         trackEvent('completion', '0.75');
     }
@@ -216,7 +220,7 @@ var ANALYTICS = (function () {
     var completeOneHundredPercent =  function() {
         trackEvent('completion', '1');
     }
-    
+
     // SLIDES
 
     var exitSlide = function(slide_index, time_on_slide) {
