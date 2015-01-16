@@ -5,6 +5,11 @@
 var _gaq = _gaq || [];
 
 var ANALYTICS = (function () {
+
+    // Global time tracking variables
+    var slideStartTime =  new Date();
+    var timeOnLastSlide = null;
+
     /*
      * Google Analytics
      */
@@ -223,8 +228,11 @@ var ANALYTICS = (function () {
 
     // SLIDES
 
-    var exitSlide = function(slide_index, time_on_slide) {
-        trackEvent('slide-exit', slide_index, time_on_slide);
+    var exitSlide = function(slide_index, last_slide_exit_event) {
+        var currentTime = new Date();
+        timeOnLastSlide = Math.abs(currentTime - slideStartTime);
+        slideStartTime = currentTime;
+        trackEvent('slide-exit', slide_index, timeOnLastSlide, last_slide_exit_event);
     }
 
     return {
