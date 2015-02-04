@@ -7,14 +7,13 @@ Request npr.org/foo redirect (short URL),https://github.com/nprapps/workinprivat
 Create Seamus shell page,https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
 Request shell page direct,https://github.com/nprapps/workinprivate/blob/master/shell_pages.md,Launch TODO
 Update widget analytics with project name,If using a widget,Launch TODO
-Browser testing: IE9,,
-Browser testing: IE10,,
 Browser testing: IE11,,
 Browser testing: Latest Firefox,,
 Browser testing: Latest Chrome,,
 Browser testing: Desktop Safari,,
 Device testing: iPhone Safari,,
 Device testing: iPhone Chrome/Webkit,,
+Device testing: iPhone in-app browser,Use Pinboard to privately bookmark stage, use iOS Pinboard client to visit the site,
 Device testing: iPad,,
 Device testing: Android phone,,
 Device testing: Android tablet,,
