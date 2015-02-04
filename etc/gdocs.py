@@ -83,12 +83,12 @@ class GoogleDoc(object):
             headers['Authorization'] = "GoogleLogin auth=%s" % self.auth
 
             url_params = { 'key': self.key, 'format': self.file_format, 'gid': self.gid }
-            url = self.spreadsheet_url % url_params
+            url = self.new_spreadsheet_url % url_params
 
             r = requests.get(url, headers=headers)
 
             if r.status_code != 200:
-                url = self.new_spreadsheet_url % url_params
+                url = self.spreadsheet_url % url_params
                 r = requests.get(url, headers=headers)
 
             if r.status_code != 200:
