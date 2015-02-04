@@ -132,15 +132,12 @@ def get_secrets():
     """
     A method for accessing our secrets.
     """
-    secrets = [
-        'EXAMPLE_SECRET'
-    ]
-
     secrets_dict = {}
 
-    for secret in secrets:
-        name = '%s_%s' % (PROJECT_FILENAME, secret)
-        secrets_dict[secret] = os.environ.get(name, None)
+    for k,v in os.environ.items():
+        if k.startswith(PROJECT_SLUG):
+            k = k[len(PROJECT_SLUG) + 1:]
+            secrets_dict[k] = v
 
     return secrets_dict
 
