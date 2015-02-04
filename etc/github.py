@@ -97,6 +97,9 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
 
         requests.post(url, data=data, auth=auth) 
 
+        # avoid approximately 30 tickets/minute rate limit
+        sleep(5)         
+
 def create_milestones(auth, filename='etc/default_milestones.csv'):
     """
     Creates milestones in Github issues.
