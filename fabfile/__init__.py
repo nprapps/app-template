@@ -162,7 +162,7 @@ def deploy(remote='origin'):
         'www',
         app_config.PROJECT_SLUG,
         max_age=app_config.DEFAULT_MAX_AGE,
-        ignore=['www/assets/*']
+        ignore=['www/assets/*', 'www/live-data/*']
     )
 
     flat.deploy_folder(
