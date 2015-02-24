@@ -8,6 +8,7 @@ import re
 
 import requests
 from requests.auth import HTTPBasicAuth
+from time import sleep
 
 def get_auth():
     """
