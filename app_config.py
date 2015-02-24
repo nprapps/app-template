@@ -13,6 +13,9 @@ import os
 from authomatic.providers import oauth2
 from authomatic import Authomatic
 
+# Duck punch until https://github.com/peterhudec/authomatic/commit/16801c9adf100ec6b86826a7e9bcffcbbda69b57 hits released version
+oauth2.Google._logger = None
+
 """
 NAMES
 """
