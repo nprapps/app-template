@@ -10,6 +10,9 @@ See get_secrets() below for a fast way to access them.
 
 import os
 
+from authomatic.providers import oauth2
+from authomatic import Authomatic
+
 """
 NAMES
 """
@@ -124,6 +127,18 @@ GOOGLE_ANALYTICS = {
 
 DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
 DISQUS_UUID = '$NEW_DISQUS_UUID'
+
+AUTHOMATIC_CONFIG = {
+    'google': {
+        'id': 1,
+        'class_': oauth2.Google,
+        'consumer_key': os.environ.get('GOOGLE_OAUTH_CONSUMER_KEY'),
+        'consumer_secret': os.environ.get('GOOGLE_OAUTH_CONSUMER_SECRET'),
+        'scope': ['https://www.googleapis.com/auth/drive.readonly'],
+    },
+}
+
+authomatic = Authomatic(AUTHOMATIC_CONFIG, os.environ.get('AUTHOMATIC_SALT'))
 
 """
 Utilities
