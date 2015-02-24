@@ -4,6 +4,7 @@ import json
 
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
+from etc.decorators import oauth_required
 from flask import Flask, make_response, render_template
 from werkzeug.debug import DebuggedApplication
 
@@ -19,6 +20,7 @@ app.add_template_filter(urlencode_filter, name='urlencode')
 
 # Example application views
 @app.route('/')
+@oauth_required
 def index():
     """
     Example view demonstrating rendering a simple HTML page.
