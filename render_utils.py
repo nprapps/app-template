@@ -10,7 +10,6 @@ from cssmin import cssmin
 from flask import Markup, g, render_template, request
 from slimit import minify
 from smartypants import smartypants
-from openpyxl.shared.exc import InvalidFileException
 
 import app_config
 import copytext
@@ -178,10 +177,7 @@ def make_context(asset_depth=0):
     """
     context = flatten_app_config()
 
-    try:
-        context['COPY'] = copytext.Copy(app_config.COPY_PATH)
-    except InvalidFileException:
-        context['COPY'] = copytext.Copy('data/default_copy.xlsx')
+    context['COPY'] = copytext.Copy(app_config.COPY_PATH)
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
 
