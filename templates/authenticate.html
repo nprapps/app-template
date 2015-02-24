@@ -1,16 +1,21 @@
 {% extends '_base.html' %}
 
-{% block content %}
-{% if result.error %}
-    <h1>Oh no, there was an error!</h1>
-    <p><strong>Error message:</strong> {{ result.error.message }}</p>
-{% endif %}
+{% block outer_content %}
+<div class="container">
+    <div class="jumbotron">
+        {% if result.error %}
+        <h1>Oh no, there was an error!</h1>
+        <p><strong>Error message:</strong> {{ result.error.message }}</p>
+        {% endif %}
 
-{% if result.user %}
-    <h1>Your creds</h1>
-    <p>{{ result.user.credentials.serialize() }}</p>
-{% endif %}
+        {% if result.user %}
+        <h1>Here you go!</h1>
+
+        <p>Add this line to your <code>bash_profile</code>!</p>
+        <pre><code>export APPS_GOOGLE_OAUTH="{{ result.user.credentials.serialize() }}"</code></pre>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 
-{% block comments %}
-{% endblock %}
+{% block comments %}{% endblock %}

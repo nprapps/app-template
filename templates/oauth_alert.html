@@ -1,9 +1,19 @@
 {% extends '_base.html' %}
 
-{% block content %}
-<h1>Hey! You have not authenticated with Google yet.</h1>
-<p>Don't worry. We'll take you through it.</p>
-<p><a href="/authenticate">AUTHENTICATE ME &raquo;</a></p>
+{% block extra_css %}
+<style>
+a.btn { color: #fff !important; }
+</style>
+{% endblock %}
+
+{% block outer_content %}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Hey! You haven't authenticated with Google yet.</h1>
+        <p>Don't worry. We'll take you through it.</p>
+        <div><a href="/authenticate" class="btn btn-primary btn-lg"><b>AUTHENTICATE ME</b> <i class="fa fa-chevron-circle-right"></i></a></div>
+    </div>
+</div>
 {% endblock %}
 
 {% block comments %}
