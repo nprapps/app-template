@@ -1,0 +1,16 @@
+{% extends '_base.html' %}
+
+{% block content %}
+{% if result.error %}
+    <h1>Oh no, there was an error!</h1>
+    <p><strong>Error message:</strong> {{ result.error.message }}</p>
+{% endif %}
+
+{% if result.user %}
+    <h1>Your creds</h1>
+    <p>{{ result.user.credentials.serialize() }}</p>
+{% endif %}
+{% endblock %}
+
+{% block comments %}
+{% endblock %}
