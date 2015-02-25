@@ -1,9 +1,7 @@
 {% extends '_base.html' %}
 
 {% block extra_css %}
-<style>
-a.btn { color: #fff !important; }
-</style>
+{{ CSS.push('less/auth.less') }}
 {% endblock %}
 
 {% block outer_content %}
