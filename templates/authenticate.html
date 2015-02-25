@@ -1,5 +1,11 @@
 {% extends '_base.html' %}
 
+{% block extra_css %}
+<style>
+a.btn { color: #fff !important; }
+</style>
+{% endblock %}
+
 {% block outer_content %}
 <div class="container">
     <div class="jumbotron">
@@ -13,6 +19,8 @@
 
         <p>Add this line to your <code>bash_profile</code>!</p>
         <pre><code>export APPS_GOOGLE_OAUTH="{{ result.user.credentials.serialize() }}"</code></pre>
+
+        <div><a href="/" class="btn btn-primary btn-lg"><b>Take me back!</b> <i class="fa fa-chevron-circle-right"></i></a></div>
         {% endif %}
     </div>
 </div>

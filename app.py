@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import os
 
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
@@ -47,6 +48,10 @@ def authenticate():
 
     if result:
         context['result'] = result
+
+        if not result.error:
+            os.environ['APPS_GOOGLE_OAUTH'] = result.user.credentials.serialize()
+
         return render_template('authenticate.html', **context)
     return response
 
