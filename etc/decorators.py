@@ -1,3 +1,4 @@
+import app_config
 import os
 
 from functools import wraps
@@ -10,7 +11,7 @@ def oauth_required(f):
         serialized_credentials = os.environ.get('APPS_GOOGLE_OAUTH', None)
         if serialized_credentials:
             credentials = authomatic.credentials(serialized_credentials)
-        if not serialized_credentials or not credentials.valid:
+        if app_config.COPY_GOOGLE_DOC_KEY and (not serialized_credentials or not credentials.valid):
             return redirect('/oauth-alert')
         else:
             return f(*args, **kwargs)
