@@ -6,6 +6,9 @@ from flask import g, request, redirect, url_for
 from app_config import authomatic
 
 def get_credentials():
+    """
+    Read Authomatic credentials object from disk and refresh if necessary.
+    """
     file_path = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
 
     try:
@@ -17,12 +20,16 @@ def get_credentials():
     credentials = authomatic.credentials(serialized_credentials)
 
     if not credentials.valid:
+        print "Credentials are stale, refreshing them"
         credentials.refresh()
         save_credentials(credentials)
 
     return credentials
 
 def save_credentials(credentials):
+    """
+    Take Authomatic credentials object and save to disk.
+    """
     file_path = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
     with open(file_path, 'w') as f:
         f.write(credentials.serialize())

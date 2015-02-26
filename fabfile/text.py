@@ -24,7 +24,7 @@ def update():
 
     cred_file = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
     if not os.path.isfile(cred_file):
-        print 'No Google oAuth credentials file found.'
+        print 'No Google OAuth credentials file found.'
         print 'Run `fab app` and visit `http://localhost:8000` to generate credentials.'
         return
 
