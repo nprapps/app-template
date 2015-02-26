@@ -5,7 +5,7 @@ import os
 
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
-from etc.decorators import oauth_required
+from etc.oauth import oauth_required, get_credentials, save_credentials
 from flask import Flask, make_response, render_template
 from werkzeug.debug import DebuggedApplication
 
@@ -37,15 +37,15 @@ def index():
 def oauth_alert():
     context = make_context()
 
-    serialized_credentials = os.environ.get('APPS_GOOGLE_OAUTH', None)
-    if serialized_credentials:
-        credentials = authomatic.credentials(serialized_credentials)
+    #serialized_credentials = os.environ.get('APPS_GOOGLE_OAUTH', None)
+    #if serialized_credentials:
+        #credentials = authomatic.credentials(serialized_credentials)
 
-        if credentials.valid:
-            resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-            if resp.status == 200:
-                context['email'] = resp.data['email']
-                context['credentials'] = credentials
+        #if credentials.valid:
+            #resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
+            #if resp.status == 200:
+                #context['email'] = resp.data['email']
+                #context['credentials'] = credentials
 
     return render_template('oauth_alert.html', **context)
 
@@ -60,7 +60,7 @@ def authenticate():
         context['result'] = result
 
         if not result.error:
-            os.environ['APPS_GOOGLE_OAUTH'] = result.user.credentials.serialize()
+            save_credentials(result.user.credentials)
 
         return render_template('authenticate.html', **context)
     return response

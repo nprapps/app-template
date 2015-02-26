@@ -11,6 +11,7 @@ from termcolor import colored
 
 import app_config
 from etc.gdocs import GoogleDoc
+from etc.oauth import get_credentials
 
 @task(default=True)
 def update():
@@ -20,15 +21,18 @@ def update():
     if app_config.COPY_GOOGLE_DOC_KEY == None:
         print colored('You have set COPY_GOOGLE_DOC_KEY to None. If you want to use a Google Sheet, set COPY_GOOGLE_DOC_KEY  to the key of your sheet in app_config.py', 'blue')
         return
-    elif not os.environ.get('APPS_GOOGLE_OAUTH'):
-        print 'You have not set the `APPS_GOOGLE_OAUTH` environment variable.'
+
+    cred_file = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
+    if not os.path.isfile(cred_file):
+        print 'No Google oAuth credentials file found.'
         print 'Run `fab app` and visit `http://localhost:8000` to generate credentials.'
-    else:
-        doc = {
-            'key': app_config.COPY_GOOGLE_DOC_KEY,
-            'file_path': app_config.COPY_PATH,
-            'credentials': os.environ.get('APPS_GOOGLE_OAUTH'),
-            'authomatic': app_config.authomatic,
-        }
-        g = GoogleDoc(**doc)
-        g.get_document()
+        return
+
+    doc = {
+        'key': app_config.COPY_GOOGLE_DOC_KEY,
+        'file_path': app_config.COPY_PATH,
+        'credentials': get_credentials(),
+        'authomatic': app_config.authomatic,
+    }
+    g = GoogleDoc(**doc)
+    g.get_document()

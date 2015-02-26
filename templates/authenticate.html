@@ -13,10 +13,9 @@
         {% endif %}
 
         {% if result.user %}
-        <h1>Here you go!</h1>
+        <h1>Success!</h1>
 
-        <p>Add this line to your <code>bash_profile</code>!</p>
-        <pre><code>export APPS_GOOGLE_OAUTH="{{ result.user.credentials.serialize() }}"</code></pre>
+        <p>That was it. Nothing more to do. This should work for all app template projects.</p>
 
         <p><a href="/" class="btn btn-primary btn-lg"><b>Take me back!</b> <i class="fa fa-chevron-circle-right"></i></a></p>
         {% endif %}

@@ -142,6 +142,8 @@ AUTHOMATIC_CONFIG = {
     },
 }
 
+GOOGLE_OAUTH_CREDENTIALS_PATH = '~/.google_oauth_credentials'
+
 authomatic = Authomatic(AUTHOMATIC_CONFIG, os.environ.get('AUTHOMATIC_SALT'))
 
 """
