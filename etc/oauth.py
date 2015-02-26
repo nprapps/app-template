@@ -8,8 +8,11 @@ from app_config import authomatic
 def get_credentials():
     file_path = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
 
-    with open(file_path) as f:
-        serialized_credentials = f.read()
+    try:
+        with open(file_path) as f:
+            serialized_credentials = f.read()
+    except IOError:
+        return None
 
     credentials = authomatic.credentials(serialized_credentials)
 
@@ -31,7 +34,7 @@ def oauth_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         credentials = get_credentials()
-        if app_config.COPY_GOOGLE_DOC_KEY and not credentials.valid:
+        if app_config.COPY_GOOGLE_DOC_KEY and (not credentials or not credentials.valid):
             return redirect('/oauth-alert')
         else:
             return f(*args, **kwargs)
