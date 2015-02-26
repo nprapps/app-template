@@ -8,8 +8,8 @@ import static
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
 from etc.oauth import oauth_required, get_credentials, save_credentials
-from fabfile import text
 from flask import Flask, make_response, render_template
+from etc.gdocs import GoogleDoc
 from render_utils import make_context, smarty_filter, urlencode_filter
 from werkzeug.debug import DebuggedApplication
 
@@ -84,7 +84,14 @@ def authenticate():
 
         if not result.error:
             save_credentials(result.user.credentials)
-            text.update()
+            doc = {
+                'key': app_config.COPY_GOOGLE_DOC_KEY,
+                'file_path': app_config.COPY_PATH,
+                'credentials': result.user.credentials,
+                'authomatic': app_config.authomatic,
+            }
+            g = GoogleDoc(**doc)
+            g.get_document()
 
         return render_template('authenticate.html', **context)
 

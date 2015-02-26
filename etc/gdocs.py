@@ -39,7 +39,10 @@ class GoogleDoc(object):
         response = self.authomatic.access(self.credentials, SPREADSHEET_URL_TEMPLATE % self.key)
 
         if response.status != 200:
-            raise KeyError("Error! Your Google Doc does not exist.")
+            if response.status == 404:
+                raise KeyError("Error! Your Google Doc does not exist or you do not have permission to access it.")
+            else:
+                raise KeyError("Error! Google returned a %s error" % response.status)
 
         with open(self.file_path, 'wb') as writefile:
             writefile.write(response.content)
