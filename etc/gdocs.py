@@ -37,10 +37,9 @@ class GoogleDoc(object):
         """
 
         response = self.authomatic.access(self.credentials, SPREADSHEET_URL_TEMPLATE % self.key)
-        #import ipdb; ipdb.set_trace();
 
-        #if r.status != 200:
-            #raise KeyError("Error! Your Google Doc does not exist.")
+        if response.status != 200:
+            raise KeyError("Error! Your Google Doc does not exist.")
 
         with open(self.file_path, 'wb') as writefile:
             writefile.write(response.content)

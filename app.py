@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
+import app_config
 import json
 import os
+import static
 
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
 from etc.oauth import oauth_required, get_credentials, save_credentials
+from fabfile import text
 from flask import Flask, make_response, render_template
-from werkzeug.debug import DebuggedApplication
-
-import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter
-import static
+from werkzeug.debug import DebuggedApplication
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -33,35 +33,6 @@ def index():
 
     return render_template('index.html', **context)
 
-@app.route('/oauth/')
-def oauth():
-    context = make_context()
-
-    credentials = get_credentials()
-    if credentials:
-        resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-        if resp.status == 200:
-            context['email'] = resp.data['email']
-            context['credentials'] = credentials
-
-    return render_template('oauth.html', **context)
-
-@app.route('/authenticate/', methods=['GET', 'POST'])
-def authenticate():
-    from flask import request
-    response = make_response()
-    context = make_context()
-    result = authomatic.login(WerkzeugAdapter(request, response), 'google')
-
-    if result:
-        context['result'] = result
-
-        if not result.error:
-            save_credentials(result.user.credentials)
-
-        return render_template('authenticate.html', **context)
-    return response
-
 @app.route('/comments/')
 def comments():
     """
@@ -82,6 +53,42 @@ def test_widget():
     Example page displaying widget at different embed sizes.
     """
     return render_template('test_widget.html', **make_context())
+
+@app.route('/oauth/')
+def oauth():
+    """
+    Show an OAuth alert to start authentication process.
+    """
+    context = make_context()
+
+    credentials = get_credentials()
+    if credentials:
+        resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
+        if resp.status == 200:
+            context['email'] = resp.data['email']
+
+    return render_template('oauth.html', **context)
+
+@app.route('/authenticate/', methods=['GET', 'POST'])
+def authenticate():
+    """
+    Run OAuth workflow.
+    """
+    from flask import request
+    response = make_response()
+    context = make_context()
+    result = authomatic.login(WerkzeugAdapter(request, response), 'google')
+
+    if result:
+        context['result'] = result
+
+        if not result.error:
+            save_credentials(result.user.credentials)
+            text.update()
+
+        return render_template('authenticate.html', **context)
+
+    return response
 
 app.register_blueprint(static.static)
 

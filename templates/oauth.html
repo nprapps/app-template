@@ -7,10 +7,9 @@
 {% block outer_content %}
 <div class="container">
     <div class="jumbotron">
-        {% if credentials %}
+        {% if email %}
         <h1>Hey! You're already authenticated.</h1>
-        <p><strong>Email:</strong> {{ email }}</p>
-        <p><strong>Credz:</strong> {{ credentials.serialize() }}</p>
+        <p>You're authenticated with <strong>{{ email }}</strong>.</p>
         <p><a href="/authenticate" class="btn btn-primary btn-lg"><b>RE-AUTHENTICATE ME</b> <i class="fa fa-chevron-circle-right"></i></a></p>
         <p><em>Re-authenticate if you need to switch Google accounts or to debug this workflow.</em></p>
         {% else %}
