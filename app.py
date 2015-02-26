@@ -37,15 +37,12 @@ def index():
 def oauth_alert():
     context = make_context()
 
-    #serialized_credentials = os.environ.get('APPS_GOOGLE_OAUTH', None)
-    #if serialized_credentials:
-        #credentials = authomatic.credentials(serialized_credentials)
-
-        #if credentials.valid:
-            #resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
-            #if resp.status == 200:
-                #context['email'] = resp.data['email']
-                #context['credentials'] = credentials
+    credentials = get_credentials()
+    if credentials:
+        resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
+        if resp.status == 200:
+            context['email'] = resp.data['email']
+            context['credentials'] = credentials
 
     return render_template('oauth_alert.html', **context)
 
