@@ -2,7 +2,7 @@ import app_config
 import os
 
 from functools import wraps
-from flask import g, request, redirect, url_for
+from flask import request, redirect, url_for
 from app_config import authomatic
 
 def get_credentials():
