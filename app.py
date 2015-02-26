@@ -33,8 +33,8 @@ def index():
 
     return render_template('index.html', **context)
 
-@app.route('/oauth-alert/')
-def oauth_alert():
+@app.route('/oauth/')
+def oauth():
     context = make_context()
 
     credentials = get_credentials()
@@ -44,7 +44,7 @@ def oauth_alert():
             context['email'] = resp.data['email']
             context['credentials'] = credentials
 
-    return render_template('oauth_alert.html', **context)
+    return render_template('oauth.html', **context)
 
 @app.route('/authenticate/', methods=['GET', 'POST'])
 def authenticate():
