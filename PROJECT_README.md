@@ -14,6 +14,7 @@ $NEW_PROJECT_SLUG
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
+* [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
@@ -136,10 +137,32 @@ fab app
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-COPY editing
-------------
+COPY configuration
+------------------
 
 This app uses a Google Spreadsheet for a simple key/value store that provides an editing workflow.
+
+To access the Google doc, you'll need to create a Google API project via the [Google developer console](http://console.developers.google.com).
+
+Enable the Drive API for your project and create a "web application" client ID. Use `http://localhost:8000/authenticate/` and `http://127.0.0.1:8000/authenticate` for the redirect URIs and `http://localhost:8000` and `http://127.0.0.1:8000` for the Javascript origins.
+
+You'll need to set some environment variables:
+
+```
+export GOOGLE_OAUTH_CONSUMER_KEY="something-something.apps.googleusercontent.com"
+export GOOGLE_OAUTH_CONSUMER_SECRET="bIgLonGStringOfCharacT3rs"
+export AUTHOMATIC_SALT="jAmOnYourKeyBoaRd"
+```
+
+Note that `AUTHOMATIC_SALT` can be set to any random string. It's just cryptographic salt for the authentication library we use.
+
+Once set up, run `fab app` and visit `http://localhost:8000` in your browser. If authentication is not configured, you'll be asked to allow the application for read-only access to Google drive, the account profile, and offline access on behalf of one of your Google accounts. This should be a one-time operation across all app-template projects.
+
+It is possible to grant access to other accounts on a per-project basis by changing `GOOGLE_OAUTH_CREDENTIALS_PATH` in `app_config.py`.
+
+
+COPY editing
+------------
 
 View the [sample copy spreadsheet](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0).
 
