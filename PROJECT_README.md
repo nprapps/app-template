@@ -149,7 +149,7 @@ Enable the Drive API for your project and create a "web application" client ID. 
 You'll need to set some environment variables:
 
 ```
-export GOOGLE_OAUTH_CONSUMER_KEY="something-something.apps.googleusercontent.com"
+export GOOGLE_OAUTH_CLIENT_ID="something-something.apps.googleusercontent.com"
 export GOOGLE_OAUTH_CONSUMER_SECRET="bIgLonGStringOfCharacT3rs"
 export AUTHOMATIC_SALT="jAmOnYourKeyBoaRd"
 ```
