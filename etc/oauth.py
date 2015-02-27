@@ -20,7 +20,6 @@ def get_credentials():
     credentials = authomatic.credentials(serialized_credentials)
 
     if not credentials.valid:
-        print "Credentials are stale, refreshing them"
         credentials.refresh()
         save_credentials(credentials)
 
