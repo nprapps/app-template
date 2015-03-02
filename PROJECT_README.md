@@ -14,6 +14,7 @@ $NEW_PROJECT_SLUG
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
+* [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
@@ -136,10 +137,32 @@ fab app
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
-COPY editing
-------------
+COPY configuration
+------------------
 
 This app uses a Google Spreadsheet for a simple key/value store that provides an editing workflow.
+
+To access the Google doc, you'll need to create a Google API project via the [Google developer console](http://console.developers.google.com).
+
+Enable the Drive API for your project and create a "web application" client ID. Use `http://localhost:8000/authenticate/` and `http://127.0.0.1:8000/authenticate` for the redirect URIs and `http://localhost:8000` and `http://127.0.0.1:8000` for the Javascript origins.
+
+You'll need to set some environment variables:
+
+```
+export GOOGLE_OAUTH_CLIENT_ID="something-something.apps.googleusercontent.com"
+export GOOGLE_OAUTH_CONSUMER_SECRET="bIgLonGStringOfCharacT3rs"
+export AUTHOMATIC_SALT="jAmOnYourKeyBoaRd"
+```
+
+Note that `AUTHOMATIC_SALT` can be set to any random string. It's just cryptographic salt for the authentication library we use.
+
+Once set up, run `fab app` and visit `http://localhost:8000` in your browser. If authentication is not configured, you'll be asked to allow the application for read-only access to Google drive, the account profile, and offline access on behalf of one of your Google accounts. This should be a one-time operation across all app-template projects.
+
+It is possible to grant access to other accounts on a per-project basis by changing `GOOGLE_OAUTH_CREDENTIALS_PATH` in `app_config.py`.
+
+
+COPY editing
+------------
 
 View the [sample copy spreadsheet](https://docs.google.com/spreadsheet/pub?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc#gid=0).
 
@@ -183,7 +206,7 @@ You may also access rows using iterators. In this case, the column headers of th
 {% endfor %}
 ```
 
-When naming keys in the COPY document, pleaseattempt to group them by common prefixes and order them by appearance on the page. For instance:
+When naming keys in the COPY document, please attempt to group them by common prefixes and order them by appearance on the page. For instance:
 
 ```
 title
@@ -197,55 +220,29 @@ download_url
 
 Arbitrary Google Docs
 ----------------------
-Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc to a CSV.
+
+Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a helper function for you to download an arbitrary Google spreadsheet.
 
 This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
 
-First, export a valid Google username (email address) and password to your environment.
-
-```
-export APPS_GOOGLE_EMAIL=foo@gmail.com
-export APPS_GOOGLE_PASS=MyPaSsW0rd1!
-```
-
-Then, you can load up the `GoogleDoc` class in `etc/gdocs.py` to handle the task of authenticating and downloading your Google Doc.
+Make sure you're authenticated, then call `oauth.get_document(key, file_path)`.
 
 Here's an example of what you might do:
 
 ```
-import csv
-
-from etc.gdoc import GoogleDoc
+from copytext import Copy
+from oauth import get_document
 
 def read_my_google_doc():
-    doc = {}
-    doc['key'] = '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc'
-    doc['gid'] = '4'
-    doc['file_format'] = 'csv'
-    doc['file_name'] = 'gdoc_%s.%s' % (doc['key'], doc['file_format'])
+    file_path = 'data/extra_data.xlsx'
+    get_document('0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc', file_path)
+    data = Copy(file_path)
 
-    g = GoogleDoc(**doc)
-    g.get_auth()
-    g.get_document()
-
-    with open('data/%s' % doc['file_name'], 'wb') as readfile:
-        csv_file = list(csv.DictReader(readfile))
-
-    for line_number, row in enumerate(csv_file):
-        print line_number, row
+    for row in data['example_list']:
+        print '%s: %s' % (row['term'], row['definition'])
 
 read_my_google_doc()
 ```
-
-Google documents will be downloaded to `data/gdoc.csv` by default.
-
-You can pass the class many keyword arguments if you'd like; here's what you can change:
-* gid AKA the sheet number
-* key AKA the Google Docs document ID
-* file_format (xlsx, csv, json)
-* file_name (to download to)
-
-See `etc/gdocs.py` for more documentation.
 
 Run Python tests
 ----------------

@@ -1,0 +1,20 @@
+{% extends 'oauth/_oauth_base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    {% if result.error %}
+    <h1>Oh no, there was an error!</h1>
+    <p><strong>Error message:</strong> {{ result.error.message }}</p>
+    {% endif %}
+
+    {% if result.user %}
+    <h1>Success!</h1>
+
+    <p>That was it. Nothing more to do. This should work for all app template projects.</p>
+
+    <p>Your copy spreadsheet was automatically updated. Run <code>fab text</code> to update again.</p>
+
+    <p><a href="/" class="btn btn-primary btn-lg"><b>Take me back!</b> <i class="fa fa-chevron-circle-right"></i></a></p>
+    {% endif %}
+</div>
+{% endblock %}

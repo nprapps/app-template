@@ -1,13 +1,22 @@
 #!/usr/bin/env python
+"""
+Example application views.
 
-import json
-
-from flask import Flask, make_response, render_template
-from werkzeug.debug import DebuggedApplication
+Note that `render_template` is wrapped with `make_response` in all application
+routes. While not necessary for most Flask apps, it it required in the
+App Template for static publishing.
+"""
 
 import app_config
-from render_utils import make_context, smarty_filter, urlencode_filter
+import json
+import oauth
+import os
 import static
+
+from flask import Flask, make_response, render_template
+from oauth import oauth_required
+from render_utils import make_context, smarty_filter, urlencode_filter
+from werkzeug.debug import DebuggedApplication
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG
@@ -15,7 +24,6 @@ app.debug = app_config.DEBUG
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
-# Example application views
 @app.route('/')
 def index():
     """
@@ -50,6 +58,7 @@ def test_widget():
     return make_response(render_template('test_widget.html', **make_context()))
 
 app.register_blueprint(static.static)
+app.register_blueprint(oauth.oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:

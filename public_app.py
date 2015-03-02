@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
+import app_config
 import datetime
-import logging
 import json
+import logging
+import static
 
 from flask import Flask, make_response, render_template
-from werkzeug.debug import DebuggedApplication
-
-import app_config
 from render_utils import make_context, smarty_filter, urlencode_filter
-import static
+from werkzeug.debug import DebuggedApplication
 
 app = Flask(__name__)
 app.debug = app_config.DEBUG

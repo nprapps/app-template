@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}App Template OAuth{% endblock %}</title>
+
+    <!-- CSS -->
+    {{ CSS.push('less/app.less') }}
+    {{ CSS.push('less/oauth.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/oauth.min.css') }}
+</head>
+<body>
+
+<section id="content">
+    <div class="container">
+        <div class="row">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+</section>
+
+{{ JS.push('js/lib/jquery.js') }}
+{{ JS.push('js/lib/bootstrap.js') }}
+{{ JS.push('js/lib/webfont.js') }}
+{{ JS.push('js/fonts.js') }}
+{% block extra_foot_js %}{% endblock extra_foot_js %}
+{{ JS.render('js/app-footer.min.js') }}
+
+ </body>
+</html>
