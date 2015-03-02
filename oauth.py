@@ -57,7 +57,7 @@ def oauth_required(f):
     def decorated_function(*args, **kwargs):
         credentials = get_credentials()
         if app_config.COPY_GOOGLE_DOC_KEY and (not credentials or not credentials.valid):
-            return redirect(url_for('/oauth/'))
+            return redirect(url_for('oauth.oauth_alert'))
         else:
             return f(*args, **kwargs)
     return decorated_function
