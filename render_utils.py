@@ -181,7 +181,8 @@ def make_context(asset_depth=0):
     try:
         context['COPY'] = copytext.Copy(app_config.COPY_PATH)
     except InvalidFileException:
-        context['COPY'] = copytext.Copy('data/default_copy.xlsx')
+        pass
+
     context['JS'] = JavascriptIncluder(asset_depth=asset_depth)
     context['CSS'] = CSSIncluder(asset_depth=asset_depth)
 
