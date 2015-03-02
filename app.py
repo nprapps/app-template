@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+"""
+Example application views.
+
+Note that `render_template` is wrapped with `make_response` in all application
+routes. While not necessary for most Flask apps, it it required in the
+App Template for static publishing.
+"""
 
 import app_config
 import json
@@ -17,7 +24,6 @@ app.debug = app_config.DEBUG
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
-# Example application views
 @app.route('/')
 @oauth_required
 def index():
@@ -29,14 +35,14 @@ def index():
     with open('data/featured.json') as f:
         context['featured'] = json.load(f)
 
-    return render_template('index.html', **context)
+    return make_response(render_template('index.html', **context))
 
 @app.route('/comments/')
 def comments():
     """
     Full-page comments view.
     """
-    return render_template('comments.html', **make_context())
+    return make_response(render_template('comments.html', **make_context()))
 
 @app.route('/widget.html')
 def widget():
@@ -50,7 +56,7 @@ def test_widget():
     """
     Example page displaying widget at different embed sizes.
     """
-    return render_template('test_widget.html', **make_context())
+    return make_response(render_template('test_widget.html', **make_context()))
 
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
