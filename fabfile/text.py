@@ -11,7 +11,7 @@ from termcolor import colored
 
 import app_config
 from etc.gdocs import GoogleDoc
-from etc.oauth import get_credentials
+from oauth import get_credentials
 
 @task(default=True)
 def update():
