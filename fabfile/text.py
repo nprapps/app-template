@@ -4,14 +4,12 @@
 Commands related to syncing copytext from Google Docs.
 """
 
+import app_config
 import os
 
 from fabric.api import task
+from oauth import get_document
 from termcolor import colored
-
-import app_config
-from etc.gdocs import GoogleDoc
-from oauth import get_credentials
 
 @task(default=True)
 def update():
@@ -24,15 +22,8 @@ def update():
 
     cred_file = os.path.expanduser(app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
     if not os.path.isfile(cred_file):
-        print 'No Google OAuth credentials file found.'
-        print 'Run `fab app` and visit `http://localhost:8000` to generate credentials.'
+        print colored('No Google OAuth credentials file found.', 'yellow')
+        print colored('Run `fab app` and visit `http://localhost:8000` to generate credentials.', 'yellow')
         return
 
-    doc = {
-        'key': app_config.COPY_GOOGLE_DOC_KEY,
-        'file_path': app_config.COPY_PATH,
-        'credentials': get_credentials(),
-        'authomatic': app_config.authomatic,
-    }
-    g = GoogleDoc(**doc)
-    g.get_document()
+    get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)

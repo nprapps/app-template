@@ -3,10 +3,11 @@ import os
 
 from app_config import authomatic
 from authomatic.adapters import WerkzeugAdapter
-from etc.gdocs import GoogleDoc
 from flask import Blueprint, make_response, redirect, render_template, url_for
 from functools import wraps
 from render_utils import make_context
+
+SPREADSHEET_URL_TEMPLATE = 'https://docs.google.com/feeds/download/spreadsheets/Export?exportFormat=xlsx&key=%s'
 
 oauth = Blueprint('oauth', __name__)
 
@@ -41,14 +42,7 @@ def authenticate():
 
         if not result.error:
             save_credentials(result.user.credentials)
-            doc = {
-                'key': app_config.COPY_GOOGLE_DOC_KEY,
-                'file_path': app_config.COPY_PATH,
-                'credentials': result.user.credentials,
-                'authomatic': app_config.authomatic,
-            }
-            g = GoogleDoc(**doc)
-            g.get_document()
+            get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
 
         return render_template('oauth/authenticate.html', **context)
 
@@ -95,3 +89,19 @@ def save_credentials(credentials):
     with open(file_path, 'w') as f:
         f.write(credentials.serialize())
 
+def get_document(key, file_path):
+    """
+    Uses Authomatic to get the google doc
+    """
+    credentials = get_credentials()
+    url = SPREADSHEET_URL_TEMPLATE % key
+    response = app_config.authomatic.access(credentials, url)
+
+    if response.status != 200:
+        if response.status == 404:
+            raise KeyError("Error! Your Google Doc does not exist or you do not have permission to access it.")
+        else:
+            raise KeyError("Error! Google returned a %s error" % response.status)
+
+    with open(file_path, 'wb') as writefile:
+        writefile.write(response.content)
