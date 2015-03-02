@@ -25,7 +25,6 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
 @app.route('/')
-@oauth_required
 def index():
     """
     Example view demonstrating rendering a simple HTML page.
@@ -49,7 +48,7 @@ def widget():
     """
     Embeddable widget example page.
     """
-    return render_template('widget.html', **make_context())
+    return make_response(render_template('widget.html', **make_context()))
 
 @app.route('/test_widget.html')
 def test_widget():
