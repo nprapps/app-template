@@ -221,40 +221,28 @@ download_url
 Arbitrary Google Docs
 ----------------------
 
-Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a class for you to download and parse an arbitrary Google Doc.
+Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a helper function for you to download an arbitrary Google spreadsheet.
 
 This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
 
-Then, you can load up the `GoogleDoc` class in `etc/gdocs.py` to handle the task of downloading your Google Doc. Pass the class credentials, an Authomatic object instance, a key, and a path to download the file to.
+Make sure you're authenticated, then call `oauth.get_document(key, file_path)`.
 
 Here's an example of what you might do:
 
 ```
-from app_config import authomatic
 from copytext import Copy
-from etc.gdoc import GoogleDoc
-from etc.oauth import get_credentials
+from oauth import get_document
 
 def read_my_google_doc():
-    doc = {
-        'key': '0ArVJ2rZZnZpDdEFxUlY5eDBDN1NCSG55ZXNvTnlyWnc',
-        'file_path': 'mydir/myfile.xlsx',
-        'credentials': get_credentials(),
-        'authomatic': app_config.authomatic,
-    }
+    file_path = 'data/extra_data.xlsx'
+    get_document('0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc', file_path)
+    data = Copy(file_path)
 
-    g = GoogleDoc(**doc)
-    g.get_document()
-
-    data = Copy('mydir/myfile.xlsx')
-
-    for row in data['worksheet']:
-        print row
+    for row in data['example_list']:
+        print '%s: %s' % (row['term'], row['definition'])
 
 read_my_google_doc()
 ```
-
-See `etc/gdocs.py` for more documentation.
 
 Run Python tests
 ----------------
