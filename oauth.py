@@ -10,7 +10,7 @@ from render_utils import make_context
 
 SPREADSHEET_URL_TEMPLATE = 'https://docs.google.com/feeds/download/spreadsheets/Export?exportFormat=xlsx&key=%s'
 
-oauth = Blueprint('oauth', __name__)
+oauth = Blueprint('_oauth', __name__)
 
 @oauth.route('/oauth/')
 def oauth_alert():

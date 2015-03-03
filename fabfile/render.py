@@ -96,7 +96,7 @@ def render_all():
     app_config_js()
     copytext_js()
 
-    compiled_includes = {} 
+    compiled_includes = {}
 
     # Loop over all views in the app
     for rule in app.app.url_map.iter_rules():
