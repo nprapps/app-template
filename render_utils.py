@@ -6,7 +6,6 @@ import json
 import time
 import urllib
 
-from cssmin import cssmin
 from flask import Markup, g, render_template, request
 from slimit import minify
 from smartypants import smartypants
@@ -133,16 +132,14 @@ class CSSIncluder(Includer):
 
         for src in self.includes:
 
-            if src.endswith('less'):
-                src_paths.append('%s' % src)
-                src = src.replace('less', 'css') # less/example.less -> css/example.css
-                src = '%s.less.css' % src[:-4]   # css/example.css -> css/example.less.css
-            else:
-                src_paths.append('www/%s' % src)
+            src_paths.append('%s' % src)
 
-            with codecs.open('www/%s' % src, encoding='utf-8') as f:
-                print '- compressing %s' % src
-                output.append(cssmin(f.read()))
+            try:
+                compressed_src = subprocess.check_output(["node_modules/less/bin/lessc", "-x", src])
+                output.append(compressed_src)
+            except:
+                print 'It looks like "lessc" isn\'t installed. Try running: "npm install"'
+                raise
 
         context = make_context()
         context['paths'] = src_paths
