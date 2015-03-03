@@ -131,7 +131,13 @@ GOOGLE_ANALYTICS = {
 DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
 DISQUS_UUID = '$NEW_DISQUS_UUID'
 
-AUTHOMATIC_CONFIG = {
+"""
+OAUTH
+"""
+
+GOOGLE_OAUTH_CREDENTIALS_PATH = '~/.google_oauth_credentials'
+
+authomatic_config = {
     'google': {
         'id': 1,
         'class_': oauth2.Google,
@@ -142,9 +148,7 @@ AUTHOMATIC_CONFIG = {
     },
 }
 
-GOOGLE_OAUTH_CREDENTIALS_PATH = '~/.google_oauth_credentials'
-
-authomatic = Authomatic(AUTHOMATIC_CONFIG, os.environ.get('AUTHOMATIC_SALT'))
+authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 
 """
 Utilities
