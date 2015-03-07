@@ -3,7 +3,7 @@
 Example application views.
 
 Note that `render_template` is wrapped with `make_response` in all application
-routes. While not necessary for most Flask apps, it it required in the
+routes. While not necessary for most Flask apps, it is required in the
 App Template for static publishing.
 """
 
