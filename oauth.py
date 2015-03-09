@@ -58,7 +58,7 @@ def oauth_required(f):
         from flask import request
         credentials = get_credentials()
         if app_config.COPY_GOOGLE_DOC_KEY and (not credentials or not credentials.valid):
-            return redirect(url_for('oauth.oauth_alert'))
+            return redirect(url_for('_oauth.oauth_alert'))
         else:
             if request.args.get('refresh'):
                 get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
