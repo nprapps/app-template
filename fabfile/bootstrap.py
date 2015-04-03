@@ -10,9 +10,12 @@ import os
 import uuid
 
 from fabric.api import execute, local, task
+from oauth import get_credentials
 
 import app_config
 import utils
+
+SPREADSHEET_COPY_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
 
 @task(default=True)
 def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
@@ -45,3 +48,14 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
 
     # Update app data
     execute('update')
+
+@task
+def create_spreadsheet():
+    credentials = get_credentials()
+    kwargs = {
+        'credentials': credentials,
+        'url': SPREADSHEET_COPY_TEMPLATE % app_config.COPY_GOOGLE_DOC_KEY,
+        'method': 'POST',
+    }
+
+    resp = app_config.authomatic.access(**kwargs)

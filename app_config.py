@@ -141,7 +141,7 @@ authomatic_config = {
         'class_': oauth2.Google,
         'consumer_key': os.environ.get('GOOGLE_OAUTH_CLIENT_ID'),
         'consumer_secret': os.environ.get('GOOGLE_OAUTH_CONSUMER_SECRET'),
-        'scope': ['https://www.googleapis.com/auth/drive.readonly', 'https://www.googleapis.com/auth/userinfo.email'],
+        'scope': ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/userinfo.email'],
         'offline': True,
     },
 }
