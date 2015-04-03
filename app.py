@@ -10,7 +10,6 @@ App Template for static publishing.
 import app_config
 import json
 import oauth
-import os
 import static
 
 from flask import Flask, make_response, render_template
