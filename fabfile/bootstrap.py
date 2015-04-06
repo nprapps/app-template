@@ -17,6 +17,7 @@ import webbrowser
 from distutils.spawn import find_executable
 from fabric.api import execute, local, prompt, task
 from oauth import get_credentials
+from time import sleep
 
 SPREADSHEET_COPY_URL_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
 
@@ -77,7 +78,11 @@ def check_credentials():
                 webbrowser.open_new('http://127.0.0.1:8000/oauth')
                 print 'Waiting...'
                 while not credentials:
-                    credentials = get_credentials()
+                    try:
+                        credentials = get_credentials()
+                        sleep(1)
+                    except ValueError:
+                        continue
                 print 'Successfully authenticated!'
                 process.terminate()
         except KeyboardInterrupt:
