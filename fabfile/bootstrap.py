@@ -69,17 +69,21 @@ def check_credentials():
     """
     credentials = get_credentials()
     if not credentials or 'https://www.googleapis.com/auth/drive' not in credentials.config['google']['scope']:
-        with open(os.devnull, 'w') as fnull:
-            print 'Credentials were not found or permissions were not correct. Automatically opening a browser to authenticate with Google.'
-            gunicorn = find_executable('gunicorn')
-            process = subprocess.Popen([gunicorn, '-b', '0.0.0.0:8000', 'app:wsgi_app'], stdout=fnull, stderr=fnull)
-            webbrowser.open_new('http://127.0.0.1:8000/oauth')
-            answer = prompt('Did authentication work?')
-            process.terminate()
-            if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
-                print 'Uh oh. Re-run `fab bootstrap` once you\'ve successfully authenticated.'
-                exit()
-
+        try:
+            with open(os.devnull, 'w') as fnull:
+                print 'Credentials were not found or permissions were not correct. Automatically opening a browser to authenticate with Google.'
+                gunicorn = find_executable('gunicorn')
+                process = subprocess.Popen([gunicorn, '-b', '0.0.0.0:8000', 'app:wsgi_app'], stdout=fnull, stderr=fnull)
+                webbrowser.open_new('http://127.0.0.1:8000/oauth')
+                print 'Waiting...'
+                credentials = get_credentials()
+                while not credentials:
+                    continue
+                print 'Successfully authenticated!'
+                process.terminate()
+        except KeyboardInterrupt:
+            print '\nCtrl-c pressed. Later, skater!'
+            exit()
 
 def create_spreadsheet(title):
     """
