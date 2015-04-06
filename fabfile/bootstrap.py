@@ -9,10 +9,13 @@ after execution.
 import app_config
 import json
 import os
+import subprocess
 import utils
 import uuid
+import webbrowser
 
-from fabric.api import execute, local, task
+from distutils.spawn import find_executable
+from fabric.api import execute, local, prompt, task
 from oauth import get_credentials
 
 SPREADSHEET_COPY_URL_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
@@ -23,6 +26,7 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     """
     Execute the bootstrap tasks for a new project.
     """
+    check_credentials()
     config_files = ' '.join(['PROJECT_README.md', 'app_config.py', 'crontab'])
 
     config = {}
@@ -59,7 +63,24 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     execute('update')
 
 
-@task
+def check_credentials():
+    """
+    Check credentials and spawn server and browser if not
+    """
+    credentials = get_credentials()
+    if not credentials or 'https://www.googleapis.com/auth/drive' not in credentials.config['google']['scope']:
+        with open(os.devnull, 'w') as fnull:
+            print 'Credentials were not found or permissions were not correct. Automatically opening a browser to authenticate with Google.'
+            gunicorn = find_executable('gunicorn')
+            process = subprocess.Popen([gunicorn, '-b', '0.0.0.0:8000', 'app:wsgi_app'], stdout=fnull, stderr=fnull)
+            webbrowser.open_new('http://127.0.0.1:8000/oauth')
+            answer = prompt('Did authentication work?')
+            process.terminate()
+            if answer.lower() not in ('y', 'yes', 'buzz off', 'screw you'):
+                print 'Uh oh. Re-run `fab bootstrap` once you\'ve successfully authenticated.'
+                exit()
+
+
 def create_spreadsheet(title):
     """
     Copy the COPY spreadsheet
