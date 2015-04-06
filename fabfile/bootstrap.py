@@ -20,7 +20,7 @@ from oauth import get_credentials
 from time import sleep
 
 SPREADSHEET_COPY_URL_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
-
+SPREADSHEET_VIEW_TEMPLATE = 'https://docs.google.com/spreadsheet/ccc?key=%s#gid=1'
 
 @task(default=True)
 def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
@@ -62,6 +62,10 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
 
     # Update app data
     execute('update')
+
+    if new_spreadsheet_key:
+        print 'You can view your COPY spreadsheet at:'
+        print SPREADSHEET_VIEW_TEMPLATE % new_spreadsheet_key
 
 
 def check_credentials():
