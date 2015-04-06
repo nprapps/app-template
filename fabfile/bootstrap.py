@@ -76,9 +76,8 @@ def check_credentials():
                 process = subprocess.Popen([gunicorn, '-b', '0.0.0.0:8000', 'app:wsgi_app'], stdout=fnull, stderr=fnull)
                 webbrowser.open_new('http://127.0.0.1:8000/oauth')
                 print 'Waiting...'
-                credentials = get_credentials()
                 while not credentials:
-                    continue
+                    credentials = get_credentials()
                 print 'Successfully authenticated!'
                 process.terminate()
         except KeyboardInterrupt:
