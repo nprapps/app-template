@@ -6,16 +6,17 @@ Bootstrap the app-template. This module disables itself
 after execution.
 """
 
+import app_config
+import json
 import os
+import utils
 import uuid
 
 from fabric.api import execute, local, task
 from oauth import get_credentials
 
-import app_config
-import utils
+SPREADSHEET_COPY_URL_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
 
-SPREADSHEET_COPY_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
 
 @task(default=True)
 def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
@@ -31,6 +32,14 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     config['$NEW_DISQUS_UUID'] = str(uuid.uuid1())
 
     utils.confirm("Have you created a Github repository named \"%s\"?" % config['$NEW_REPOSITORY_NAME'])
+
+    # Create the spreadsheet
+    title = '%s COPY' % config['$NEW_PROJECT_SLUG']
+    new_spreadsheet_key = create_spreadsheet(title)
+    if new_spreadsheet_key:
+        config[app_config.COPY_GOOGLE_DOC_KEY] = new_spreadsheet_key
+    else:
+        print 'No spreadsheet created, you will need to update COPY_GOOGLE_DOC_KEY manually.'
 
     for k, v in config.items():
         local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
@@ -49,13 +58,27 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     # Update app data
     execute('update')
 
+
 @task
-def create_spreadsheet():
-    credentials = get_credentials()
+def create_spreadsheet(title):
+    """
+    Copy the COPY spreadsheet
+    """
     kwargs = {
-        'credentials': credentials,
-        'url': SPREADSHEET_COPY_TEMPLATE % app_config.COPY_GOOGLE_DOC_KEY,
+        'credentials': get_credentials(),
+        'url': SPREADSHEET_COPY_URL_TEMPLATE % app_config.COPY_GOOGLE_DOC_KEY,
         'method': 'POST',
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps({
+            'title': title,
+        }),
     }
 
     resp = app_config.authomatic.access(**kwargs)
+    if resp.status == 200:
+        spreadsheet_key = resp.data['id']
+        print 'New spreadsheet created with key %s' % spreadsheet_key
+        return spreadsheet_key
+    else:
+        print 'Error creating spreadsheet (status code %s) with message %s' % (resp.status, resp.reason)
+        return None
