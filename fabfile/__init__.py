@@ -132,8 +132,6 @@ def deploy(remote='origin'):
     """
     require('settings', provided_by=[production, staging])
 
-    print app_config.ASSETS_MAX_AGE
-
     if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
 
