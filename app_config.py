@@ -52,8 +52,7 @@ ASSETS_S3_BUCKET = {
     'region': 'us-east-1'
 }
 
-DEFAULT_MAX_AGE = 20 
-ASSETS_MAX_AGE = 86400
+DEFAULT_MAX_AGE = 20
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['cron-staging.nprapps.org']
@@ -87,12 +86,12 @@ SERVER_SERVICES = [
 ]
 
 # These variables will be set at runtime. See configure_targets() below
-S3_BUCKET = None 
-S3_BASE_URL = None 
+S3_BUCKET = None
+S3_BASE_URL = None
 S3_DEPLOY_URL = None
 SERVERS = []
 SERVER_BASE_URL = None
-SERVER_LOG_PATH = None 
+SERVER_LOG_PATH = None
 DEBUG = True
 
 """
@@ -178,6 +177,7 @@ def configure_targets(deployment_target):
     global DEBUG
     global DEPLOYMENT_TARGET
     global DISQUS_SHORTNAME
+    global ASSETS_MAX_AGE
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
@@ -188,6 +188,7 @@ def configure_targets(deployment_target):
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
+        ASSETS_MAX_AGE = 86400
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
@@ -197,15 +198,17 @@ def configure_targets(deployment_target):
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
+        ASSETS_MAX_AGE = 20
     else:
         S3_BUCKET = None
         S3_BASE_URL = 'http://127.0.0.1:8000'
-        S3_DEPLOY_URL = None 
+        S3_DEPLOY_URL = None
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
+        ASSETS_MAX_AGE = 20
 
     DEPLOYMENT_TARGET = deployment_target
 
