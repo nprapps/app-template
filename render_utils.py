@@ -23,7 +23,7 @@ class BetterJSONEncoder(json.JSONEncoder):
             encoded_object = obj.isoformat()
         else:
             encoded_object = json.JSONEncoder.default(self, obj)
-    
+
         return encoded_object
 
 class Includer(object):
@@ -47,7 +47,7 @@ class Includer(object):
 
     def _relativize_path(self, path):
         relative_path = path
-        depth = len(request.path.split('/')) - (2 + self.asset_depth) 
+        depth = len(request.path.split('/')) - (2 + self.asset_depth)
 
         while depth > 0:
             relative_path = '../%s' % relative_path
@@ -212,8 +212,13 @@ def smarty_filter(s):
     if type(s) is not unicode:
         s = unicode(s)
 
+
     s = s.encode('utf-8')
     s = smartypants(s)
 
-    return Markup(s)
+    try:
+        return Markup(s)
+    except:
+        print s
+        return Markup(s)
 
