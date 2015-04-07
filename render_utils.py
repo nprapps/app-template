@@ -219,6 +219,6 @@ def smarty_filter(s):
     try:
         return Markup(s)
     except:
-        print s
+        print 'This string failed to encode: %s' % s
         return Markup(s)
 
