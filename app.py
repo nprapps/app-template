@@ -13,7 +13,6 @@ import oauth
 import static
 
 from flask import Flask, make_response, render_template
-from oauth import oauth_required
 from render_utils import make_context, smarty_filter, urlencode_filter
 from werkzeug.debug import DebuggedApplication
 
@@ -24,7 +23,7 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
 @app.route('/')
-@oauth_required
+@oauth.oauth_required
 def index():
     """
     Example view demonstrating rendering a simple HTML page.
