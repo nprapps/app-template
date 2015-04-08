@@ -1,4 +1,4 @@
--e git+git@github.com:nprapps/authomatic.git@315f0c0044df341a3666f1d34f5dc97244077e76#egg=Authomatic
+-e git+git@github.com:peterhudec/authomatic.git@70c740546d9849271e35edbf3da30e1801f7a227#egg=Authomatic
 Fabric==1.4.3
 Flask==0.9
 Jinja2==2.7.3
