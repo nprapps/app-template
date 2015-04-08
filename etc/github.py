@@ -14,8 +14,8 @@ def get_auth():
     """
     Construct a basic auth object from a username and password
     """
-    username = raw_input('Username:')
-    password = getpass.getpass('Password:')
+    username = raw_input('Username: ')
+    password = getpass.getpass('Password: ')
 
     auth = HTTPBasicAuth(username, password)
 
@@ -23,7 +23,13 @@ def get_auth():
     response = requests.get('https://api.github.com/notifications', auth=auth)
 
     if response.status_code == 401:
-        raise Exception('Invalid username or password')
+        otp = response.headers.get('X-Github-OTP')
+        if otp and otp.startswith('required'):
+            print 'You are using 2-factor authentication. Please create a personal access token at https://github.com/settings/applications#personal-access-tokens and provide it here'
+            access_token = raw_input('Personal access token: ')
+            auth = HTTPBasicAuth(access_token, '')
+        else:
+            raise Exception('Invalid username or password')
 
     return auth
 
