@@ -18,8 +18,11 @@ def oauth_alert():
     Show an OAuth alert to start authentication process.
     """
     context = make_context()
-    credentials = get_credentials()
 
+    if not _has_api_credentials():
+        return render_template('oauth/warning.html', **context)
+
+    credentials = get_credentials()
     if credentials:
         resp = authomatic.access(credentials, 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json')
         if resp.status == 200:
@@ -35,6 +38,9 @@ def authenticate():
     from flask import request
     response = make_response()
     context = make_context()
+
+    if not _has_api_credentials():
+        return render_template('oauth/warning.html', **context)
 
     result = authomatic.login(WerkzeugAdapter(request, response), 'google')
 
@@ -109,3 +115,12 @@ def get_document(key, file_path):
 
     with open(file_path, 'wb') as writefile:
         writefile.write(response.content)
+
+def _has_api_credentials():
+    """
+    Test for API credentials
+    """
+    client_id = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
+    client_secret = os.environ.get('GOOGLE_OAUTH_CONSUMER_SECRET')
+    salt = os.environ.get('AUTHOMATIC_SALT')
+    return bool(client_id and client_secret and salt)
