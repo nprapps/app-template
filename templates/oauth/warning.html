@@ -1,0 +1,14 @@
+{% extends 'oauth/_oauth_base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+  <h1>Whoops, some configuration needed</h1>
+  <p>You'll need to set these environment variables before you continue:</p>
+  <ul>
+    <li><code>GOOGLE_OAUTH_CLIENT_ID</code></li>
+    <li><code>GOOGLE_OAUTH_CONSUMER_SECRET</code></li>
+    <li><code>AUTHOMATIC_SALT</code></li>
+  </ul>
+  <p>See the NPR Visuals <a href="http://blog.apps.npr.org/2015/03/02/app-template-oauth.html">blog post</a> for more details.</p>
+</div>
+{% endblock %}
