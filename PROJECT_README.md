@@ -144,9 +144,23 @@ This app uses a Google Spreadsheet for a simple key/value store that provides an
 
 To access the Google doc, you'll need to create a Google API project via the [Google developer console](http://console.developers.google.com).
 
-Enable the Drive API for your project and create a "web application" client ID. Use `http://localhost:8000/authenticate/` and `http://127.0.0.1:8000/authenticate` for the redirect URIs and `http://localhost:8000` and `http://127.0.0.1:8000` for the Javascript origins.
+Enable the Drive API for your project and create a "web application" client ID.
 
-You'll need to set some environment variables:
+For the redirect URIs use:
+
+* `http://localhost:8000/authenticate/`
+* `http://127.0.0.1:8000/authenticate`
+* `http://localhost:8888/authenticate/`
+* `http://127.0.0.1:8888/authenticate`
+
+For the Javascript origins use:
+
+* `http://localhost:8000`
+* `http://127.0.0.1:8000`
+* `http://localhost:8888`
+* `http://127.0.0.1:8888`
+
+You'll also need to set some environment variables:
 
 ```
 export GOOGLE_OAUTH_CLIENT_ID="something-something.apps.googleusercontent.com"
