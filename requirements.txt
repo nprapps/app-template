@@ -1,4 +1,4 @@
--e git+git@github.com:peterhudec/authomatic.git@70c740546d9849271e35edbf3da30e1801f7a227#egg=Authomatic
+Authomatic==0.0.13
 Fabric==1.4.3
 Flask==0.9
 Jinja2==2.7.3
