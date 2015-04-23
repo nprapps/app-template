@@ -2,13 +2,15 @@
 <html lang="en">
 
 <head>
+    <!-- CHARTBEAT -->
+    <script type="text/javascript">
+        var _sf_startpt=(new Date()).getTime();
+    </script>
+
     <title>{{ COPY.content.project_name }}</title>
 
     <!-- META TAGS -->
     {% include '_meta.html' %}
-
-    <!-- CHARTBEAT -->
-    <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
     <!-- FONTS -->
     {% include '_fonts.html' %}
@@ -24,6 +26,11 @@
     {% endblock extra_head %}
 </head>
 <body>
+    <!-- ANALYTICS JAVASCRIPT -->
+    {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/analytics.js') }}
+    {{ JS.render('js/app-header.min.js') }}
+
     <a class="sr-only" href="#content">Skip To Content</a>
 
     {% block outer_content %}
@@ -110,7 +117,6 @@
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/ZeroClipboard.js') }}
-    {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/copy.js') }}
     {{ JS.push('js/ads.js') }}
     {{ JS.push('js/templates.js') }}
@@ -118,7 +124,6 @@
     {{ JS.push('js/share.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
-    {{ JS.push('js/analytics.js') }}
     {{ JS.render('js/app-footer.min.js') }}
 
     {% block extra_foot %}
@@ -140,5 +145,10 @@
         }
         </script>
     </div>
+
+    {# Setup Chartbeat last! #}
+    <script type="text/javascript">
+        $(ANALYTICS.setupChartbeat);
+    </script>
 </body>
 </html>

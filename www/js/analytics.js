@@ -33,7 +33,7 @@ var ANALYTICS = (function () {
 
         _gaq.push(['_setCustomVar', 6, 'Orientation', orientation, 3]);
 
-        var viewportSize = $(window).width();
+        var viewportSize = document.body.clientWidth;
         var viewportGrouping = '1760 and higher';
 
         if (viewportSize < 481) {
@@ -131,13 +131,6 @@ var ANALYTICS = (function () {
             window.onload = (typeof window.onload != "function") ?
                 loadChartbeat : function() { oldonload(); loadChartbeat(); };
         })();
-    }
-
-    var setupAll = function() {
-        setupGoogle();
-        setupComscore();
-        setupNielson();
-        setupChartbeat();
     }
 
     /*
@@ -258,8 +251,12 @@ var ANALYTICS = (function () {
         trackEvent('slide-exit', slide_index, timeOnLastSlide);
     }
 
+    setupGoogle();
+    setupComscore();
+    setupNielson();
+
     return {
-        'setupAll': setupAll,
+        'setupChartbeat': setupChartbeat,
         'trackEvent': trackEvent,
         'openShareDiscuss': openShareDiscuss,
         'closeShareDiscuss': closeShareDiscuss,
@@ -284,5 +281,3 @@ var ANALYTICS = (function () {
         'stopChromecast': stopChromecast
     };
 }());
-
-ANALYTICS.setupAll();
