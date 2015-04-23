@@ -16,10 +16,10 @@ var ANALYTICS = (function () {
      * Google Analytics
      */
     var setupGoogle = function() {
-        _gaq.push(['_setAccount', APP_CONFIG.GOOGLE_ANALYTICS.ACCOUNT_ID]);
-        _gaq.push(['_setDomainName', APP_CONFIG.GOOGLE_ANALYTICS.DOMAIN]);
+        _gaq.push(['_setAccount', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID]);
+        _gaq.push(['_setDomainName', APP_CONFIG.NPR_GOOGLE_ANALYTICS.DOMAIN]);
         //_gaq.push(['_setCustomVar', 1, 'BC', '', 3]);
-        _gaq.push(['_setCustomVar', 2, 'Topics', APP_CONFIG.GOOGLE_ANALYTICS.TOPICS, 3]);
+        _gaq.push(['_setCustomVar', 2, 'Topics', APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, 3]);
         //_gaq.push(['_setCustomVar', 3, 'Program ID', '', 3]);
         //_gaq.push(['_setCustomVar', 3, 'Localization', '', 1]);
         _gaq.push(['_setCustomVar', 4, 'OrgID', '1', 3]);
@@ -64,12 +64,23 @@ var ANALYTICS = (function () {
 
         _gaq.push(['_trackPageview']);
 
+        // Old GA: NPR.org
         (function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
-    }
+
+        // New GA: NPR Visuals
+        (function(i,s,o,g,r,a,m) {
+            i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
+        ga('send', 'pageview');
+     }
 
     /*
      * Comscore
@@ -133,21 +144,21 @@ var ANALYTICS = (function () {
      * Event tracking.
      */
     var trackEvent = function(eventName, label, value) {
-        var args = ['_trackEvent', APP_CONFIG.PROJECT_SLUG];
-
-        args.push(eventName);
+        var eventData = {
+            'hitType': 'event',
+            'eventCategory': APP_CONFIG.PROJECT_SLUG,
+            'eventAction': eventName
+        }
 
         if (label) {
-            args.push(label);
-        } else if (value) {
-            args.push('');
+            eventData['eventLabel'] = label;
         }
 
         if (value) {
-            args.push(value);
+            eventData['eventValue'] = value
         }
 
-        _gaq.push(args);
+        ga('send', eventData);
     }
 
     // SHARING
@@ -237,7 +248,6 @@ var ANALYTICS = (function () {
     var stopChromecast = function() {
         trackEvent('chromecast-stop');
     }
-
 
     // SLIDES
 
