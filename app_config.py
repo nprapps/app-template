@@ -119,10 +119,14 @@ NPR_DFP = {
 """
 SERVICES
 """
-GOOGLE_ANALYTICS = {
+NPR_GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-4',
     'DOMAIN': PRODUCTION_S3_BUCKET['bucket_name'],
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
+}
+
+VIZ_GOOGLE_ANALYTICS = {
+    'ACCOUNT_ID': 'UA-5828686-75'
 }
 
 DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
@@ -218,4 +222,3 @@ Run automated configuration
 DEPLOYMENT_TARGET = os.environ.get('DEPLOYMENT_TARGET', None)
 
 configure_targets(DEPLOYMENT_TARGET)
-

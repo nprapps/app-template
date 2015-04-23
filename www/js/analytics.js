@@ -16,10 +16,10 @@ var ANALYTICS = (function () {
      * Google Analytics
      */
     var setupGoogle = function() {
-        _gaq.push(['_setAccount', APP_CONFIG.GOOGLE_ANALYTICS.ACCOUNT_ID]);
-        _gaq.push(['_setDomainName', APP_CONFIG.GOOGLE_ANALYTICS.DOMAIN]);
+        _gaq.push(['_setAccount', APP_CONFIG.NPR_GOOGLE_ANALYTICS.ACCOUNT_ID]);
+        _gaq.push(['_setDomainName', APP_CONFIG.NPR_GOOGLE_ANALYTICS.DOMAIN]);
         //_gaq.push(['_setCustomVar', 1, 'BC', '', 3]);
-        _gaq.push(['_setCustomVar', 2, 'Topics', APP_CONFIG.GOOGLE_ANALYTICS.TOPICS, 3]);
+        _gaq.push(['_setCustomVar', 2, 'Topics', APP_CONFIG.NPR_GOOGLE_ANALYTICS.TOPICS, 3]);
         //_gaq.push(['_setCustomVar', 3, 'Program ID', '', 3]);
         //_gaq.push(['_setCustomVar', 3, 'Localization', '', 1]);
         _gaq.push(['_setCustomVar', 4, 'OrgID', '1', 3]);
@@ -78,7 +78,7 @@ var ANALYTICS = (function () {
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-5828686-75', 'auto');
+        ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
         ga('send', 'pageview');
      }
 
