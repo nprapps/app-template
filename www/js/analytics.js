@@ -144,21 +144,21 @@ var ANALYTICS = (function () {
      * Event tracking.
      */
     var trackEvent = function(eventName, label, value) {
-        var args = ['_trackEvent', APP_CONFIG.PROJECT_SLUG];
-
-        args.push(eventName);
+        var eventData = {
+            'hitType': 'event',
+            'eventCategory': APP_CONFIG.PROJECT_SLUG,
+            'eventAction': eventName
+        }
 
         if (label) {
-            args.push(label);
-        } else if (value) {
-            args.push('');
+            eventData['eventLabel'] = label;
         }
 
         if (value) {
-            args.push(value);
+            eventData['eventValue'] = value
         }
 
-        ga.send.apply(this, args);
+        ga('send', eventData);
     }
 
     // SHARING
@@ -248,7 +248,6 @@ var ANALYTICS = (function () {
     var stopChromecast = function() {
         trackEvent('chromecast-stop');
     }
-
 
     // SLIDES
 
