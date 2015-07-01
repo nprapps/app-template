@@ -12,24 +12,7 @@ var onDocumentLoad = function(e) {
     getCommentCount(showCommentCount);
 
     SHARE.setup();
-    // testStorage();
 }
-/*
-var testStorage = function() {
-    var test = STORAGE.get('test');
-    if (test) {
-        STORAGE.deleteKey('test');
-    }
-    console.log(simpleStorage.index());
-    console.log(STORAGE.get('test')); //nothing
-    STORAGE.set('test', 'haha');
-    console.log(STORAGE.get('test'), STORAGE.getTTL('test')); //haha
-    STORAGE.setTTL('test', 1000);
-    console.log(STORAGE.getTTL('test'));
-
-    console.log(simpleStorage.index());
-}
-*/
 
 /*
  * Basic templating example.
