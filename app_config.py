@@ -54,6 +54,9 @@ ASSETS_S3_BUCKET = {
 
 DEFAULT_MAX_AGE = 20
 
+RELOAD_TRIGGER = False
+RELOAD_CHECK_INTERVAL = 60
+
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['cron-staging.nprapps.org']
 

@@ -117,9 +117,15 @@
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/ZeroClipboard.js') }}
+
     {# uncomment both files to use simpleStorage #}
     {# {{ JS.push('js/lib/simpleStorage.js') }} #}
     {# {{ JS.push('js/storage.js') }} #}
+
+    {% if RELOAD_TRIGGER %}
+    {{ JS.push('js/reload.js') }}
+    {% endif %}
+
     {{ JS.push('js/copy.js') }}
     {{ JS.push('js/ads.js') }}
     {{ JS.push('js/templates.js') }}
