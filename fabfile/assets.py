@@ -8,6 +8,7 @@ from glob import glob
 import os
 
 import boto
+from boto.s3.connection import OrdinaryCallingFormat
 from fabric.api import prompt, task
 import app_config
 from fnmatch import fnmatch
@@ -179,7 +180,10 @@ def _assets_get_bucket():
     """
     Get a reference to the assets bucket.
     """
-    s3 = boto.connect_s3()
+    if '.' in app_config.ASSETS_S3_BUCKET['bucket_name']:
+        s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
+    else:
+        s3 = boto.connect_s3()
 
     return s3.get_bucket(app_config.ASSETS_S3_BUCKET['bucket_name'])
 

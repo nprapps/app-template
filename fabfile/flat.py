@@ -9,6 +9,7 @@ import mimetypes
 import os
 
 import boto
+from boto.s3.connection import OrdinaryCallingFormat
 from boto.s3.key import Key
 
 import app_config
@@ -109,7 +110,10 @@ def deploy_folder(bucket_name, src, dst, headers={}, ignore=[]):
 
             to_deploy.append((src_path, dst_path))
 
-    s3 = boto.connect_s3()
+    if '.' in bucket_name:
+        s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
+    else:
+        s3 = boto.connect_s3()
 
     for src, dst in to_deploy:
         deploy_file(s3, bucket_name, src, dst, headers)
