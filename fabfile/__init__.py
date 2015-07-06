@@ -4,8 +4,6 @@ from datetime import datetime
 import json
 import os
 
-import boto
-from boto.s3.connection import OrdinaryCallingFormat
 from boto.s3.key import Key
 from fabric.api import local, require, settings, task
 from fabric.state import env
@@ -201,12 +199,7 @@ def deploy(remote='origin', reload=False):
 def check_timestamp():
     require('settings', provided_by=[production, staging])
 
-    if '.' in app_config.S3_BUCKET:
-        s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
-    else:
-        s3 = boto.connect_s3()
-
-    bucket = s3.get_bucket(app_config.S3_BUCKET)
+    bucket = utils.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
     k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
     if k.exists():

@@ -8,11 +8,10 @@ import hashlib
 import mimetypes
 import os
 
-import boto
-from boto.s3.connection import OrdinaryCallingFormat
 from boto.s3.key import Key
 
 import app_config
+import utils
 
 GZIP_FILE_TYPES = ['.html', '.js', '.json', '.css', '.xml']
 
@@ -24,12 +23,10 @@ class FakeTime:
 # See: http://stackoverflow.com/questions/264224/setting-the-gzip-timestamp-from-python
 gzip.time = FakeTime()
 
-def deploy_file(connection, bucket_name, src, dst, headers={}):
+def deploy_file(bucket, src, dst, headers={}):
     """
     Deploy a single file to S3, if the local version is different.
     """
-    bucket = connection.get_bucket(bucket_name)
-
     k = bucket.get_key(dst)
     s3_md5 = None
 
@@ -110,21 +107,16 @@ def deploy_folder(bucket_name, src, dst, headers={}, ignore=[]):
 
             to_deploy.append((src_path, dst_path))
 
-    if '.' in bucket_name:
-        s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
-    else:
-        s3 = boto.connect_s3()
+    bucket = utils.get_bucket(bucket_name)
 
     for src, dst in to_deploy:
-        deploy_file(s3, bucket_name, src, dst, headers)
+        deploy_file(bucket, src, dst, headers)
 
 def delete_folder(bucket_name, dst):
     """
     Delete a folder from S3.
     """
-    s3 = boto.connect_s3()
-
-    bucket = s3.get_bucket(bucket_name)
+    bucket = utils.get_bucket(bucket_name)
 
     for key in bucket.list(prefix='%s/' % dst):
         print 'Deleting %s' % (key.key)
