@@ -13,9 +13,13 @@ from werkzeug.debug import DebuggedApplication
 app = Flask(__name__)
 app.debug = app_config.DEBUG
 
-file_handler = logging.FileHandler('%s/public_app.log' % app_config.SERVER_LOG_PATH)
-file_handler.setLevel(logging.INFO)
-app.logger.addHandler(file_handler)
+try:
+    file_handler = logging.FileHandler('%s/public_app.log' % app_config.SERVER_LOG_PATH)
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+except IOError:
+    print 'Could not open %s/public_app.log, skipping file-based logging' % app_config.SERVER_LOG_PATH
+
 app.logger.setLevel(logging.INFO)
 
 app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG)
