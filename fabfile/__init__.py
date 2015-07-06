@@ -166,7 +166,7 @@ def deploy(remote='origin', reload=False):
     local('rm -rf www/live-data')
 
     flat.deploy_folder(
-        app_config.S3_BUCKET['bucket_name'],
+        app_config.S3_BUCKET,
         'www',
         app_config.PROJECT_SLUG,
         headers={
@@ -176,7 +176,7 @@ def deploy(remote='origin', reload=False):
     )
 
     flat.deploy_folder(
-        app_config.S3_BUCKET['bucket_name'],
+        app_config.S3_BUCKET,
         'www/assets',
         '%s/assets' % app_config.PROJECT_SLUG,
         headers={
@@ -195,12 +195,12 @@ def deploy(remote='origin', reload=False):
 def check_timestamp():
     require('settings', provided_by=[production, staging])
 
-    if '.' in app_config.S3_BUCKET['bucket_name']:
+    if '.' in app_config.S3_BUCKET:
         s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
     else:
         s3 = boto.connect_s3()
 
-    bucket = s3.get_bucket(app_config.S3_BUCKET['bucket_name'])
+    bucket = s3.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
     k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
     if k.exists():
@@ -226,7 +226,7 @@ def reset_browsers():
         json.dump(payload, f)
 
     flat.deploy_folder(
-        app_config.S3_BUCKET['bucket_name'],
+        app_config.S3_BUCKET,
         'www/live-data',
         '%s/live-data' % app_config.PROJECT_SLUG,
         headers={
@@ -254,7 +254,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        flat.delete_folder(app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
+        flat.delete_folder(app_config.S3_BUCKET, app_config.PROJECT_SLUG)
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()

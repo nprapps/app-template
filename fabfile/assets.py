@@ -180,12 +180,12 @@ def _assets_get_bucket():
     """
     Get a reference to the assets bucket.
     """
-    if '.' in app_config.ASSETS_S3_BUCKET['bucket_name']:
+    if '.' in app_config.ASSETS_S3_BUCKET:
         s3 = boto.connect_s3(calling_format=OrdinaryCallingFormat())
     else:
         s3 = boto.connect_s3()
 
-    return s3.get_bucket(app_config.ASSETS_S3_BUCKET['bucket_name'])
+    return s3.get_bucket(app_config.ASSETS_S3_BUCKET)
 
 def _assets_confirm(local_path):
     """
