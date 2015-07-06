@@ -165,6 +165,7 @@ def deploy(remote='origin', reload=False):
     local('rm -rf www/live-data')
 
     flat.deploy_folder(
+        app_config.S3_BUCKET['bucket_name'],
         'www',
         app_config.PROJECT_SLUG,
         headers={
@@ -174,6 +175,7 @@ def deploy(remote='origin', reload=False):
     )
 
     flat.deploy_folder(
+        app_config.S3_BUCKET['bucket_name'],
         'www/assets',
         '%s/assets' % app_config.PROJECT_SLUG,
         headers={
@@ -219,6 +221,7 @@ def reset_browsers():
         json.dump(payload, f)
 
     flat.deploy_folder(
+        app_config.S3_BUCKET['bucket_name'],
         'www/live-data',
         '%s/live-data' % app_config.PROJECT_SLUG,
         headers={
@@ -246,7 +249,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        flat.delete_folder(app_config.PROJECT_SLUG)
+        flat.delete_folder(app_config.S3_BUCKET['bucket_name'], app_config.PROJECT_SLUG)
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
