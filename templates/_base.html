@@ -27,6 +27,10 @@
 </head>
 <body>
     <!-- ANALYTICS JAVASCRIPT -->
+    {{ JS.push('js/lib/modernizr.js') }}
+    {{ JS.push('js/lib/cookie.js') }}
+    {{ JS.push('js/lib/es6-promise.js') }}
+    {{ JS.push('js/lib/cross-storage-client.js') }}
     {{ JS.push('js/app_config.js') }}
     {{ JS.push('js/analytics.js') }}
     {{ JS.render('js/app-header.min.js') }}
@@ -113,7 +117,6 @@
 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/ZeroClipboard.js') }}
