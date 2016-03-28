@@ -8,7 +8,6 @@ App Template for static publishing.
 """
 
 import app_config
-import json
 import oauth
 import static
 
@@ -30,17 +29,7 @@ def index():
     """
     context = make_context()
 
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
-
     return make_response(render_template('index.html', **context))
-
-@app.route('/comments/')
-def comments():
-    """
-    Full-page comments view.
-    """
-    return make_response(render_template('comments.html', **make_context()))
 
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)

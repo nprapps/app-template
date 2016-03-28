@@ -111,15 +111,10 @@
 
     {% endblock outer_content %}
 
-    {% block comments %}
-        {% include '_share_modal.html' %}
-    {% endblock %}
-
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
-    {{ JS.push('js/lib/ZeroClipboard.js') }}
 
     {# uncomment both files to use simpleStorage #}
     {# {{ JS.push('js/lib/simpleStorage.js') }} #}
@@ -132,8 +127,6 @@
     {{ JS.push('js/copy.js') }}
     {{ JS.push('js/ads.js') }}
     {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/comments.js') }}
-    {{ JS.push('js/share.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}

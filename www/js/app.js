@@ -1,17 +1,11 @@
 // Global jQuery references
-var $commentCount = null;
 
 /*
  * Run on page load.
  */
 var onDocumentLoad = function(e) {
     // Cache jQuery references
-    $commentCount = $('.comment-count');
-
     renderExampleTemplate();
-    getCommentCount(showCommentCount);
-
-    SHARE.setup();
 }
 
 /*
@@ -27,21 +21,6 @@ var renderExampleTemplate = function() {
     var html = JST.example(context);
 
     $('#template-example').html(html);
-}
-
-/*
- * Display the comment count.
- */
-var showCommentCount = function(count) {
-    $commentCount.text(count);
-
-    if (count > 0) {
-        $commentCount.addClass('has-comments');
-    }
-
-    if (count > 1) {
-        $commentCount.next('.comment-label').text('Comments');
-    }
 }
 
 $(onDocumentLoad);
