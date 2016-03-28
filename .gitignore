@@ -48,3 +48,6 @@ data/copy.xlsx
 www/assets/*
 !www/assets/assetsignore
 www/live-data/*
+
+#Logs
+logs/*.log
