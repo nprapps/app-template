@@ -65,7 +65,7 @@ def delete_existing_labels(auth):
     logger.info('Deleting %i labels' % len(labels))
 
     for label in labels:
-        logging.info('Deleting label %s' % label['name'])
+        logger.info('Deleting label %s' % label['name'])
 
         requests.delete(url + '/' + label['name'], auth=auth)
 
@@ -81,7 +81,7 @@ def create_labels(auth, filename='etc/default_labels.csv'):
     logger.info('Creating %i labels' % len(labels))
 
     for label in labels:
-        logging.info('Creating label "%s"' % label['name'])
+        logger.info('Creating label "%s"' % label['name'])
         data = json.dumps(label)
 
         requests.post(url, data=data, auth=auth)
@@ -98,7 +98,7 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
     logger.info('Creating %i tickets' % len(tickets))
 
     for ticket in tickets:
-        logging.info('Creating ticket "%s"' % ticket['title'])
+        logger.info('Creating ticket "%s"' % ticket['title'])
 
         if ticket['labels']:
             ticket['labels'] = ticket['labels'].split(',')

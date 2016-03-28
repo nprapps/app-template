@@ -49,7 +49,7 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     if new_spreadsheet_key:
         config[app_config.COPY_GOOGLE_DOC_KEY] = new_spreadsheet_key
     else:
-        logging.warn('No spreadsheet created, you will need to update COPY_GOOGLE_DOC_KEY manually.')
+        logger.warn('No spreadsheet created, you will need to update COPY_GOOGLE_DOC_KEY manually.')
 
     for k, v in config.items():
         local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
