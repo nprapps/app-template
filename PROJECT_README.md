@@ -16,6 +16,7 @@ $NEW_PROJECT_SLUG
 * [Run the project](#run-the-project)
 * [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
+* [Generating custom font](#generating-custom-font)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
 * [Run Python tests](#run-python-tests)
 * [Run Javascript tests](#run-javascript-tests)
@@ -231,6 +232,27 @@ about_url
 download_label
 download_url
 ```
+
+Generating custom font
+----------------------
+
+This project uses a custom font build powered by [Fontello](http://fontello.com)
+If the font does not exist, it will be created when running `fab update`.
+To force generation of the custom font, run:
+
+```
+fab utils.install_font:true
+```
+
+Editing the font is a little tricky -- you have to use the Fontello web gui.
+To open the gui with your font configuration, run:
+
+```
+fab utils.open_font
+```
+
+Now edit the font, download the font pack, copy the new config.json into this
+project's `fontello` directory, and run `fab utils.install_font:true` again.
 
 Arbitrary Google Docs
 ----------------------
