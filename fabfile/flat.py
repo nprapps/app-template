@@ -5,6 +5,7 @@ from cStringIO import StringIO
 from fnmatch import fnmatch
 import gzip
 import hashlib
+import logging
 import mimetypes
 import os
 
@@ -12,6 +13,10 @@ from boto.s3.key import Key
 
 import app_config
 import utils
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 GZIP_FILE_TYPES = ['.html', '.js', '.json', '.css', '.xml']
 
@@ -58,9 +63,9 @@ def deploy_file(bucket, src, dst, headers={}):
         local_md5 = local_md5.hexdigest()
 
         if local_md5 == s3_md5:
-            print 'Skipping %s (has not changed)' % src
+            logger.info('Skipping %s (has not changed)' % src)
         else:
-            print 'Uploading %s --> %s (gzipped)' % (src, dst)
+            logger.info('Uploading %s --> %s (gzipped)' % (src, dst))
             k.set_contents_from_string(output.getvalue(), file_headers, policy='public-read')
     # Non-gzip file
     else:
@@ -70,9 +75,9 @@ def deploy_file(bucket, src, dst, headers={}):
             local_md5 = local_md5.hexdigest()
 
         if local_md5 == s3_md5:
-            print 'Skipping %s (has not changed)' % src
+            logger.info('Skipping %s (has not changed)' % src)
         else:
-            print 'Uploading %s --> %s' % (src, dst)
+            logger.info('Uploading %s --> %s' % (src, dst))
             k.set_contents_from_filename(src, file_headers, policy='public-read')
 
 def deploy_folder(bucket_name, src, dst, headers={}, ignore=[]):
@@ -119,7 +124,6 @@ def delete_folder(bucket_name, dst):
     bucket = utils.get_bucket(bucket_name)
 
     for key in bucket.list(prefix='%s/' % dst):
-        print 'Deleting %s' % (key.key)
+        logger.info('Deleting %s' % (key.key))
 
         key.delete()
-

@@ -8,6 +8,7 @@ after execution.
 
 import app_config
 import json
+import logging
 import os
 import subprocess
 import utils
@@ -18,6 +19,10 @@ from distutils.spawn import find_executable
 from fabric.api import execute, local, prompt, task
 from oauth import get_credentials
 from time import sleep
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 SPREADSHEET_COPY_URL_TEMPLATE = 'https://www.googleapis.com/drive/v2/files/%s/copy'
 SPREADSHEET_VIEW_TEMPLATE = 'https://docs.google.com/spreadsheet/ccc?key=%s#gid=1'
@@ -44,7 +49,7 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     if new_spreadsheet_key:
         config[app_config.COPY_GOOGLE_DOC_KEY] = new_spreadsheet_key
     else:
-        print 'No spreadsheet created, you will need to update COPY_GOOGLE_DOC_KEY manually.'
+        logging.warn('No spreadsheet created, you will need to update COPY_GOOGLE_DOC_KEY manually.')
 
     for k, v in config.items():
         local('sed -i "" \'s|%s|%s|g\' %s' % (k, v, config_files))
@@ -64,8 +69,8 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     execute('update')
 
     if new_spreadsheet_key:
-        print 'You can view your COPY spreadsheet at:'
-        print SPREADSHEET_VIEW_TEMPLATE % new_spreadsheet_key
+        logger.info('You can view your COPY spreadsheet at:')
+        logger.info(SPREADSHEET_VIEW_TEMPLATE % new_spreadsheet_key)
 
 
 def check_credentials():
@@ -76,21 +81,21 @@ def check_credentials():
     if not credentials or 'https://www.googleapis.com/auth/drive' not in credentials.config['google']['scope']:
         try:
             with open(os.devnull, 'w') as fnull:
-                print 'Credentials were not found or permissions were not correct. Automatically opening a browser to authenticate with Google.'
+                logger.info('Credentials were not found or permissions were not correct. Automatically opening a browser to authenticate with Google.')
                 gunicorn = find_executable('gunicorn')
                 process = subprocess.Popen([gunicorn, '-b', '127.0.0.1:8888', 'app:wsgi_app'], stdout=fnull, stderr=fnull)
                 webbrowser.open_new('http://127.0.0.1:8888/oauth')
-                print 'Waiting...'
+                logger.info('Waiting...')
                 while not credentials:
                     try:
                         credentials = get_credentials()
                         sleep(1)
                     except ValueError:
                         continue
-                print 'Successfully authenticated!'
+                logger.info('Successfully authenticated!')
                 process.terminate()
         except KeyboardInterrupt:
-            print '\nCtrl-c pressed. Later, skater!'
+            logger.info('\nCtrl-c pressed. Later, skater!')
             exit()
 
 def create_spreadsheet(title):
@@ -110,8 +115,8 @@ def create_spreadsheet(title):
     resp = app_config.authomatic.access(**kwargs)
     if resp.status == 200:
         spreadsheet_key = resp.data['id']
-        print 'New spreadsheet created with key %s' % spreadsheet_key
+        logger.info('New spreadsheet created with key %s' % spreadsheet_key)
         return spreadsheet_key
     else:
-        print 'Error creating spreadsheet (status code %s) with message %s' % (resp.status, resp.reason)
+        logger.info('Error creating spreadsheet (status code %s) with message %s' % (resp.status, resp.reason))
         return None

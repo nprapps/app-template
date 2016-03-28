@@ -8,6 +8,7 @@ They will be exposed to users. Use environment variables instead.
 See get_secrets() below for a fast way to access them.
 """
 
+import logging
 import os
 
 from authomatic.providers import oauth2
@@ -133,6 +134,11 @@ authomatic_config = {
 authomatic = Authomatic(authomatic_config, os.environ.get('AUTHOMATIC_SALT'))
 
 """
+Logging
+"""
+LOG_FORMAT = '%(levelname)s:%(name)s:%(asctime)s: %(message)s'
+
+"""
 Utilities
 """
 def get_secrets():
@@ -161,7 +167,7 @@ def configure_targets(deployment_target):
     global SERVER_LOG_PATH
     global DEBUG
     global DEPLOYMENT_TARGET
-    global DISQUS_SHORTNAME
+    global LOG_LEVEL
     global ASSETS_MAX_AGE
 
     if deployment_target == 'production':
@@ -171,7 +177,7 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'npr-news'
+        LOG_LEVEL = logging.WARNING
         DEBUG = False
         ASSETS_MAX_AGE = 86400
     elif deployment_target == 'staging':
@@ -181,7 +187,7 @@ def configure_targets(deployment_target):
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'nprviz-test'
+        LOG_LEVEL = logging.DEBUG
         DEBUG = True
         ASSETS_MAX_AGE = 20
     else:
@@ -191,7 +197,7 @@ def configure_targets(deployment_target):
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
-        DISQUS_SHORTNAME = 'nprviz-test'
+        LOG_LEVEL = logging.DEBUG
         DEBUG = True
         ASSETS_MAX_AGE = 20
 

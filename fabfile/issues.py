@@ -5,9 +5,14 @@ Commands that integrate with Github issues.
 """
 
 from fabric.api import task
+import logging
 
 import app_config
 from etc import github
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 @task
 def bootstrap():
@@ -15,7 +20,7 @@ def bootstrap():
     Bootstraps Github issues with default configuration.
     """
     if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-        print 'You can\'t run the issues bootstrap until you\'ve set PROJECT_SLUG in app_config.py!'
+        logger.warn('You can\'t run the issues bootstrap until you\'ve set PROJECT_SLUG in app_config.py!')
         return
 
     auth = github.get_auth()
@@ -32,4 +37,3 @@ def from_file(path):
     """
     auth = github.get_auth()
     github.create_tickets(auth, path)
-

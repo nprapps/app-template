@@ -5,11 +5,17 @@ Commands for rendering various parts of the app stack.
 """
 
 from glob import glob
+import logging
 import os
 
 from fabric.api import local, task
 
 import app
+import app_config
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 def _fake_context(path):
     """
@@ -45,7 +51,7 @@ def less():
         try:
             local('node_modules/less/bin/lessc %s %s' % (path, out_path))
         except:
-            print 'It looks like "lessc" isn\'t installed. Try running: "npm install"'
+            logger.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
             raise
 
 @task
@@ -56,7 +62,7 @@ def jst():
     try:
         local('node_modules/universal-jst/bin/jst.js --template underscore jst www/js/templates.js')
     except:
-        print 'It looks like "jst" isn\'t installed. Try running: "npm install"'
+        logger.error('It looks like "jst" isn\'t installed. Try running: "npm install"')
 
 @task
 def app_config_js():
@@ -105,7 +111,7 @@ def render_all():
 
         # Skip utility views
         if name == 'static' or name.startswith('_'):
-            print 'Skipping %s' % name
+            logger.info('Skipping %s' % name)
             continue
 
         # Convert trailing slashes to index.html files
@@ -114,7 +120,7 @@ def render_all():
         elif rule_string.endswith('.html'):
             filename = 'www' + rule_string
         else:
-            print 'Skipping %s' % name
+            logger.info('Skipping %s' % name)
             continue
 
         # Create the output path
@@ -123,7 +129,7 @@ def render_all():
         if not (os.path.exists(dirname)):
             os.makedirs(dirname)
 
-        print 'Rendering %s' % (filename)
+        logger.info('Rendering %s' % (filename))
 
         # Render views, reusing compiled assets
         with _fake_context(rule_string):
@@ -140,4 +146,3 @@ def render_all():
         # NB: Flask response object has utf-8 encoded the data
         with open(filename, 'w') as f:
             f.write(content)
-
