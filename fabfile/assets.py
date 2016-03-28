@@ -58,7 +58,7 @@ def sync():
         logger.error('The following filenames are not lowercase, please change them before running `assets.sync`:')
 
         for name in not_lowercase:
-            logger.info('    %s' % name)
+            logger.error('    %s' % name)
 
         return
 
