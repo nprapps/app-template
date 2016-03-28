@@ -27,7 +27,6 @@ six==1.5.2
 slimit==0.7.4
 smartypants==1.8.6
 ssh==1.7.14
-termcolor==1.1.0
 twitter==1.14.3
 wheel==0.23.0
 wsgiref==0.1.2
