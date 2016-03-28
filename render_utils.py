@@ -110,7 +110,7 @@ class JavascriptIncluder(Includer):
             src_paths.append('www/%s' % src)
 
             with codecs.open('www/%s' % src, encoding='utf-8') as f:
-                logging.info('- compressing %s' % src)
+                logger.info('- compressing %s' % src)
                 output.append(minify(f.read()))
 
         context = make_context()
@@ -143,7 +143,7 @@ class CSSIncluder(Includer):
                 compressed_src = subprocess.check_output(["node_modules/less/bin/lessc", "-x", src])
                 output.append(compressed_src)
             except:
-                logging.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
+                logger.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
                 raise
 
         context = make_context()
