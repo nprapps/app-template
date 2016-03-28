@@ -15,42 +15,32 @@
 
 
 {% block content %}
-<h1>{{ COPY.content.project_name }}</h1>
+<section id="content">
+    <div class="container">
+        <div class="row">
+            <div id="main-content" class="col-md-8">
 
-<div id="story-meta">
-    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
-    <p class="dateblock">
-        <span class="date">{{ COPY.content.pubdate }}</span>
-        <span class="time"> {{ COPY.content.pubtime }}</span>
-    </p>
-</div>
+                <h1>{{ COPY.content.project_name }}</h1>
 
-<a class="comment-button comment-button-bubble comment-drawer-toggle" href="javascript:">
-    <span class="comment-count"></span>
-</a>
+                <div id="story-meta">
+                    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
+                    <p class="dateblock">
+                        <span class="date">{{ COPY.content.pubdate }}</span>
+                        <span class="time"> {{ COPY.content.pubtime }}</span>
+                    </p>
+                </div>
 
-<a class="comment-button comment-button-article comment-drawer-toggle" data-toggle="modal" data-backdrop="static" data-target="#share-modal">
-    <span class="comment-count"></span>
-    <span class="comment-label">Share / Discuss</span>
-</a>
+                <h2 class="knockout-example">Example COPY list</h2>
+                <dl>
+                    {% for row in COPY.example_list %}
+                    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
+                    {% endfor %}
+                </dl>
 
-<h2 class="knockout-example">Example COPY list</h2>
-<dl>
-    {% for row in COPY.example_list %}
-    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
-    {% endfor %}
-</dl>
-
-<h2 class="knockout-example">JST example</h2>
-<p id="template-example"></p>
-{% endblock %}
-
-
-{% block wide_content %}
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="knockout-example">{{ COPY.content.footer_title }}</h2>
-        <p>{{ COPY.content.lorem_ipsum }}</p>
+                <h2 class="knockout-example">JST example</h2>
+                <p id="template-example"></p>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}

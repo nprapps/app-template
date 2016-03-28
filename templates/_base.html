@@ -37,7 +37,7 @@
 
     <a class="sr-only" href="#content">Skip To Content</a>
 
-    {% block outer_content %}
+    {% block nav %}
     <nav role="navigation">
         <ul class="site-links">
             <li class="npr"><a href="http://npr.org"><img src="http://media.npr.org/chrome/news/nprlogo_138x46.gif" alt="NPR" /></a></li>
@@ -56,36 +56,15 @@
             <li class="shop"><a href="http://shop.npr.org">Shop</a></li>
         </ul>
     </nav>
+    {% endblock nav %}
 
     {% block header_content %}
     {% endblock header_content %}
 
-    <section id="content">
-        <div class="container">
-            <div class="row">
-                <div id="main-content" class="col-md-8">
-                    {% block content %}
-                    <h1>{{ project_name }}</h1>
-                    App content goes here.
+    {% block content %}
+    {% endblock content %}
 
-                    <i class="icon icon-play"></i>
-                    {% endblock content %}
-                </div>
-                <div id="bigbox" class="col-md-4">
-                    {# 300x250 ad #}
-                    <div class="adwrapper">
-                        <div id="ad-desktop" class="sponsor300">
-                        </div>
-                        <p class="left">NPR thanks our sponsors</p>
-                        <p class="right"><a href="http://www.npr.org/about/place/corpsupport/">Become an NPR sponsor</a></p>
-                    </div>
-                </div>
-            </div>
-            {% block wide_content %}
-            {% endblock wide_content %}
-        </div>
-    </section>
-
+    {% block footer %}
     <footer>
         <div class="primary">
             <ul>
@@ -99,7 +78,7 @@
             </ul>
         </div>
         <div class="secondary">
-            <p>&copy;2014 NPR</p>
+            <p>&copy;2016 NPR</p>
             <ul>
                 <li id="footerContact"><a href="http://help.npr.org/npr/includes/customer/npr/custforms/contactus.aspx">Contact</a></li>
                 <li><a href="http://www.npr.org/about/termsofuse.html">Terms of Use</a></li>
@@ -108,18 +87,12 @@
             </ul>
         </div>
     </footer>
-
-    {% endblock outer_content %}
-
-    {% block comments %}
-        {% include '_share_modal.html' %}
-    {% endblock %}
+    {% endblock footer %}
 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
-    {{ JS.push('js/lib/ZeroClipboard.js') }}
 
     {# uncomment both files to use simpleStorage #}
     {# {{ JS.push('js/lib/simpleStorage.js') }} #}
@@ -130,33 +103,13 @@
     {% endif %}
 
     {{ JS.push('js/copy.js') }}
-    {{ JS.push('js/ads.js') }}
     {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/comments.js') }}
-    {{ JS.push('js/share.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}
 
     {% block extra_foot %}
     {% endblock extra_foot %}
-
-    {# Adhesion ad #}
-    <div id="adhesion">
-        <script type="text/javascript">
-        if (Modernizr.touch && Modernizr.mq('(max-width: 1024px)')) {
-            var ord = Math.floor(Math.random() * 1e16);
-
-            var size = '640x100';
-
-            if (Modernizr.mq('only screen and (min-width: 768px)')) {
-                size = '2048x180';
-            }
-
-            document.write('<scr' + 'ipt type="text/javascript" src="http://ad.doubleclick.net/N6735/adj/n6735.nprmobile/' + APP_CONFIG.NPR_DFP.TARGET + ';storyId=' + APP_CONFIG.NPR_DFP.STORY_ID + ';testserver=false;sz=' + size + ';ord=' + ord + '?"><\/script>');
-        }
-        </script>
-    </div>
 
     {# Setup Chartbeat last! #}
     <script type="text/javascript">
