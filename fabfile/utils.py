@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 
+import app_config
 import boto
+import logging
 
 from boto.s3.connection import OrdinaryCallingFormat
 from fabric.api import local, task
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 """
 Utilities used by multiple commands.
@@ -41,8 +47,8 @@ def install_font(force='true'):
     print 'Installing font'
     if force != 'true':
         try:
-            with open('www/css/icon/elections16.css') and open('www/css/font/elections16.svg'):
-                print 'Font installed, skipping.'
+            with open('www/css/icon/npr-app-template.css') and open('www/css/font/npr-app-template.svg'):
+                logger.info('Font installed, skipping.')
                 return
         except IOError:
             pass

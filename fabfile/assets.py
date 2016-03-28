@@ -5,7 +5,6 @@ Commands related to the syncing assets.
 from glob import glob
 import logging
 import os
-import sys
 
 from fabric.api import prompt, task
 import app_config
