@@ -5,12 +5,17 @@ Commands work with servers. (Hiss, boo.)
 """
 
 import copy
+import logging
 
 from fabric.api import local, put, settings, require, run, sudo, task
 from fabric.state import env
 from jinja2 import Template
 
 import app_config
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 """
 Setup
@@ -27,7 +32,7 @@ def setup():
     require('branch', provided_by=['stable', 'master', 'branch'])
 
     if not app_config.DEPLOY_TO_SERVERS:
-        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py before setting up the servers.'
+        logger.error('You must set DEPLOY_TO_SERVERS = True in your app_config.py before setting up the servers.')
 
         return
 
@@ -87,7 +92,7 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__) 
+    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -211,7 +216,7 @@ def deploy_confs():
             b = run('md5sum %s' % installed_path).split()[0]
 
             if a != b:
-                print 'Updating %s' % installed_path
+                logging.info('Updating %s' % installed_path)
                 put(rendered_path, installed_path, use_sudo=True)
 
                 if service == 'nginx':
@@ -225,7 +230,7 @@ def deploy_confs():
                     sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
                     sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
             else:
-                print '%s has not changed' % rendered_path
+                logging.info('%s has not changed' % rendered_path)
 
 @task
 def nuke_confs():
@@ -263,7 +268,6 @@ def fabcast(command):
     require('settings', provided_by=['production', 'staging'])
 
     if not app_config.DEPLOY_TO_SERVERS:
-        print 'You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.'
+        logging.error('You must set DEPLOY_TO_SERVERS = True in your app_config.py and setup a server before fabcasting.')
 
     run('cd %s && bash run_on_server.sh fab %s $DEPLOYMENT_TARGET %s' % (app_config.SERVER_REPOSITORY_PATH, env.branch, command))
-

@@ -3,12 +3,19 @@
 import csv
 import getpass
 import json
+import logging
 import os
 import re
 
 import requests
 from requests.auth import HTTPBasicAuth
 from time import sleep
+
+import app_config
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 def get_auth():
     """
@@ -25,7 +32,7 @@ def get_auth():
     if response.status_code == 401:
         otp = response.headers.get('X-Github-OTP')
         if otp and otp.startswith('required'):
-            print 'You are using 2-factor authentication. Please create a personal access token at https://github.com/settings/applications#personal-access-tokens and provide it here'
+            logger.warn('You are using 2-factor authentication. Please create a personal access token at https://github.com/settings/applications#personal-access-tokens and provide it here')
             access_token = raw_input('Personal access token: ')
             auth = HTTPBasicAuth(access_token, '')
         else:
@@ -40,7 +47,7 @@ def get_repo_path():
     with open('.git/config') as f:
         gitconfig = f.read()
 
-    match = re.search('(git@github.com:|https://github.com/)(.+)/(.+).git', gitconfig)    
+    match = re.search('(git@github.com:|https://github.com/)(.+)/(.+).git', gitconfig)
     repo_username = match.group(2)
     repo_name = match.group(3)
 
@@ -55,10 +62,10 @@ def delete_existing_labels(auth):
     response = requests.get(url, auth=auth)
     labels = json.loads(response.content)
 
-    print 'Deleting %i labels' % len(labels)
+    logger.info('Deleting %i labels' % len(labels))
 
     for label in labels:
-        print 'Deleting label %s' % label['name']
+        logger.info('Deleting label %s' % label['name'])
 
         requests.delete(url + '/' + label['name'], auth=auth)
 
@@ -71,10 +78,10 @@ def create_labels(auth, filename='etc/default_labels.csv'):
     with open(filename) as f:
         labels = list(csv.DictReader(f))
 
-    print 'Creating %i labels' % len(labels)
+    logger.info('Creating %i labels' % len(labels))
 
     for label in labels:
-        print 'Creating label "%s"' % label['name']
+        logger.info('Creating label "%s"' % label['name'])
         data = json.dumps(label)
 
         requests.post(url, data=data, auth=auth)
@@ -88,10 +95,10 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
     with open(filename) as f:
         tickets = list(csv.DictReader(f))
 
-    print 'Creating %i tickets' % len(tickets)
+    logger.info('Creating %i tickets' % len(tickets))
 
     for ticket in tickets:
-        print 'Creating ticket "%s"' % ticket['title']
+        logger.info('Creating ticket "%s"' % ticket['title'])
 
         if ticket['labels']:
             ticket['labels'] = ticket['labels'].split(',')
@@ -102,10 +109,10 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
 
         data = json.dumps(ticket)
 
-        requests.post(url, data=data, auth=auth) 
+        requests.post(url, data=data, auth=auth)
 
         # avoid approximately 30 tickets/minute rate limit
-        sleep(5)         
+        sleep(5)
 
 def create_milestones(auth, filename='etc/default_milestones.csv'):
     """
@@ -116,14 +123,14 @@ def create_milestones(auth, filename='etc/default_milestones.csv'):
     with open(filename) as f:
         milestones = list(csv.DictReader(f))
 
-    print 'Creating %i milestones' % len(milestones)
+    logger.info('Creating %i milestones' % len(milestones))
 
     for milestone in milestones:
-        print 'Creating milestone "%s"' % milestone['title']
+        logger.info('Creating milestone "%s"' % milestone['title'])
 
         data = json.dumps(milestone)
 
-        requests.post(url, data=data, auth=auth) 
+        requests.post(url, data=data, auth=auth)
 
 def create_hipchat_hook(auth):
     """
@@ -131,13 +138,13 @@ def create_hipchat_hook(auth):
     """
     url = 'https://api.github.com/repos/%s/hooks' % get_repo_path()
 
-    print 'Creating Hipchat hook'
+    logger.info('Creating Hipchat hook')
 
     auth_token = os.environ.get('HIPCHAT_AUTH_TOKEN', None)
     room = os.environ.get('HIPCHAT_ROOM_ID', None)
 
     if (not auth_token or not room):
-        print 'Skipping! (Not configured.)'
+        logger.error('Skipping! (Not configured.)')
         return
 
     data = json.dumps({
