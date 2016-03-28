@@ -71,7 +71,7 @@ class Includer(object):
                 out_path = 'www/%s' % path
 
                 if path not in g.compiled_includes:
-                    logging.info('Rendering %s' % out_path)
+                    logger.info('Rendering %s' % out_path)
 
                     with codecs.open(out_path, 'w', encoding='utf-8') as f:
                         f.write(self._compress())
@@ -224,5 +224,5 @@ def smarty_filter(s):
     try:
         return Markup(s)
     except:
-        logging.error('This string failed to encode: %s' % s)
+        logger.error('This string failed to encode: %s' % s)
         return Markup(s)
