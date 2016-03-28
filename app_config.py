@@ -99,16 +99,6 @@ SHARING
 """
 SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
 
-"""
-ADS
-"""
-
-NPR_DFP = {
-    'STORY_ID': '1002',
-    'TARGET': 'homepage',
-    'ENVIRONMENT': 'NPRTEST',
-    'TESTSERVER': 'false'
-}
 
 """
 SERVICES
@@ -122,9 +112,6 @@ NPR_GOOGLE_ANALYTICS = {
 VIZ_GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-75'
 }
-
-DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
-DISQUS_UUID = '$NEW_DISQUS_UUID'
 
 """
 OAUTH
