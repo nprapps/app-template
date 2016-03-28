@@ -52,6 +52,9 @@ class Includer(object):
 
     def _relativize_path(self, path):
         relative_path = path
+        if relative_path.startswith('www/'):
+            relative_path = relative_path[4:]
+
         depth = len(request.path.split('/')) - (2 + self.asset_depth)
 
         while depth > 0:
