@@ -18,7 +18,7 @@
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
-    {{ CSS.render('css/app.min.css') }}
+    {{ CSS.render('css/rendered/app.min.css') }}
 
     {% include '_social_tags.html' %}
 
