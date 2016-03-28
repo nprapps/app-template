@@ -27,7 +27,7 @@ Assumptions
 The following things are assumed to be true in this documentation.
 
 * You are running OSX.
-* You are using Python 2.7. (Probably the version that came OSX.)
+* You are using Python 2.7. (Probably the version that came with OSX.)
 * You have [virtualenv](https://pypi.python.org/pypi/virtualenv) and [virtualenvwrapper](https://pypi.python.org/pypi/virtualenvwrapper) installed and working.
 * You have NPR's AWS credentials stored as environment variables locally.
 

@@ -3,6 +3,7 @@
 import codecs
 from datetime import datetime
 import json
+import logging
 import time
 import urllib
 import subprocess
@@ -13,6 +14,10 @@ from smartypants import smartypants
 
 import app_config
 import copytext
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 class BetterJSONEncoder(json.JSONEncoder):
     """
@@ -69,7 +74,7 @@ class Includer(object):
                 out_path = 'www/%s' % path
 
                 if path not in g.compiled_includes:
-                    print 'Rendering %s' % out_path
+                    logger.info('Rendering %s' % out_path)
 
                     with codecs.open(out_path, 'w', encoding='utf-8') as f:
                         f.write(self._compress())
@@ -108,7 +113,7 @@ class JavascriptIncluder(Includer):
             src_paths.append('www/%s' % src)
 
             with codecs.open('www/%s' % src, encoding='utf-8') as f:
-                print '- compressing %s' % src
+                logger.info('- compressing %s' % src)
                 output.append(minify(f.read()))
 
         context = make_context()
@@ -141,7 +146,7 @@ class CSSIncluder(Includer):
                 compressed_src = subprocess.check_output(["node_modules/less/bin/lessc", "-x", src])
                 output.append(compressed_src)
             except:
-                print 'It looks like "lessc" isn\'t installed. Try running: "npm install"'
+                logger.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
                 raise
 
         context = make_context()
@@ -222,5 +227,5 @@ def smarty_filter(s):
     try:
         return Markup(s)
     except:
-        print 'This string failed to encode: %s' % s
+        logger.error('This string failed to encode: %s' % s)
         return Markup(s)

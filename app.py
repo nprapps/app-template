@@ -8,6 +8,7 @@ App Template for static publishing.
 """
 
 import app_config
+import logging
 import oauth
 import static
 
@@ -20,6 +21,10 @@ app.debug = app_config.DEBUG
 
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 @app.route('/')
 @oauth.oauth_required
@@ -42,4 +47,4 @@ else:
 
 # Catch attempts to run the app directly
 if __name__ == '__main__':
-    print 'This command has been removed! Please run "fab app" instead!'
+    logging.error('This command has been removed! Please run "fab app" instead!')
