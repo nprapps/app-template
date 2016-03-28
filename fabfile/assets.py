@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-
 """
 Commands related to the syncing assets.
 """
-
 from glob import glob
 import logging
 import os
+import sys
 
 from fabric.api import prompt, task
 import app_config
@@ -183,7 +182,7 @@ def _assets_confirm(local_path):
     """
     Check with user about whether to keep local or remote file.
     """
-    logger.info('--> This file has been changed locally and on S3.')
+    print('--> This file has been changed locally and on S3.')
     answer = prompt('Take remote [r] Take local [l] Take all remote [ra] Take all local [la] cancel', default='c')
 
     if answer == 'r':
@@ -198,7 +197,7 @@ def _assets_confirm(local_path):
     return (None, False)
 
 def _assets_upload_confirm():
-    logger.info('--> This file does not exist on S3.')
+    print('--> This file does not exist on S3.')
     answer = prompt('Upload local copy [u] Delete local copy [d] Upload all [ua] Delete all [da] cancel', default='c')
 
     if answer == 'u':
@@ -216,7 +215,7 @@ def _assets_download(s3_key, local_path):
     """
     Utility method to download a single asset from S3.
     """
-    logger.info('--> Downloading!')
+    print('--> Downloading!')
 
     dirname = os.path.dirname(local_path)
 
@@ -229,7 +228,7 @@ def _assets_upload(local_path, s3_key):
     """
     Utility method to upload a single asset to S3.
     """
-    logger.info('--> Uploading!')
+    print('--> Uploading!')
 
     with open(local_path, 'rb') as f:
         local_md5 = s3_key.compute_md5(f)[0]
@@ -241,7 +240,7 @@ def _assets_delete(local_path, s3_key):
     """
     Utility method to delete assets both locally and remotely.
     """
-    logger.info('--> Deleting!')
+    print('--> Deleting!')
 
     s3_key.delete()
     os.remove(local_path)
