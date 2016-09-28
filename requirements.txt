@@ -1,4 +1,4 @@
-Authomatic==0.0.13
+Authomatic==0.1.0.post1
 Fabric==1.4.3
 Flask==0.9
 Jinja2==2.7.3
