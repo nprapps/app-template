@@ -21,15 +21,6 @@ logger.setLevel(app_config.LOG_LEVEL)
 GZIP_FILE_TYPES = ['.html', '.js', '.json', '.css', '.xml']
 
 
-class FakeTime:
-    def time(self):
-        return 1261130520.0
-
-# Hack to override gzip's time implementation
-# See: http://stackoverflow.com/questions/264224/setting-the-gzip-timestamp-from-python
-gzip.time = FakeTime()
-
-
 def deploy_file(bucket, src, dst, headers={}, public=True):
     """
     Deploy a single file to S3, if the local version is different.
@@ -47,6 +38,11 @@ def deploy_file(bucket, src, dst, headers={}, public=True):
 
     if 'Content-Type' not in headers:
         file_headers['Content-Type'] = mimetypes.guess_type(src)[0]
+        if file_headers['Content-Type'] == 'text/html':
+            # Force character encoding header
+            file_headers['Content-Type'] = '; '.join([
+                file_headers['Content-Type'],
+                'charset=utf-8'])
 
     # Define policy
     if public:
@@ -62,7 +58,7 @@ def deploy_file(bucket, src, dst, headers={}, public=True):
             contents = f_in.read()
 
         output = StringIO()
-        f_out = gzip.GzipFile(filename=dst, mode='wb', fileobj=output)
+        f_out = gzip.GzipFile(filename=dst, mode='wb', fileobj=output, mtime=0)
         f_out.write(contents)
         f_out.close()
 
