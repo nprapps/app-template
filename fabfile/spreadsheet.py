@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# _*_ coding:utf-8 _*_
 """
 Commands that ease the interaction with the app google spreadsheet
 """

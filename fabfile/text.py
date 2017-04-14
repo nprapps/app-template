@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# _*_ coding:utf-8 _*_
 """
 Commands related to syncing copytext from Google Docs.
 """

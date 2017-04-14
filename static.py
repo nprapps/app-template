@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# _*_ coding:utf-8 _*_
 import json
 from mimetypes import guess_type
 import os
