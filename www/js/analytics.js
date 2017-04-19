@@ -62,7 +62,7 @@ var ANALYTICS = (function () {
             'dimension24': screenType // screen type
         };
 
-        var storage = new CrossStorageClient('http://www.npr.org/visuals/cross-storage-iframe.html');
+        var storage = new CrossStorageClient('https://secure.npr.org/visuals/cross-storage-iframe.html');
         storage.onConnect().then(function() {
             return storage.get('firstVisitDate', 'hasListenedToAudio', 'isLoggedIn', 'isRegistered', 'originalLandingPage', 'originalReferrer', 'regDate');
         }).then(function(res) {
