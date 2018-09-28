@@ -1,25 +1,16 @@
 <!-- Fonts -->
 <script src="{{ S3_BASE_URL }}/js/lib/webfont.js"></script>
 <script>
-    var urls = [
-        'http://s.npr.org/templates/css/fonts/GothamSSm.css',
-        'http://s.npr.org/templates/css/fonts/Knockout.css'
-    ];
-
-    if (window.location.protocol == "https:") {
-        urls = [
-            'https://s.npr.org/templates/css/fonts/GothamSSm.css',
-            'https://s.npr.org/templates/css/fonts/Knockout.css'
-        ];
-    }
-
     WebFont.load({
          custom: {
              families: [
                  'Gotham SSm:n4,n7',
                  'Knockout 31 4r:n4'
              ],
-             urls: urls
+             urls: [
+                'https://s.npr.org/templates/css/fonts/GothamSSm.css',
+                'https://s.npr.org/templates/css/fonts/Knockout.css'
+            ]
          },
          timeout: 10000
     });
