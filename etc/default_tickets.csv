@@ -25,7 +25,7 @@ DevOps: Enable scout monitor for /<project_slug>/test/,,Launch TODO
 Write the team blog post,,Launch TODO
 Byline for visuals team,,Launch TODO
 Add project to team projects list,Update https://github.com/nprapps/nprapps.github.com/blob/master/_data/apps.yml,Launch TODO
-Update master sitemaps index and redeploy,,Launch TODO
+Update master sitemaps index and redeploy,Add new URL to https://www.npr.org/sitemap_apps.xml. You may need to update the file locally and ask onlinetech to replace it on www.,Launch TODO
 Email media relations re: press releases,,Launch TODO
 Schedule iteration reviews,,Project Management
 Schedule sprint planning meetings,,Project Management
