@@ -1,9 +1,15 @@
 {
-    "name": "app-template",
-    "version": "1.0.0",
-    "dependencies": {
-        "less": "~1.7.0",
-        "universal-jst": "~1.0.5",
-        "fontello-cli": "~0.4.0"
-    }
+  "name": "app-template",
+  "version": "1.0.0",
+  "dependencies": {
+    "less": "~2.1.0",
+    "universal-jst": "~1.0.5",
+    "fontello-cli": "~0.4.0",
+    "snyk": "^1.104.2"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
